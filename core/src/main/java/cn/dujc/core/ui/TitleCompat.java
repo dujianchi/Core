@@ -166,7 +166,11 @@ public class TitleCompat {
     public TitleCompat setFakeStatusBarColor(Drawable drawable) {
         if (mFakeStatusBarView != null) {
             setFakeStatusBarVisibility(true);
-            ViewCompat.setBackground(mFakeStatusBarView, drawable);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mFakeStatusBarView.setBackground(drawable);
+            } else {
+                mFakeStatusBarView.setBackgroundDrawable(drawable);
+            }
         }
         return this;
     }
