@@ -10,11 +10,12 @@ buildscript {
 
         support_version = '27.1.1'
     }
+
     repositories {
         google()
         jcenter()
-        
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'

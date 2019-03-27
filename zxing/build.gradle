@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group='cn.dujc'
+group = 'cn.dujc'
 
 android {
     compileSdkVersion Integer.valueOf("$compile_sdk_version")
@@ -10,9 +10,6 @@ android {
         targetSdkVersion Integer.valueOf("$target_sdk_version")
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -25,13 +22,11 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:$support_version"
-    implementation "com.android.support:support-v4:$support_version"
-    implementation 'com.google.zxing:core:3.3.0'
+    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly "com.android.support:appcompat-v7:$support_version"
+    compileOnly "com.android.support:support-v4:$support_version"
+    compileOnly 'com.google.zxing:core:3.3.0'
+    compileOnly project(':core')
 }
 
 //---------------------------------------------
@@ -48,7 +43,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
+    failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile
