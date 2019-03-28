@@ -23,7 +23,7 @@ import cn.dujc.core.util.ContextUtil;
  */
 public final class IToolbarHandler {
 
-    private static final String CLASS = "CORE_TOOLBAR_CLASS";
+    private static final String CLASS = "cn.dujc.core.initializer.toolbar";
     private static IToolbar sToolbar = null;
 
     private IToolbarHandler() { }

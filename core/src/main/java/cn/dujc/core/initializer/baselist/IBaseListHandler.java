@@ -17,7 +17,7 @@ import cn.dujc.core.app.Initializer;
  */
 public final class IBaseListHandler {
 
-    private static final String CLASS = "CORE_LIST_SETUP";
+    private static final String CLASS = "cn.dujc.core.initializer.baselist";
     private static IBaseListSetup sSetup = null;
 
     private IBaseListHandler() {
