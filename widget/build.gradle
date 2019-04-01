@@ -23,9 +23,8 @@ android {
 
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly "com.android.support:appcompat-v7:$support_version"
-    compileOnly "com.android.support:recyclerview-v7:$support_version"
-    //implementation 'cn.dujc:CoreApp:1.2.0-alpha6'
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
 }
 
 //---------------------------------------------
