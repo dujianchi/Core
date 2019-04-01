@@ -8,7 +8,7 @@ buildscript {
         target_sdk_version = 27
         compile_sdk_version = 27
 
-        support_version = '27.1.1'
+        support_version = '27.1.0'
     }
 
     repositories {
