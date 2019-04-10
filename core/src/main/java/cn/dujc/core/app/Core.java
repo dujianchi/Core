@@ -23,7 +23,7 @@ public class Core {
      * 初始化框架
      */
     public static void init(Application app, Class<? extends IToolbar> iToolbar) {
-        init(app, iToolbar, IBaseListSetup.Impl.class);
+        init(app, iToolbar, IBaseListSetup.DefaultImpl.class);
     }
 
     /**
