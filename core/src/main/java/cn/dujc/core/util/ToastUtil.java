@@ -2,6 +2,7 @@ package cn.dujc.core.util;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
+import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -15,6 +16,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cn.dujc.core.bridge.ActivityStackUtil;
+
 /**
  * 在目前的实现方式中实现自定义view的toast会有问题，以后再来改（2018年11月7日）
  * Created by du on 2017/9/21.
@@ -24,7 +27,8 @@ public class ToastUtil {
     public static final int DEFAULT_DURATION = Toast.LENGTH_SHORT;
     private static WeakReference<Toast> LAST_TOAST = null;
 
-    ToastUtil() { }
+    ToastUtil() {
+    }
 
     public static int getDefaultYOffset(Context context) {
         if (context == null) return 48;
@@ -72,14 +76,17 @@ public class ToastUtil {
                 toast.show();
             }
         } else {
-            /*new XToast((Application) context.getApplicationContext())
-                    .setView(com.android.internal.R.layout.transient_notification)
-                    .setGravity(gravity)
-                    .setYOffset(yOffset)
-                    .setDuration(duration == Toast.LENGTH_SHORT ? 1000 : 3000) // 设置显示时长
-                    .setAnimStyle(android.R.style.Animation_Translucent) // 设置动画样式
-                    .setText(com.android.internal.R.id.message, text)
-                    .show();*/
+            Context ctx = context;
+            if (context instanceof Application) {
+                ctx = ActivityStackUtil.getInstance().topActivity();
+            }
+            if (ctx != null) {
+                try {
+                    ToastX.makeText(ctx, text, duration).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -87,7 +94,7 @@ public class ToastUtil {
      * 检查通知栏权限有没有开启
      * 参考SupportCompat包中的方法： NotificationManagerCompat.from(context).areNotificationsEnabled();
      */
-    public static boolean isNotificationEnabled(Context context){
+    public static boolean isNotificationEnabled(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             return notificationManager != null && notificationManager.areNotificationsEnabled();
