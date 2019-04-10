@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="core_xtoast_background_color">#7f000000</color>
+    <color name="core_xtoast_text_color">#fff</color>
+
+    <dimen name="core_xtoast_corner">10dp</dimen>
+
+    <style name="core_toast_x_dialog" parent="core_base_dialog_theme">
+        <!--模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--是否有遮盖-->
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!--文字id-->
+    <item name="core_toast_x_message" type="id" />
+
+</resources>
