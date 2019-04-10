@@ -10,4 +10,9 @@ public class ListSetupHelper implements IBaseListSetup {
 
     @Override
     public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) { }
+
+    @Override
+    public boolean endGone() {
+        return false;
+    }
 }

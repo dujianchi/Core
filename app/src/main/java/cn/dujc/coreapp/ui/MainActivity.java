@@ -16,7 +16,8 @@ import cn.dujc.core.util.ToastUtil;
 public class MainActivity extends BaseListActivity {
 
     private final List<String> mList = Arrays.asList("toast"
-            , "webview", "", "", "", "", "");
+            , "webview"
+            , "listview", "", "", "", "");
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class MainActivity extends BaseListActivity {
                         .goFragment(WebFragment.class);
             }
             break;
+            case 2:{
+                starter().go(ListActivity.class);
+            }break;
             //case 00:{}break;
         }
     }

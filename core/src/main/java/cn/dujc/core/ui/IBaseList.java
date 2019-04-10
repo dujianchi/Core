@@ -12,12 +12,15 @@ import android.view.View;
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.baselist.IBaseListHandler;
+import cn.dujc.core.initializer.baselist.IBaseListSetup;
 
 /**
  * @author du
  * date 2018/11/1 4:33 PM
  */
-interface IBaseList {
+public interface IBaseList {
+
+    public static final boolean DEFAULT_END_GONE = true;
 
     int getViewId();
 
@@ -118,6 +121,7 @@ interface IBaseList {
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
         private AppBarLayout mAppbarLayout;
         private long mLastDoubleTap = 0;
+        private boolean mEndGone = DEFAULT_END_GONE;
 
         public AbsImpl(UI UI) {
             mUI = UI;
@@ -179,6 +183,9 @@ interface IBaseList {
 
             mUI.loadAtFirst();
             mUI.coordinateRefreshAndAppbar();
+
+            IBaseListSetup listSetup = IBaseListHandler.getSetup(context());
+            if (listSetup != null) mEndGone = listSetup.endGone();
         }
 
         @Override
@@ -237,7 +244,7 @@ interface IBaseList {
 
         @Override
         public void notifyDataSetChanged(boolean done) {
-            mUI.notifyDataSetChanged(done, true);
+            mUI.notifyDataSetChanged(done, mEndGone);
         }
 
         @Override
