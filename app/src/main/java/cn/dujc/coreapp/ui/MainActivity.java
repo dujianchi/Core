@@ -72,7 +72,8 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 3: {
-                permissionKeeper().requestPermissions(requestCodeSdcard, "no permission", "need permission", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                permissionKeeper().requestPermissions(requestCodeSdcard, "no permission", "need permission"
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
             }
             break;
             case 4: {
