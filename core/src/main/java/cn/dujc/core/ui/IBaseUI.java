@@ -665,6 +665,7 @@ public interface IBaseUI {
         private IOddsPermissionOperator mPermissionOperator;
         private IPermissionSettingsDialog mSettingsDialog;
         private String[] mLastRequestedPermissions = null;
+        private int mLastRequestCode = -1;
 
         public IPermissionKeeperImpl(Activity activity, IPermissionKeeperCallback callback) {
             this(new IContextCompatActivityImpl(activity), callback);
@@ -690,8 +691,10 @@ public interface IBaseUI {
         @Override
         public void requestPermissions(int requestCode, String title, String message, String... permissions) {
             mLastRequestedPermissions = null;
+            mLastRequestCode = -1;
             if (permissions == null) return;
             mLastRequestedPermissions = permissions;
+            mLastRequestCode = requestCode;
             // 以下为自定义的权限处理逻辑
             if (mPermissionOperator != null
                     && mPermissionOperator.useOddsPermissionOperate(mContext.context())
@@ -712,8 +715,7 @@ public interface IBaseUI {
                 for (String permission : permissions) {
                     showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
                 }
-                if (showHint && mSettingsDialog != null
-                        && (mPermissionOperator != null && mPermissionOperator.showConfirmDialog(permissions))) {
+                if (mSettingsDialog != null && (showHint || mPermissionOperator != null && mPermissionOperator.showConfirmDialog(permissions))) {
                     mSettingsDialog.showSettingsDialog(mContext, title, message);
                 } else {
                     mContext.requestPermissions(permissions, requestCode);
@@ -730,7 +732,7 @@ public interface IBaseUI {
         public void handOnActivityResult(int requestCode) {
             if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE
                     && mLastRequestedPermissions != null) {
-                handleGrantedOrDenied(mContext.context(), mCallback, mLastRequestedPermissions, null, requestCode);
+                handleGrantedOrDenied(mContext.context(), mCallback, mLastRequestedPermissions, null, mLastRequestCode);
             }
         }
 
