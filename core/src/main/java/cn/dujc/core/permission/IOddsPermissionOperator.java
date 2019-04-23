@@ -52,9 +52,10 @@ public interface IOddsPermissionOperator {
     boolean useOddsPermissionOperate(Context context);
 
     /**
-     * 特异的申请权限方法，低水平的狗X的rom，都是在使用权限时才申请权限，所以权限判断和请求权限都在这一个方法里
+     * 特异的申请权限方法，低水平的狗X的rom，都是在使用权限时才申请权限，所以权限判断和请求权限都在这一个方法里。
+     * 所以在申请权限时同样也可以判断到是否有权限
      */
-    void requestPermissions(int requestCode, String title, String message, String... permissions);
+    boolean requestPermissions(int requestCode, String title, String message, String... permissions);
 
     /**
      * 权限处理流程是否到此结束，此方法在{@link #requestPermissions(int, String, String, String...)}后调用

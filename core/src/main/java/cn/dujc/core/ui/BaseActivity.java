@@ -23,8 +23,12 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.permission.IPermissionSetup;
+import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.initializer.toolbar.IToolbarHandler;
+import cn.dujc.core.permission.IOddsPermissionOperator;
+import cn.dujc.core.util.ToastUtil;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
@@ -143,8 +147,22 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
 
     @Override
     public IPermissionKeeper permissionKeeper() {
-        if (mPermissionKeeper == null) mPermissionKeeper = new IPermissionKeeperImpl(this, this);
+        if (mPermissionKeeper == null) {
+            mPermissionKeeper = new IPermissionKeeperImpl(this, this);
+            permissionKeeperSetup();
+        }
         return mPermissionKeeper;
+    }
+
+    @Override
+    public void permissionKeeperSetup() {
+        //if (mPermissionKeeper != null) {
+        final IPermissionSetup setup = IPermissionSetupHandler.getSetup(mActivity);
+        final IOddsPermissionOperator operator;
+        if (setup != null && (operator = setup.getOddsPermissionOperator(mActivity, mPermissionKeeper)) != null) {
+            mPermissionKeeper.setOddsPermissionOperator(operator);
+        }
+        //}
     }
 
     @Override
@@ -167,7 +185,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     public void onGranted(int requestCode, List<String> permissions) { }
 
     @Override
-    public void onDenied(int requestCode, List<String> permissions) { }
+    public void onDenied(int requestCode, List<String> permissions) {
+        ToastUtil.showToast(mActivity, getString(R.string.core_permission_denied));
+    }
 
     /**
      * 关联主界面 **只有在使用自定义View时使用**

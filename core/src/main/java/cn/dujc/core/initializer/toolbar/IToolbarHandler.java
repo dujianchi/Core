@@ -9,11 +9,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
 
 import cn.dujc.core.R;
 import cn.dujc.core.app.Initializer;
-import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.core.util.ContextUtil;
 
@@ -23,10 +21,11 @@ import cn.dujc.core.util.ContextUtil;
  */
 public final class IToolbarHandler {
 
-    private static final String CLASS = "cn.dujc.core.initializer.toolbar";
+    private static final String CLASS = IToolbar.class.getName();
     private static IToolbar sToolbar = null;
 
-    private IToolbarHandler() { }
+    private IToolbarHandler() {
+    }
 
     /**
      * 设置toolbar的处理类，仅推荐默认toolbar使用此方案，其他情况请在activity中重写initToolbar方法
@@ -150,7 +149,7 @@ public final class IToolbarHandler {
      * @param user 当前需要使用toolbar的类，用于判断是否符合排除或包含条件，通常填this
      * @return toolbar的view
      */
-    public static View generateToolbar(Object user, ViewGroup parent, IToolbar iToolbar) {
+    private static View generateToolbar(Object user, ViewGroup parent, IToolbar iToolbar) {
         if (iToolbar != null) {
             //final List<Class<? extends IBaseUI>> include = iToolbar.include();
             //boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
@@ -160,33 +159,33 @@ public final class IToolbarHandler {
             //    }
             //}
             //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
-            boolean useHere = true;
-            final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
-            if (exclude != null && exclude.size() > 0) {
-                for (Class clazz : exclude) {
-                    if (clazz.isInstance(user)) {
-                        useHere = false;
-                        break;
-                    }
-                }
-            }
+            // boolean useHere = true;
+            // final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
+            // if (exclude != null && exclude.size() > 0) {
+            //     for (Class clazz : exclude) {
+            //         if (clazz.isInstance(user)) {
+            //             useHere = false;
+            //             break;
+            //         }
+            //     }
+            // }
             //}
-            if (useHere) {
-                final View toolbar = iToolbar.normal(parent);
-                if (toolbar != null) {
-                    final View backView = toolbar.findViewById(R.id.core_toolbar_back_id);
-                    final Activity activity = ContextUtil.getActivity(parent.getContext());
-                    if (activity != null && backView != null) {
-                        backView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                activity.onBackPressed();
-                            }
-                        });
-                    }
+            //if (useHere) {
+            final View toolbar = iToolbar.normal(parent);
+            if (toolbar != null) {
+                final View backView = toolbar.findViewById(R.id.core_toolbar_back_id);
+                final Activity activity = ContextUtil.getActivity(parent.getContext());
+                if (activity != null && backView != null) {
+                    backView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            activity.onBackPressed();
+                        }
+                    });
                 }
-                return toolbar;
             }
+            return toolbar;
+            //}
         }
         return null;
     }
@@ -208,32 +207,32 @@ public final class IToolbarHandler {
                 //    }
                 //}
                 //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
-                boolean useHere = true;
-                final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
-                if (exclude != null && exclude.size() > 0) {
-                    for (Class clazz : exclude) {
-                        if (clazz.isInstance(user)) {
-                            useHere = false;
-                            break;
-                        }
-                    }
-                }
+                // boolean useHere = true;
+                // final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
+                // if (exclude != null && exclude.size() > 0) {
+                //     for (Class clazz : exclude) {
+                //         if (clazz.isInstance(user)) {
+                //             useHere = false;
+                //             break;
+                //         }
+                //     }
+                // }
                 //}
-                if (useHere) {
-                    final int color = toolbar.statusBarColor(context);
-                    final int mode = toolbar.statusBarMode();
-                    // mode 可能为null，switch可能不安全
-                    if (mode == IToolbar.AUTO) {
-                        final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
-                        //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
-                        titleCompat.setStatusBarMode(!darkColor);
-                    } else if (mode == IToolbar.DARK) {
-                        titleCompat.setStatusBarMode(true);
-                    } else if (mode == IToolbar.LIGHT) {
-                        titleCompat.setStatusBarMode(false);
-                    }
-                    titleCompat.setFakeStatusBarColor(color);
+                // if (useHere) {
+                final int color = toolbar.statusBarColor(context);
+                final int mode = toolbar.statusBarMode();
+                // mode 可能为null，switch可能不安全
+                if (mode == IToolbar.AUTO) {
+                    final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
+                    //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
+                    titleCompat.setStatusBarMode(!darkColor);
+                } else if (mode == IToolbar.DARK) {
+                    titleCompat.setStatusBarMode(true);
+                } else if (mode == IToolbar.LIGHT) {
+                    titleCompat.setStatusBarMode(false);
                 }
+                titleCompat.setFakeStatusBarColor(color);
+                // }
             }
         }
     }

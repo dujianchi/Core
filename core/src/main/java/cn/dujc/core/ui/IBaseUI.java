@@ -61,6 +61,8 @@ public interface IBaseUI {
 
         IPermissionKeeper permissionKeeper();
 
+        void permissionKeeperSetup();
+
         View initToolbar(ViewGroup parent);
 
         TitleCompat getTitleCompat();
@@ -699,10 +701,14 @@ public interface IBaseUI {
             if (mPermissionOperator != null
                     && mPermissionOperator.useOddsPermissionOperate(mContext.context())
             ) {//使用自定义权限操作
-                mPermissionOperator.requestPermissions(requestCode, title, message, permissions);
+                final boolean hasPermission = mPermissionOperator.requestPermissions(requestCode, title, message, permissions);
                 if (mPermissionOperator.doneHere(permissions)) {
                     if (mCallback != null) {
-                        mCallback.onGranted(requestCode, Arrays.asList(permissions));
+                        if (hasPermission) {
+                            mCallback.onGranted(requestCode, Arrays.asList(permissions));
+                        } else {
+                            mCallback.onDenied(requestCode, Arrays.asList(permissions));
+                        }
                     }
                     return;//是否需要就此结束
                 }
@@ -715,7 +721,9 @@ public interface IBaseUI {
                 for (String permission : permissions) {
                     showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
                 }
-                if (mSettingsDialog != null && (showHint || mPermissionOperator != null && mPermissionOperator.showConfirmDialog(permissions))) {
+                if (mSettingsDialog != null && showHint && ( mPermissionOperator == null //系统api需要显示对话框，并且没有设置特异权限的操作
+                        || !mPermissionOperator.useOddsPermissionOperate(mContext.context()) //设置了特异权限操作，但是不符合特异权限使用条件
+                        || mPermissionOperator.showConfirmDialog(permissions) ) ) {//特异权限允许使用对话框
                     mSettingsDialog.showSettingsDialog(mContext, title, message);
                 } else {
                     mContext.requestPermissions(permissions, requestCode);

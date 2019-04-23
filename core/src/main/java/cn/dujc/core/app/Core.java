@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 
 import cn.dujc.core.bridge.ActivityStackUtil;
-import cn.dujc.core.initializer.baselist.IBaseListHandler;
 import cn.dujc.core.initializer.baselist.IBaseListSetup;
+import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
+import cn.dujc.core.initializer.permission.IPermissionSetup;
+import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.initializer.toolbar.IToolbarHandler;
 
@@ -29,13 +31,25 @@ public class Core {
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar> iToolbar, Class<? extends IBaseListSetup> iListSetup) {
+    public static void init(Application app, Class<? extends IToolbar> iToolbar
+            , Class<? extends IBaseListSetup> iListSetup) {
+        init(app, iToolbar, iListSetup, null);
+    }
+
+    /**
+     * 初始化框架
+     */
+    public static void init(Application app, Class<? extends IToolbar> iToolbar
+            , Class<? extends IBaseListSetup> iListSetup, Class<? extends IPermissionSetup> iPermissionSetup) {
         initActivityStack(app);
         if (iToolbar != null) {
             initToolbarHelper(app, iToolbar);
         }
         if (iListSetup != null) {
             initListSetup(app, iListSetup);
+        }
+        if (iPermissionSetup != null) {
+            initPermissionSetup(app, iPermissionSetup);
         }
     }
 
@@ -48,6 +62,10 @@ public class Core {
     }
 
     private static void initListSetup(Context context, Class<? extends IBaseListSetup> clazz) {
-        if (context != null && clazz != null) IBaseListHandler.setSetupClass(context, clazz);
+        if (context != null && clazz != null) IBaseListSetupHandler.setSetupClass(context, clazz);
+    }
+
+    private static void initPermissionSetup(Context context, Class<? extends IPermissionSetup> clazz) {
+        if (context != null && clazz != null) IPermissionSetupHandler.setSetupClass(context, clazz);
     }
 }

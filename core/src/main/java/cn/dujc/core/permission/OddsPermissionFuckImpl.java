@@ -11,11 +11,7 @@ public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
     private final IBaseUI.IPermissionKeeper mPermissionKeeper;
     private final Context mContext;
 
-    public static void fuckOPPOAndVIVO(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
-        new OddsPermissionFuckImpl(context, permissionKeeper);
-    }
-
-    private OddsPermissionFuckImpl(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
+    public OddsPermissionFuckImpl(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
         mPermissionKeeper = permissionKeeper;
         mContext = context;
         if (permissionKeeper != null) {
@@ -29,14 +25,17 @@ public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
     }
 
     @Override
-    public void requestPermissions(int requestCode, String title, String message, String... permissions) {
+    public boolean requestPermissions(int requestCode, String title, String message, String... permissions) {
+        boolean hasPermission = false;
         if (permissions != null && mPermissionKeeper != null) {
+            hasPermission = true;
             for (String permission : permissions) {
                 if (!mPermissionKeeper.hasPermission(permission)) {
-                    PermissionUtil.checkSelfPermission(mContext, permission);
+                    hasPermission = hasPermission && PermissionUtil.checkSelfPermission(mContext, permission);
                 }
             }
         }
+        return hasPermission;
     }
 
     @Override
@@ -46,6 +45,6 @@ public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
 
     @Override
     public boolean showConfirmDialog(String... permissions) {
-        return false;
+        return true;
     }
 }

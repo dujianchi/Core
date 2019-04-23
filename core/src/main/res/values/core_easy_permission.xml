@@ -6,6 +6,7 @@
         缺少必要权限可能无法正确运行。
         打开设置界面授予相关权限。
     </string>
+    <string name="core_permission_denied">缺少权限无法正确运行</string>
 
     <string name="core_title_settings_dialog">权限要求</string>
 

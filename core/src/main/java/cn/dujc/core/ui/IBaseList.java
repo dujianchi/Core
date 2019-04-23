@@ -11,8 +11,8 @@ import android.view.View;
 
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
-import cn.dujc.core.initializer.baselist.IBaseListHandler;
 import cn.dujc.core.initializer.baselist.IBaseListSetup;
+import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
 
 /**
  * @author du
@@ -184,7 +184,7 @@ public interface IBaseList {
             mUI.loadAtFirst();
             mUI.coordinateRefreshAndAppbar();
 
-            IBaseListSetup listSetup = IBaseListHandler.getSetup(context());
+            IBaseListSetup listSetup = IBaseListSetupHandler.getSetup(context());
             if (listSetup != null) mEndGone = listSetup.endGone();
         }
 
@@ -264,7 +264,7 @@ public interface IBaseList {
 
         @Override
         public void recyclerViewOtherSetup() {
-            IBaseListHandler.setup(context(), mRvList, mQuickAdapter);
+            IBaseListSetupHandler.setup(context(), mRvList, mQuickAdapter);
         }
 
         @Override
