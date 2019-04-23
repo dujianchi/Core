@@ -13,5 +13,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Core.init(this, ToolbarHelper.class, ListSetupHelper.class, PermissionHelper.class);
+        //Core.init(this, ToolbarHelper.class, ListSetupHelper.class);
     }
 }

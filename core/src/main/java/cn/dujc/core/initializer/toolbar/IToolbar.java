@@ -50,6 +50,9 @@ public interface IToolbar {
     @Style
     int toolbarStyle();
 
+    // 原本考虑到要做多个通用toolbar，于是有包含和排除的规则。后来想想，一个app内通常只有一
+    // 个通用的toolbar样式，其他样式通常也是在某个界面单独使用，没必要做多个样式，于是去掉了相应的规则
+    //List<Class<? extends IBaseUI>> include();
     //List<Class<? extends IBaseUI>> exclude();
 
 }

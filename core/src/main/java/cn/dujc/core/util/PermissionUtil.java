@@ -61,7 +61,7 @@ public class PermissionUtil {
      */
     public static boolean checkSelfPermission(Context context, String permission) {
         // 对于非oppo和vivo手机，做正常的权限申请
-        if (RomUtil.isOppo() || RomUtil.isVivo()) {
+        if (!RomUtil.isOppo() && !RomUtil.isVivo()) {
             return selfPermissionGranted(context, permission);
         }
         // 对于国内部分机型做非正常权限申请
