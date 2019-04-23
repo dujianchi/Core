@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import cn.dujc.core.initializer.toolbar.IToolbar;
-import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.coreapp.R;
 
 public class ToolbarHelper implements IToolbar {
@@ -34,8 +31,8 @@ public class ToolbarHelper implements IToolbar {
         return LINEAR;
     }
 
-    @Override
-    public List<Class<? extends IBaseUI>> exclude() {
-        return null;
-    }
+    //@Override
+    //public List<Class<? extends IBaseUI>> exclude() {
+    //    return null;
+    //}
 }

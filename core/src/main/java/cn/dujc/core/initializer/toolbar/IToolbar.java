@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
-
-import cn.dujc.core.ui.IBaseUI;
 
 public interface IToolbar {
 
@@ -53,6 +50,6 @@ public interface IToolbar {
     @Style
     int toolbarStyle();
 
-    List<Class<? extends IBaseUI>> exclude();
+    //List<Class<? extends IBaseUI>> exclude();
 
 }

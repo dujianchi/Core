@@ -11,11 +11,7 @@ public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
     private final IBaseUI.IPermissionKeeper mPermissionKeeper;
     private final Context mContext;
 
-    public static void fuckOPPOAndVIVO(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
-        new OddsPermissionFuckImpl(context, permissionKeeper);
-    }
-
-    private OddsPermissionFuckImpl(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
+    public OddsPermissionFuckImpl(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
         mPermissionKeeper = permissionKeeper;
         mContext = context;
         if (permissionKeeper != null) {

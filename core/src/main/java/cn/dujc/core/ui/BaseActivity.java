@@ -23,8 +23,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.permission.IPermissionSetup;
+import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.initializer.toolbar.IToolbarHandler;
+import cn.dujc.core.permission.IOddsPermissionOperator;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
@@ -145,6 +148,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     public IPermissionKeeper permissionKeeper() {
         if (mPermissionKeeper == null) mPermissionKeeper = new IPermissionKeeperImpl(this, this);
         return mPermissionKeeper;
+    }
+
+    @Override
+    public void permissionKeeperSetup() {
+        if (mPermissionKeeper != null) {
+            final IPermissionSetup setup = IPermissionSetupHandler.getSetup(mActivity);
+            final IOddsPermissionOperator operator;
+            if (setup != null && (operator = setup.getOddsPermissionOperator(mActivity, mPermissionKeeper)) != null) {
+                mPermissionKeeper.setOddsPermissionOperator(operator);
+            }
+        }
     }
 
     @Override

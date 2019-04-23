@@ -12,11 +12,12 @@ import java.util.List;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.permission.OddsPermissionFuckImpl;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.core.ui.BaseWebFragment;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.MediaUtil;
+import cn.dujc.core.util.RomUtil;
+import cn.dujc.core.util.StringUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
@@ -27,7 +28,7 @@ public class MainActivity extends BaseListActivity {
             , "listview"
             , "save image"
             , "crash"
-            , "if - else", "", "", "", "", "", "");
+            , "I am OPPO or VIVO", "", "", "", "", "", "");
     private final int requestCodeSdcard = 123;
 
     @Override
@@ -35,7 +36,6 @@ public class MainActivity extends BaseListActivity {
         super.initBasic(savedInstanceState);
         getAdapter().setEnableLoadMore(false);
         getSwipeRefreshLayout().setEnabled(false);
-        OddsPermissionFuckImpl.fuckOPPOAndVIVO(mActivity, permissionKeeper());
     }
 
     @Override
@@ -81,80 +81,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 5: {
-                boolean showHint;
-                String settingsDialog, permissionOperator;
-                // ---- 1 --------
-                showHint = true;
-                settingsDialog = null;
-                permissionOperator = null;
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("1 ---------------   yes");
-                } else {
-                    System.out.println("1 ---------------    no");
-                }
-                // ---- 2 --------
-                showHint = false;
-                settingsDialog = null;
-                permissionOperator = null;
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("2 ---------------   yes");
-                } else {
-                    System.out.println("2 ---------------    no");
-                }
-                // ---- 3 --------
-                showHint = true;
-                settingsDialog = "1";
-                permissionOperator = null;
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("3 ---------------   yes");
-                } else {
-                    System.out.println("3 ---------------    no");
-                }
-                // ---- 4 --------
-                showHint = false;
-                settingsDialog = "1";
-                permissionOperator = null;
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("4 ---------------   yes");
-                } else {
-                    System.out.println("4 ---------------    no");
-                }
-                // ---- 5 --------
-                showHint = true;
-                settingsDialog = "1";
-                permissionOperator = "1";
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("5 ---------------   yes");
-                } else {
-                    System.out.println("5 ---------------    no");
-                }
-                // ---- 6 --------
-                showHint = false;
-                settingsDialog = "1";
-                permissionOperator = "1";
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("6 ---------------   yes");
-                } else {
-                    System.out.println("6 ---------------    no");
-                }
-                // ---- 7 --------
-                showHint = true;
-                settingsDialog = null;
-                permissionOperator = "1";
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("7 ---------------   yes");
-                } else {
-                    System.out.println("7 ---------------    no");
-                }
-                // ---- 8 --------
-                showHint = false;
-                settingsDialog = null;
-                permissionOperator = "1";
-                if (settingsDialog != null && (showHint || permissionOperator != null && permissionOperator.equals("1"))) {
-                    System.out.println("8 ---------------   yes");
-                } else {
-                    System.out.println("8 ---------------    no");
-                }
+                ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo()));
             }
             break;
             //case 00:{}break;

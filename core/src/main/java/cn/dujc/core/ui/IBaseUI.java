@@ -65,6 +65,8 @@ public interface IBaseUI {
 
         IPermissionKeeper permissionKeeper();
 
+        void permissionKeeperSetup();
+
         View initToolbar(ViewGroup parent);
 
         TitleCompat getTitleCompat();
