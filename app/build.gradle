@@ -32,10 +32,10 @@ dependencies {
     //implementation 'cn.dujc.DimensCompat:a640:1.2.2'
     //implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
 
-    //LeakCanary --- start
+    /*//LeakCanary --- start --- 低版本的sdk跟LeakCanary有冲突，LeakCanary的界面有个roundIcon，但是我这低版本版的不支持这个属性
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
-    //LeakCanary --- end
+    //LeakCanary --- end*/
 }
