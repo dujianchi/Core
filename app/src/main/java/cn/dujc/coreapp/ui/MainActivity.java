@@ -77,6 +77,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 4: {
+                LogUtil.d(Constants.TEST);
                 starter().go(CrashActivity.class);
             }
             break;

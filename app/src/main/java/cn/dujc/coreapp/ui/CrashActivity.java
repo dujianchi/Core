@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import cn.dujc.core.ui.BaseActivity;
-import cn.dujc.core.util.LogUtil;
 
 public class CrashActivity extends BaseActivity implements View.OnClickListener {
 
@@ -29,12 +28,6 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void initBasic(Bundle savedInstanceState) {
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LogUtil.d(Constants.TEST);
     }
 
     @Override
