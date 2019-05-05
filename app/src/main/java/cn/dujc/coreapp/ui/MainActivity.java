@@ -94,9 +94,9 @@ public class MainActivity extends BaseListActivity {
                 ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo()));
             }
             break;
-            case 6:{
+            case 6: {
                 Gson gson = new GsonBuilder()
-                       .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
+                        .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
                         .create();
                 /*Bean bean = new Bean();
                 bean.setAaa(111);
@@ -109,14 +109,16 @@ public class MainActivity extends BaseListActivity {
                 System.out.println(gson.toJson(parentBean));*/
 
                 ParentBean<Bean> parentBean = gson.fromJson("{\"data\":{\"aaa\":11111111111111111111111111.0,\"bbb\":11111111111111111111111.0000000000000000000111,\"ccc\":\"111\",\"ddd\":1,\"eee\":1110.1100000000000000000000111}}"
-                        , new TypeToken<ParentBean<Bean>>(){}.getType());
+                        , new TypeToken<ParentBean<Bean>>() {
+                        }.getType());
                 Bean bean = parentBean.getData();
                 System.out.println(bean.getAaa());
                 System.out.println(bean.getBbb());
                 System.out.println(bean.getCcc());
-                System.out.println(bean.isDdd());
+                System.out.println(bean.getDdd());
                 System.out.println(bean.getEee());
-            }break;
+            }
+            break;
             //case 00:{}break;
         }
     }

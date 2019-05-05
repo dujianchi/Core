@@ -37,7 +37,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         T result;
         try {
             result = GSON.fromJson(json, typeOfT);
-        } catch (Exception e0) {
+        } catch (Throwable e0) {
             e0.printStackTrace();
             try {
                 result = (T) ((Class) typeOfT).newInstance();
@@ -75,7 +75,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                         setFieldValue(f, object, value);
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -114,47 +114,47 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                             } else {
                                 final String valueStr = String.valueOf(val);
                                 if (Integer.class.equals(genericClazz)) {
-                                    final double number = Double.valueOf(valueStr);
+                                    final double number = valueToNumber(valueStr);
                                     objects.add((int) number);
                                 } else if (Float.class.equals(genericClazz)) {
-                                    final double number = Double.valueOf(valueStr);
+                                    final double number = valueToNumber(valueStr);
                                     objects.add((float) number);
                                 } else if (Double.class.equals(genericClazz)) {
-                                    final double number = Double.valueOf(valueStr);
+                                    final double number = valueToNumber(valueStr);
                                     objects.add(number);
                                 } else if (Short.class.equals(genericClazz)) {
-                                    final double number = Double.valueOf(valueStr);
+                                    final double number = valueToNumber(valueStr);
                                     objects.add((short) number);
                                 } else if (Byte.class.equals(genericClazz)) {
-                                    final double number = Double.valueOf(valueStr);
+                                    final double number = valueToNumber(valueStr);
                                     objects.add((byte) number);
                                 } else if (Boolean.class.equals(genericClazz)) {
-                                    objects.add("true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr));
+                                    objects.add(valueIsTrue(valueStr));
                                 } else if (Character.class.equals(genericClazz)) {
                                     objects.add(valueStr.trim().charAt(0));
                                 } else if (boolean.class.equals(genericClazz)) {
-                                    boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
+                                    boolean b = valueIsTrue(valueStr);
                                     objects.add(b);
                                 } else if (char.class.equals(genericClazz)) {
                                     char c = valueStr.trim().charAt(0);
                                     objects.add(c);
                                 } else if (int.class.equals(genericClazz)) {
-                                    double number = Double.valueOf(valueStr);
+                                    double number = valueToNumber(valueStr);
                                     int i = (int) number;
                                     objects.add(i);
                                 } else if (double.class.equals(genericClazz)) {
-                                    double number = Double.valueOf(valueStr);
+                                    double number = valueToNumber(valueStr);
                                     objects.add(number);
                                 } else if (float.class.equals(genericClazz)) {
-                                    double number = Double.valueOf(valueStr);
+                                    double number = valueToNumber(valueStr);
                                     float f = (float) number;
                                     objects.add(f);
                                 } else if (short.class.equals(genericClazz)) {
-                                    double number = Double.valueOf(valueStr);
+                                    double number = valueToNumber(valueStr);
                                     short s = (short) number;
                                     objects.add(s);
                                 } else if (byte.class.equals(genericClazz)) {
-                                    double number = Double.valueOf(valueStr);
+                                    double number = valueToNumber(valueStr);
                                     byte b = (byte) number;
                                     objects.add(b);
                                 } else if (genericClazz.isArray()) {
@@ -189,13 +189,13 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
             } else if (fieldType.isPrimitive()) {
                 final String valueStr = String.valueOf(value);
                 if (boolean.class.equals(fieldType)) {
-                    boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
+                    boolean b = valueIsTrue(valueStr);
                     field.setBoolean(object, b);
                 } else if (char.class.equals(fieldType)) {
                     char c = valueStr.trim().charAt(0);
                     field.setChar(object, c);
                 } else {
-                    double number = Double.valueOf(valueStr);
+                    double number = valueToNumber(valueStr);
                     if (int.class.equals(fieldType)) {
                         int i = (int) number;
                         field.setInt(object, i);
@@ -236,11 +236,11 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
             } else {//Integer Float 等封装类不会到上面到基本类型中去
                 final String valueStr = String.valueOf(value);
                 if (Boolean.class.equals(fieldType)) {
-                    field.set(object, "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr));
+                    field.set(object, valueIsTrue(valueStr));
                 } else if (Character.class.equals(fieldType)) {
                     field.set(object, valueStr.trim().charAt(0));
                 } else {
-                    final double number = Double.valueOf(valueStr);
+                    final double number = valueToNumber(valueStr);
                     if (Integer.class.equals(fieldType)) {
                         field.set(object, (int) number);
                     } else if (Float.class.equals(fieldType)) {
@@ -254,7 +254,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -264,6 +264,19 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
      */
     private static boolean valueIsTrue(String valueStr) {
         return "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
+    }
+
+    /**
+     * 把字符串转数值
+     */
+    private static Double valueToNumber(String valueStr) {
+        Double result = null;
+        try {
+            result = Double.valueOf(valueStr);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -287,7 +300,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                 char c = valueStr.trim().charAt(0);
                 Array.set(object, index, c);
             } else {
-                double number = Double.valueOf(valueStr);
+                double number = valueToNumber(valueStr);
                 if (int.class.equals(componentType)) {
                     int i = (int) number;
                     Array.set(object, index, i);
@@ -311,7 +324,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
             } else if (Character.class.equals(componentType)) {
                 Array.set(object, index, valueStr.trim().charAt(0));
             } else {
-                final double number = Double.valueOf(valueStr);
+                final double number = valueToNumber(valueStr);
                 if (Integer.class.equals(componentType)) {
                     Array.set(object, index, (int) number);
                 } else if (Float.class.equals(componentType)) {

@@ -1,53 +1,56 @@
 package cn.dujc.coreapp.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Bean implements Serializable {
     private static final long serialVersionUID = 1154192701543147592L;
 
-    private int aaa;
-    private float bbb;
-    private String ccc;
-    private boolean ddd;
-    private double eee;
+    private Integer aaa;
+    private Float bbb;
+    @SerializedName("ccc")
+    private String cccc;
+    private Boolean ddd;
+    private Double eee;
 
-    public int getAaa() {
+    public Integer getAaa() {
         return aaa;
     }
 
-    public void setAaa(int aaa) {
+    public void setAaa(Integer aaa) {
         this.aaa = aaa;
     }
 
-    public float getBbb() {
+    public Float getBbb() {
         return bbb;
     }
 
-    public void setBbb(float bbb) {
+    public void setBbb(Float bbb) {
         this.bbb = bbb;
     }
 
     public String getCcc() {
-        return ccc;
+        return cccc;
     }
 
     public void setCcc(String ccc) {
-        this.ccc = ccc;
+        this.cccc = ccc;
     }
 
-    public boolean isDdd() {
+    public Boolean getDdd() {
         return ddd;
     }
 
-    public void setDdd(boolean ddd) {
+    public void setDdd(Boolean ddd) {
         this.ddd = ddd;
     }
 
-    public double getEee() {
+    public Double getEee() {
         return eee;
     }
 
-    public void setEee(double eee) {
+    public void setEee(Double eee) {
         this.eee = eee;
     }
 }
