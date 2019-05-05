@@ -96,7 +96,7 @@ public class MainActivity extends BaseListActivity {
             break;
             case 6:{
                 Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
+                       .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
                         .create();
                 /*Bean bean = new Bean();
                 bean.setAaa(111);
@@ -108,7 +108,7 @@ public class MainActivity extends BaseListActivity {
                 parentBean.setData(bean);
                 System.out.println(gson.toJson(parentBean));*/
 
-                ParentBean<Bean> parentBean = gson.fromJson("{\"data\":{\"aaa\":111.0,\"bbb\":11111111111111111111111.0,\"ccc\":\"111\",\"ddd\":1,\"eee\":0.0000000000000000111}}"
+                ParentBean<Bean> parentBean = gson.fromJson("{\"data\":{\"aaa\":11111111111111111111111111.0,\"bbb\":11111111111111111111111.0000000000000000000111,\"ccc\":\"111\",\"ddd\":1,\"eee\":1110.1100000000000000000000111}}"
                         , new TypeToken<ParentBean<Bean>>(){}.getType());
                 Bean bean = parentBean.getData();
                 System.out.println(bean.getAaa());
