@@ -22,7 +22,7 @@ import android.view.View;
  * @author du
  * date 2018/7/27 下午1:42
  */
-public class TextColorBuilder {
+public class RichTextBuilder {
 
     public interface OnClickListener {
         void onClick(View widget, CharSequence clickedText);
@@ -69,7 +69,7 @@ public class TextColorBuilder {
     /**
      * 添加一个char字符
      */
-    public TextColorBuilder addTextPart(char text) {
+    public RichTextBuilder addTextPart(char text) {
         mStringBuilder.append(text);
         return this;
     }
@@ -77,7 +77,7 @@ public class TextColorBuilder {
     /**
      * 添加一个纯文本
      */
-    public TextColorBuilder addTextPart(CharSequence text) {
+    public RichTextBuilder addTextPart(CharSequence text) {
         if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
         return this;
     }
@@ -85,7 +85,7 @@ public class TextColorBuilder {
     /**
      * 添加一个带颜色的文字
      */
-    public TextColorBuilder addTextPart(Context context, int colorId, CharSequence text) {
+    public RichTextBuilder addTextPart(Context context, int colorId, CharSequence text) {
         if (context == null || colorId == 0) return addTextPart(text);
         return addPart(text, new ForegroundColorSpan(ContextCompat.getColor(context, colorId)));
     }
@@ -93,7 +93,7 @@ public class TextColorBuilder {
     /**
      * 添加一个带颜色的文字
      */
-    public TextColorBuilder addTextPart(int color, CharSequence text) {
+    public RichTextBuilder addTextPart(int color, CharSequence text) {
         return addPart(text, new ForegroundColorSpan(color));
     }
 
@@ -103,56 +103,56 @@ public class TextColorBuilder {
      * 、下标{@link android.text.style.SubscriptSpan}
      * 、上标{@link android.text.style.SuperscriptSpan}
      */
-    public TextColorBuilder addTextPart(CharSequence text, CharacterStyle characterStyle) {
+    public RichTextBuilder addTextPart(CharSequence text, CharacterStyle characterStyle) {
         return addPart(text, characterStyle);
     }
 
     /**
      * 添加一个带颜色和点击事件的文字
      */
-    public TextColorBuilder addTextPart(CharSequence text, Context context, int colorId, OnClickListener listener) {
+    public RichTextBuilder addTextPart(CharSequence text, Context context, int colorId, OnClickListener listener) {
         return addPart(text, new TextClickableSpan(text, ContextCompat.getColor(context, colorId), listener));
     }
 
     /**
      * 添加一个带颜色和点击事件的文字
      */
-    public TextColorBuilder addTextPart(CharSequence text, int color, OnClickListener listener) {
+    public RichTextBuilder addTextPart(CharSequence text, int color, OnClickListener listener) {
         return addPart(text, new TextClickableSpan(text, color, listener));
     }
 
     /**
      * 添加一个指定多少px大小的文字
      */
-    public TextColorBuilder addTextPartPx(CharSequence text, int sizeInPx) {
+    public RichTextBuilder addTextPartPx(CharSequence text, int sizeInPx) {
         return addPart(text, new AbsoluteSizeSpan(sizeInPx));
     }
 
     /**
      * 添加一个指定多少dp大小的文字
      */
-    public TextColorBuilder addTextPartDp(CharSequence text, int sizeInDp) {
+    public RichTextBuilder addTextPartDp(CharSequence text, int sizeInDp) {
         return addPart(text, new AbsoluteSizeSpan(sizeInDp, true));
     }
 
     /**
      * 添加一个指定倍数的文字，比如0.5即为设置的字体的一半大
      */
-    public TextColorBuilder addTextPartScale(CharSequence text, float scale) {
+    public RichTextBuilder addTextPartScale(CharSequence text, float scale) {
         return addPart(text, new RelativeSizeSpan(scale));
     }
 
     /**
      * 添加一个指定宽度倍数的文字，比如2。0即为设置的字体的2倍宽
      */
-    public TextColorBuilder addTextPartScaleX(CharSequence text, float scaleX) {
+    public RichTextBuilder addTextPartScaleX(CharSequence text, float scaleX) {
         return addPart(text, new ScaleXSpan(scaleX));
     }
 
     /**
      * 添加一个图片
      */
-    public TextColorBuilder addImage(Context context, int drawableId) {
+    public RichTextBuilder addImage(Context context, int drawableId) {
         if (drawableId == 0) return this;
         return addImage(ContextCompat.getDrawable(context, drawableId));
     }
@@ -160,7 +160,7 @@ public class TextColorBuilder {
     /**
      * 添加一个图片
      */
-    public TextColorBuilder addImage(Drawable drawable) {
+    public RichTextBuilder addImage(Drawable drawable) {
         if (drawable == null) return this;
         return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), DynamicDrawableSpan.ALIGN_BASELINE);
     }
@@ -171,7 +171,7 @@ public class TextColorBuilder {
      * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
      *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
      */
-    public TextColorBuilder addImage(Drawable drawable, int verticalAlignment) {
+    public RichTextBuilder addImage(Drawable drawable, int verticalAlignment) {
         if (drawable == null) return this;
         return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), verticalAlignment);
     }
@@ -182,7 +182,7 @@ public class TextColorBuilder {
      * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
      *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
      */
-    public TextColorBuilder addImage(Drawable drawable, int width, int height, int verticalAlignment) {
+    public RichTextBuilder addImage(Drawable drawable, int width, int height, int verticalAlignment) {
         if (drawable == null) return this;
         drawable.setBounds(0, 0, width, height);
         return addPart(" ", new ImageSpan(drawable, verticalAlignment));
@@ -191,7 +191,7 @@ public class TextColorBuilder {
     /**
      * 添加一个文字，并指定span
      */
-    public TextColorBuilder addPart(CharSequence text, Object span) {
+    public RichTextBuilder addPart(CharSequence text, Object span) {
         if (!TextUtils.isEmpty(text) && span != null) {
             final int start = mStringBuilder.length();
             final int end = start + text.length();
