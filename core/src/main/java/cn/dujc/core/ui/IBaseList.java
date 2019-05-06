@@ -100,7 +100,7 @@ public interface IBaseList {
 
     void refreshEnable(boolean enable);
 
-    interface UI extends IBaseList {
+    public static interface UI extends IBaseList {
 
         @Nullable
         BaseQuickAdapter initAdapter();
@@ -112,11 +112,11 @@ public interface IBaseList {
         void reload();
     }
 
-    abstract class AbsImpl implements IBaseList {
+    public static abstract class AbsImpl implements IBaseList {
 
         private final UI mUI;
-        private SwipeRefreshLayout mSrlLoader;
-        private RecyclerView mRvList;
+        private SwipeRefreshLayout mRefreshLayout;
+        private RecyclerView mListView;
         private BaseQuickAdapter mQuickAdapter;
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
         private AppBarLayout mAppbarLayout;
@@ -138,13 +138,13 @@ public interface IBaseList {
 
         @Override
         public void initBasic(Bundle savedInstanceState) {
-            mSrlLoader = (SwipeRefreshLayout) findViewById(R.id.core_srl_loader);
-            mRvList = (RecyclerView) findViewById(R.id.core_rv_list);
+            mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
+            mListView = (RecyclerView) findViewById(R.id.core_list_view_id);
             mUI.doubleClickTitleToTop();
 
-            if (mSrlLoader != null) {
-                //mSrlLoader.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-                mSrlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            if (mRefreshLayout != null) {
+                //mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
+                mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         if (mQuickAdapter != null) {
@@ -158,16 +158,16 @@ public interface IBaseList {
             mQuickAdapter = mUI.initAdapter();
             final RecyclerView.LayoutManager layoutManager = mUI.initLayoutManager();
 
-            mRvList.setLayoutManager(layoutManager);
+            mListView.setLayoutManager(layoutManager);
             if (mQuickAdapter != null) {
-                mRvList.setAdapter(mQuickAdapter);
+                mListView.setAdapter(mQuickAdapter);
 
                 mQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
                     @Override
                     public void onLoadMoreRequested() {
                         mUI.loadMore();
                     }
-                }, mRvList);
+                }, mListView);
 
                 mQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                     @Override
@@ -199,12 +199,12 @@ public interface IBaseList {
         @Override
         public void coordinateRefreshAndAppbar() {
             View appbarLayout = findViewById(R.id.core_toolbar_appbar_layout);
-            if (mSrlLoader != null && appbarLayout instanceof AppBarLayout) {
+            if (mRefreshLayout != null && appbarLayout instanceof AppBarLayout) {
                 mAppbarLayout = (AppBarLayout) appbarLayout;
                 mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
                     @Override
                     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        mSrlLoader.setEnabled(verticalOffset >= 0);
+                        mRefreshLayout.setEnabled(verticalOffset >= 0);
                     }
                 };
                 mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
@@ -226,8 +226,8 @@ public interface IBaseList {
 
         @Override
         public void refreshDone() {
-            if (mSrlLoader != null) {
-                mSrlLoader.setRefreshing(false);
+            if (mRefreshLayout != null) {
+                mRefreshLayout.setRefreshing(false);
             }
         }
 
@@ -264,7 +264,7 @@ public interface IBaseList {
 
         @Override
         public void recyclerViewOtherSetup() {
-            IBaseListSetupHandler.setup(context(), mRvList, mQuickAdapter);
+            IBaseListSetupHandler.setup(context(), mListView, mQuickAdapter);
         }
 
         @Override
@@ -275,8 +275,8 @@ public interface IBaseList {
                     @Override
                     public void onClick(View v) {
                         final long current = System.currentTimeMillis();
-                        if (mRvList != null && current - mLastDoubleTap < 500)
-                            mRvList.smoothScrollToPosition(0);
+                        if (mListView != null && current - mLastDoubleTap < 500)
+                            mListView.smoothScrollToPosition(0);
                         mLastDoubleTap = current;
                     }
                 });
@@ -298,31 +298,31 @@ public interface IBaseList {
         @Nullable
         @Override
         public RecyclerView getRecyclerView() {
-            return mRvList;
+            return mListView;
         }
 
         @Nullable
         @Override
         public SwipeRefreshLayout getSwipeRefreshLayout() {
-            return mSrlLoader;
+            return mRefreshLayout;
         }
 
         @Override
         public void showRefreshing() {
-            if (mSrlLoader != null) {
-                mSrlLoader.setRefreshing(true);
+            if (mRefreshLayout != null) {
+                mRefreshLayout.setRefreshing(true);
             }
         }
 
         @Override
         public void refreshEnable(boolean enable) {
-            if (mSrlLoader != null) {
-                mSrlLoader.setEnabled(enable);
+            if (mRefreshLayout != null) {
+                mRefreshLayout.setEnabled(enable);
             }
         }
     }
 
-    class FragmentImpl extends AbsImpl {
+    public static class FragmentImpl extends AbsImpl {
         private BaseListFragment mFragment;
 
         FragmentImpl(BaseListFragment fragment) {
@@ -341,7 +341,7 @@ public interface IBaseList {
         }
     }
 
-    class ActivityImpl extends AbsImpl {
+    public static class ActivityImpl extends AbsImpl {
 
         private final BaseListActivity mActivity;
 

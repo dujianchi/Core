@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,12 +18,15 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.core.ui.BaseWebFragment;
+import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.MediaUtil;
 import cn.dujc.core.util.RomUtil;
 import cn.dujc.core.util.StringUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
+import cn.dujc.coreapp.entity.Bean;
+import cn.dujc.coreapp.entity.ParentBean;
 
 public class MainActivity extends BaseListActivity {
 
@@ -28,7 +35,9 @@ public class MainActivity extends BaseListActivity {
             , "listview"
             , "save image"
             , "crash"
-            , "I am OPPO or VIVO", "", "", "", "", "", "");
+            , "I am OPPO or VIVO"
+            , "gson", "", "", "", "", "");
+
     private final int requestCodeSdcard = 123;
 
     @Override
@@ -83,6 +92,31 @@ public class MainActivity extends BaseListActivity {
             break;
             case 5: {
                 ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo()));
+            }
+            break;
+            case 6: {
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
+                        .create();
+                /*Bean bean = new Bean();
+                bean.setAaa(111);
+                bean.setBbb(111.0F);
+                bean.setCcc("111");
+                bean.setDdd(true);
+                bean.setEee(0.0111);
+                ParentBean<Bean> parentBean = new ParentBean<>();
+                parentBean.setData(bean);
+                System.out.println(gson.toJson(parentBean));*/
+
+                ParentBean<Bean> parentBean = gson.fromJson("{\"data\":{\"aaa\":11111111111111111111111111.0,\"bbb\":11111111111111111111111.0000000000000000000111,\"ccc\":\"111\",\"ddd\":1,\"eee\":1110.1100000000000000000000111}}"
+                        , new TypeToken<ParentBean<Bean>>() {
+                        }.getType());
+                Bean bean = parentBean.getData();
+                System.out.println(bean.getAaa());
+                System.out.println(bean.getBbb());
+                System.out.println(bean.getCcc());
+                System.out.println(bean.getDdd());
+                System.out.println(bean.getEee());
             }
             break;
             //case 00:{}break;

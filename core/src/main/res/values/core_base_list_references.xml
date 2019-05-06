@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--刷新控件id-->
+    <item name="core_list_refresh_id" type="id" />
+    <!--列表控件id-->
+    <item name="core_list_view_id" type="id" />
+
+</resources>
