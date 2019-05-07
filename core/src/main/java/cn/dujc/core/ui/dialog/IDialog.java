@@ -1,4 +1,4 @@
-package cn.dujc.core.ui.func;
+package cn.dujc.core.ui.dialog;
 
 import android.widget.PopupWindow;
 

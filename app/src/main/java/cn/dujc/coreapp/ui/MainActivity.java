@@ -16,6 +16,7 @@ import java.util.List;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
+import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.core.ui.BaseWebFragment;
 import cn.dujc.core.util.GodDeserializer;
@@ -36,7 +37,8 @@ public class MainActivity extends BaseListActivity {
             , "save image"
             , "crash"
             , "I am OPPO or VIVO"
-            , "gson", "", "", "", "", "");
+            , "gson"
+            , "", "", "", "", "");
 
     private final int requestCodeSdcard = 123;
 
@@ -51,6 +53,12 @@ public class MainActivity extends BaseListActivity {
     protected void onStart() {
         super.onStart();
         LogUtil.d(Constants.TEST);
+    }
+
+    @Nullable
+    @Override
+    public IBackPressedOperator backPressOperator() {
+        return new IBackPressedOperator.DialogImpl();
     }
 
     @Nullable
@@ -119,6 +127,9 @@ public class MainActivity extends BaseListActivity {
                 System.out.println(bean.getEee());
             }
             break;
+            case 7:{
+
+            }break;
             //case 00:{}break;
         }
     }

@@ -3,6 +3,7 @@ package cn.dujc.core.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -35,6 +36,10 @@ public class ToastUtil {
         @SuppressLint("ShowToast") Toast toast = Toast.makeText(context.getApplicationContext(), text, DEFAULT_DURATION);
         LAST_TOAST = new WeakReference<>(toast);
         return toast;
+    }
+
+    public static void showToast(Context context, @StringRes int textId) {
+        showToast(context, context.getString(textId));
     }
 
     public static void showToast(Context context, CharSequence text) {

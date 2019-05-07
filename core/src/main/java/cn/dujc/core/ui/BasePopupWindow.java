@@ -13,8 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import cn.dujc.core.R;
-import cn.dujc.core.ui.func.IDialog;
-import cn.dujc.core.ui.func.OnRootViewClick;
+import cn.dujc.core.ui.dialog.IDialog;
+import cn.dujc.core.ui.dialog.OnRootViewClick;
 
 public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
 

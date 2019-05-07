@@ -23,6 +23,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
@@ -44,6 +45,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     protected View mToolbar = null;
     private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
+
+    //返回操作
+    private volatile IBackPressedOperator mBackPressOperator = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,11 +107,26 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     }
 
     @Override
+    public void onBackPressed() {
+        if (mBackPressOperator == null) mBackPressOperator = backPressOperator();
+        if (mBackPressOperator == null || mBackPressOperator.calculateCanBack()) {
+            super.onBackPressed();
+        } else {
+            mBackPressOperator.showBackConfirm(mActivity);
+        }
+    }
+
+    @Override
     @Nullable
     public View createRootView(View contentView) {
         final View[] viewAndToolbar = BaseToolbarHelper.createRootViewAndToolbar(toolbarStyle(), mActivity, this, contentView);
         mToolbar = viewAndToolbar[1];
         return viewAndToolbar[0];
+    }
+
+    @Nullable
+    public IBackPressedOperator backPressOperator() {
+        return null;
     }
 
     @Nullable
