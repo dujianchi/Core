@@ -25,8 +25,8 @@ import android.widget.FrameLayout;
 import java.util.UUID;
 
 import cn.dujc.core.R;
-import cn.dujc.core.ui.func.IDialog;
-import cn.dujc.core.ui.func.OnRootViewClick;
+import cn.dujc.core.ui.dialog.IDialog;
+import cn.dujc.core.ui.dialog.OnRootViewClick;
 
 /**
  * 基本的Fragment。最好Fragment都要继承于此类

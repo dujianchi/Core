@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_back_confirm">再按一次退出</string>
+    <string name="core_back_confirm_title">提示</string>
+    <string name="core_back_confirm_message">确定退出？</string>
+    <string name="core_back_confirm_positive">确定</string>
+    <string name="core_back_confirm_negative">取消</string>
+</resources>
