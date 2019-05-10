@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,7 +71,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Override
     public void onDestroy() {
         super.onDestroy();
-        destroyRootViewAndToolbar();
+        //destroyRootViewAndToolbar();
     }
 
     @Override
@@ -271,7 +270,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         return IToolbar.LINEAR;
     }
 
-    protected void destroyRootViewAndToolbar() {
+    /*protected void destroyRootViewAndToolbar() {
         mLoaded = false;
         if (mToolbar != null) {
             final ViewParent parent = mToolbar.getParent();
@@ -287,6 +286,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
             }
             mRootView = null;
         }
-    }
+    }*/
 
 }

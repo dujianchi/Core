@@ -14,9 +14,19 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@id/core_toolbar_title_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hello World!"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@id/core_toolbar_back_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="20dp"
+            android:layout_gravity="right"
+            android:text="close"
             android:textColor="@color/colorAccent" />
     </android.support.v7.widget.Toolbar>
 
