@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -96,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        destroyRootViewAndToolbar();
+        //destroyRootViewAndToolbar();
         //ActivityStackUtil.getInstance().removeActivity(this);
     }
 
@@ -325,7 +324,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         }
     }
 
-    protected void destroyRootViewAndToolbar() {
+    /*protected void destroyRootViewAndToolbar() {
         if (mToolbar != null) {
             final ViewParent parent = mToolbar.getParent();
             if (parent != null) {
@@ -340,7 +339,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             }
             mRootView = null;
         }
-    }
+    }*/
 
     /**
      * 退出动画
