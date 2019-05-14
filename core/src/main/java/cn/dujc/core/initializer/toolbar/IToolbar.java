@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
+
+import cn.dujc.core.ui.IBaseUI;
 
 public interface IToolbar {
 
@@ -52,7 +55,8 @@ public interface IToolbar {
 
     // 原本考虑到要做多个通用toolbar，于是有包含和排除的规则。后来想想，一个app内通常只有一
     // 个通用的toolbar样式，其他样式通常也是在某个界面单独使用，没必要做多个样式，于是去掉了相应的规则
-    //List<Class<? extends IBaseUI>> include();
-    //List<Class<? extends IBaseUI>> exclude();
+    // 2019.05.14 还是碰到了多个类型toolbar的情况，经过思考，还是可以做多个toolbar的，于是再把这个放出来
+    List<Class<? extends IBaseUI>> include();
+    List<Class<? extends IBaseUI>> exclude();
 
 }
