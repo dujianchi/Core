@@ -24,14 +24,14 @@ public class Core {
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar> iToolbar) {
+    public static void init(Application app, Class<? extends IToolbar>... iToolbar) {
         init(app, iToolbar, IBaseListSetup.DefaultImpl.class);
     }
 
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar> iToolbar
+    public static void init(Application app, Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup) {
         init(app, iToolbar, iListSetup, null);
     }
@@ -39,7 +39,7 @@ public class Core {
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar> iToolbar
+    public static void init(Application app, Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup, Class<? extends IPermissionSetup> iPermissionSetup) {
         initActivityStack(app);
         if (iToolbar != null) {
@@ -57,7 +57,7 @@ public class Core {
         if (app != null) ActivityStackUtil.getInstance().initApp(app);
     }
 
-    private static void initToolbarHelper(Context context, Class<? extends IToolbar> clazz) {
+    private static void initToolbarHelper(Context context, Class<? extends IToolbar>[] clazz) {
         if (context != null && clazz != null) IToolbarHandler.setToolbarClass(context, clazz);
     }
 

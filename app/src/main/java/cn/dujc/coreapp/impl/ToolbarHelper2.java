@@ -14,16 +14,16 @@ import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.ui.ListActivity;
 
-public class ToolbarHelper implements IToolbar {
+public class ToolbarHelper2 implements IToolbar {
 
     @Override
     public View normal(ViewGroup parent) {
-        return LayoutInflater.from(parent.getContext()).inflate(R.layout.toolbar_normal, parent, false);
+        return LayoutInflater.from(parent.getContext()).inflate(R.layout.toolbar_normal2, parent, false);
     }
 
     @Override
     public int statusBarColor(Context context) {
-        return ContextCompat.getColor(context, R.color.colorPrimaryDark);
+        return ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     @Override
@@ -38,14 +38,14 @@ public class ToolbarHelper implements IToolbar {
 
     @Override
     public List<Class<? extends IBaseUI>> include() {
-        return null;
+        List<Class<? extends IBaseUI>> exc = new ArrayList<>();
+        exc.add(ListActivity.class);
+        return exc;
     }
 
     @Override
     public List<Class<? extends IBaseUI>> exclude() {
-        List<Class<? extends IBaseUI>> exc = new ArrayList<>();
-        exc.add(ListActivity.class);
-        return exc;
+        return null;
     }
 
 }
