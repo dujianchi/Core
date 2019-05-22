@@ -27,7 +27,7 @@ import cn.dujc.core.util.StringUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
-import cn.dujc.coreapp.entity.ParentBean;
+import cn.dujc.coreapp.entity.Bean1;
 
 public class MainActivity extends BaseListActivity {
 
@@ -104,7 +104,7 @@ public class MainActivity extends BaseListActivity {
             break;
             case 6: {
                 Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(Bean.class, new GodDeserializer<ParentBean>())
+                        .registerTypeAdapter(Bean.class, new GodDeserializer<Bean>())
                         .create();
                 /*Bean bean = new Bean();
                 bean.setAaa(111);
@@ -112,24 +112,27 @@ public class MainActivity extends BaseListActivity {
                 bean.setCcc("111");
                 bean.setDdd(true);
                 bean.setEee(0.0111);
-                ParentBean<Bean> parentBean = new ParentBean<>();
-                parentBean.setData(bean);
-                System.out.println(gson.toJson(parentBean));*/
-
-                ParentBean<Bean> parentBean = gson.fromJson("{\"data\":{\"aaa\":11111111111111111111111111.0,\"bbb\":11111111111111111111111.0000000000000000000111,\"ccc\":\"111\",\"ddd\":1,\"eee\":1110.1100000000000000000000111}}"
-                        , new TypeToken<ParentBean<Bean>>() {
-                        }.getType());
-                Bean bean = parentBean.getData();
-                System.out.println(bean.getAaa());
-                System.out.println(bean.getBbb());
-                System.out.println(bean.getCcc());
-                System.out.println(bean.getDdd());
-                System.out.println(bean.getEee());
+                Bean1<Bean> bean1 = new Bean1<>();
+                bean1.setData(bean);
+                System.out.println(gson.toJson(bean1));*/
+                Bean<Bean1> bean = gson.fromJson(Constants.JSON_STR, new TypeToken<Bean<Bean1>>() {
+                }.getType());
+                System.out.println(bean);
+                if (bean != null) {
+                    List<Bean1> data = bean.getData();
+                    System.out.println(data);
+                    if (data != null && !data.isEmpty()) {
+                        Bean1 bean1 = data.get(0);
+                        System.out.println(bean1);
+                        if (bean1 != null) System.out.println(bean1.getId());
+                    }
+                }
             }
             break;
-            case 7:{
+            case 7: {
 
-            }break;
+            }
+            break;
             //case 00:{}break;
         }
     }
