@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +42,34 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         } catch (Throwable e0) {
             e0.printStackTrace();
             try {
-                result = (T) ((Class) typeOfT).newInstance();
+                result = (T) createByType(typeOfT);
+                if (result == null) return null;
                 Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
                 copyFromMap(result, map);
             } catch (Throwable e1) {
                 e1.printStackTrace();
                 result = null;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 通过type构造一个新的对象
+     */
+    private static Object createByType(Type typeOfT) {
+        Object result = null;
+        try {
+            result = GSON.fromJson("{}", typeOfT);
+        } catch (JsonSyntaxException e) {
+            try {
+                result = GSON.fromJson("[]", typeOfT);
+            } catch (JsonSyntaxException e1) {
+                try {
+                    result = GSON.fromJson("", typeOfT);
+                } catch (JsonSyntaxException e2) {
+
+                }
             }
         }
         return result;
@@ -107,6 +131,99 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                             final ParameterizedType pt = (ParameterizedType) genericType;
                             //得到泛型里的class类型对象
                             final Class<?> genericClazz = (Class<?>) pt.getActualTypeArguments()[0];
+                            if (val instanceof Map) {
+                                final Object o = genericClazz.newInstance();
+                                copyFromMap(o, (Map<String, Object>) val);
+                                objects.add(o);
+                            } else {
+                                final String valueStr = String.valueOf(val);
+                                if (Integer.class.equals(genericClazz)) {
+                                    final double number = valueToNumber(valueStr);
+                                    objects.add((int) number);
+                                } else if (Float.class.equals(genericClazz)) {
+                                    final double number = valueToNumber(valueStr);
+                                    objects.add((float) number);
+                                } else if (Double.class.equals(genericClazz)) {
+                                    final double number = valueToNumber(valueStr);
+                                    objects.add(number);
+                                } else if (Short.class.equals(genericClazz)) {
+                                    final double number = valueToNumber(valueStr);
+                                    objects.add((short) number);
+                                } else if (Byte.class.equals(genericClazz)) {
+                                    final double number = valueToNumber(valueStr);
+                                    objects.add((byte) number);
+                                } else if (Boolean.class.equals(genericClazz)) {
+                                    objects.add(valueIsTrue(valueStr));
+                                } else if (Character.class.equals(genericClazz)) {
+                                    objects.add(valueStr.trim().charAt(0));
+                                } else if (boolean.class.equals(genericClazz)) {
+                                    boolean b = valueIsTrue(valueStr);
+                                    objects.add(b);
+                                } else if (char.class.equals(genericClazz)) {
+                                    char c = valueStr.trim().charAt(0);
+                                    objects.add(c);
+                                } else if (int.class.equals(genericClazz)) {
+                                    double number = valueToNumber(valueStr);
+                                    int i = (int) number;
+                                    objects.add(i);
+                                } else if (double.class.equals(genericClazz)) {
+                                    double number = valueToNumber(valueStr);
+                                    objects.add(number);
+                                } else if (float.class.equals(genericClazz)) {
+                                    double number = valueToNumber(valueStr);
+                                    float f = (float) number;
+                                    objects.add(f);
+                                } else if (short.class.equals(genericClazz)) {
+                                    double number = valueToNumber(valueStr);
+                                    short s = (short) number;
+                                    objects.add(s);
+                                } else if (byte.class.equals(genericClazz)) {
+                                    double number = valueToNumber(valueStr);
+                                    byte b = (byte) number;
+                                    objects.add(b);
+                                } else if (genericClazz.isArray()) {
+                                    final List inner = (List) value;
+                                    final int innerSize = inner.size();
+                                    final Class<?> componentType = genericClazz.getComponentType();
+                                    final Object innerObjects = Array.newInstance(componentType, innerSize);
+                                    for (int innerIndex = 0; innerIndex < innerSize; innerIndex++) {
+                                        final Object innerVal = inner.get(innerIndex);
+                                        if (innerVal == null) continue;
+                                        if (innerVal instanceof Map) {
+                                            final Object o = componentType.newInstance();
+                                            copyFromMap(o, (Map<String, Object>) innerVal);
+                                            Array.set(innerObjects, innerIndex, o);
+                                        } else {
+                                            putValue(innerObjects, innerIndex, innerVal, componentType);
+                                        }
+                                    }
+                                    objects.add(innerObjects);
+                                } else if (value instanceof Map) {
+                                    final Object child = field.getType().newInstance();
+                                    copyFromMap(child, (Map<String, Object>) value);
+                                    objects.add(child);
+                                }
+                            }
+                        }
+                    }
+                    field.set(object, objects);
+                } else if (value instanceof List) {
+                    final List values = (List) value;
+                    final int size = values.size();
+                    final List objects = new ArrayList(size);
+                    for (int index = 0; index < size; index++) {
+                        final Object val = values.get(index);
+                        if (val == null) continue;
+                        final Type genericType = field.getGenericType();
+                        Class<?> genericClazz = null;
+                        if (genericType instanceof TypeVariable) {
+                            // todo genericClazz = (Class<?>) ((TypeVariable) genericType).getBounds()[0];
+                        } else if (genericType instanceof ParameterizedType) {
+                            final ParameterizedType pt = (ParameterizedType) genericType;
+                            //得到泛型里的class类型对象
+                            genericClazz = (Class<?>) pt.getActualTypeArguments()[0];
+                        }
+                        if (genericClazz != null) {
                             if (val instanceof Map) {
                                 final Object o = genericClazz.newInstance();
                                 copyFromMap(o, (Map<String, Object>) val);
