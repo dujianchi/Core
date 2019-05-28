@@ -6,14 +6,15 @@
 
     <cn.dujc.coreapp.ui.widget.RatingBar2
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="#cccc"
         android:gravity="center"
-        app:rating_current="1"
+        app:rating_current="2"
         app:rating_max="6"
-        app:star_default="@color/colorPrimary"
+        app:star_default="@mipmap/ic_star_gray"
         app:star_height="30dp"
         app:star_margin="10dp"
-        app:star_selected="@mipmap/ic_launcher"
+        app:star_selected="@mipmap/ic_star_red"
         app:star_width="30dp" />
 </FrameLayout>

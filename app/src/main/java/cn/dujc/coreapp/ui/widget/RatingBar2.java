@@ -76,13 +76,14 @@ public class RatingBar2 extends LinearLayout {
 
     private void reset() {
         removeAllViews();
-        LayoutParams params = new LayoutParams(mWidth, mHeight);
         for (int index = 0; index < mMax; index++) {
             ImageView child = new ImageView(getContext());
             child.setImageDrawable(mDefault);
+            LayoutParams params = new LayoutParams(mWidth, mHeight);
             params.leftMargin = index == 0 ? 0 : mMargin;
             addView(child, params);
         }
+        calcPosition(mCurrent);
     }
 
     public void calcPosition(int current) {
