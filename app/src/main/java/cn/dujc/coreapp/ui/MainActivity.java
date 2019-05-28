@@ -38,7 +38,7 @@ public class MainActivity extends BaseListActivity {
             , "crash"
             , "I am OPPO or VIVO"
             , "gson"
-            , "", "", "", "", "");
+            , "ratingBar", "", "", "", "");
 
     private final int requestCodeSdcard = 123;
 
@@ -130,7 +130,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 7: {
-
+                starter().go(RatingBarActivity.class);
             }
             break;
             //case 00:{}break;
