@@ -1,19 +1,25 @@
 package cn.dujc.coreapp.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import cn.dujc.coreapp.R;
+
 public class RatingBar2 extends LinearLayout {
 
-    private int mMax = 5, mCurrent = 1;
+    private int mMax = 5, mCurrent = 0;
     private int mWidth = 50, mHeight = 50, mMargin = 30;
-    private boolean mTouching = false;
+    private Drawable mSelected, mDefault;
 
     public RatingBar2(Context context) {
         this(context, null, 0);
@@ -25,12 +31,12 @@ public class RatingBar2 extends LinearLayout {
 
     public RatingBar2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context, attrs);
+        reset();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        mTouching = ev.getAction() != MotionEvent.ACTION_UP;
         final float index, length;
         if (getOrientation() == HORIZONTAL) {
             index = ev.getX();
@@ -39,31 +45,54 @@ public class RatingBar2 extends LinearLayout {
             index = ev.getY();
             length = getHeight();
         }
-        final int position = (int) (mMax * index / length + 0.5);
-        System.out.println(position);
-        calcPosition(position);
-        return mTouching || super.dispatchTouchEvent(ev);
+        mCurrent = (int) (mMax * index / length + 0.5);
+        calcPosition(mCurrent);
+        return ev.getAction() != MotionEvent.ACTION_UP || super.dispatchTouchEvent(ev);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.RatingBar2);
+            mMax = array.getInteger(R.styleable.RatingBar2_rating_max, mMax);
+            mCurrent = array.getInteger(R.styleable.RatingBar2_rating_current, mCurrent);
+            mWidth = array.getDimensionPixelOffset(R.styleable.RatingBar2_star_width, mWidth);
+            mHeight = array.getDimensionPixelOffset(R.styleable.RatingBar2_star_height, mHeight);
+            mMargin = array.getDimensionPixelOffset(R.styleable.RatingBar2_star_margin, mMargin);
+            int selected = array.getResourceId(R.styleable.RatingBar2_star_selected, 0);
+            try {
+                mSelected = ContextCompat.getDrawable(getContext(), selected);
+            } catch (Exception e) {
+                mSelected = new ColorDrawable(Color.RED);
+            }
+            int _default = array.getResourceId(R.styleable.RatingBar2_star_default, 0);
+            try {
+                mDefault = ContextCompat.getDrawable(getContext(), _default);
+            } catch (Exception e) {
+                mDefault = new ColorDrawable(Color.GRAY);
+            }
+            array.recycle();
+        }
+    }
+
+    private void reset() {
         removeAllViews();
         LayoutParams params = new LayoutParams(mWidth, mHeight);
         for (int index = 0; index < mMax; index++) {
             ImageView child = new ImageView(getContext());
-            child.setBackgroundColor(Color.GRAY);
+            child.setImageDrawable(mDefault);
             params.leftMargin = index == 0 ? 0 : mMargin;
             addView(child, params);
         }
     }
 
-    public void calcPosition(int position) {
-        for (int index = mMax - 1; index >= position; index--) {
+    public void calcPosition(int current) {
+        for (int index = mMax - 1; index >= current; index--) {
             View child = getChildAt(index);
-            if (child instanceof ImageView) child.setBackgroundColor(Color.GRAY);
+            if (child instanceof ImageView) ((ImageView) child).setImageDrawable(mDefault);
         }
-        for (int index = position - 1; index >= 0; index--) {
+        for (int index = current - 1; index >= 0; index--) {
             View child = getChildAt(index);
-            if (child instanceof ImageView) child.setBackgroundColor(Color.RED);
+            if (child instanceof ImageView) ((ImageView) child).setImageDrawable(mSelected);
         }
     }
 
