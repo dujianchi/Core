@@ -82,16 +82,14 @@ public class DuBanner extends FrameLayout implements IDuBanner {
 
             @Override
             public void onPageSelected(int position) {
-                if (position != mActual) {
-                    mActual = position;
-                    if (mActual <= 10 || mActual > Integer.MAX_VALUE - 10) {
-                        mActual = calcOffset() + mActual;
-                    }
+                mActual = position;
+                if (mActual <= 10 || mActual > Integer.MAX_VALUE - 10) {
+                    mActual = calcOffset() + mActual;
                     mViewPager.setCurrentItem(mActual);
-                    mCurrent = mBannerAdapter.getRealPosition(mActual);
-
-                    refreshIndicator();
                 }
+                mCurrent = mBannerAdapter.getRealPosition(mActual);
+
+                refreshIndicator();
             }
         };
         init(context, attrs);
@@ -257,7 +255,7 @@ public class DuBanner extends FrameLayout implements IDuBanner {
         mCurrent = mBannerAdapter.getRealPosition(mActual);
         mBannerAdapter.notifyDataSetChanged();
         refreshIndicator();
-        mViewPager.setCurrentItem(mActual);
+        mViewPager.setCurrentItem(mActual, false);
     }
 
     @Override
