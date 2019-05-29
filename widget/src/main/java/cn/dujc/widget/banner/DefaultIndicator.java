@@ -2,21 +2,25 @@ package cn.dujc.widget.banner;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class DefaultIndicator extends LinearLayout implements DuBannerIndicator {
+import cn.dujc.widget.abstraction.IDuBannerIndicator;
+
+public class DefaultIndicator extends LinearLayout implements IDuBannerIndicator {
 
     private final SparseArray<CircleView> mIndicators = new SparseArray<>();
     private Drawable mDrawableDefault, mDrawableSelected;
     private int mColorDefault, mColorSelected;
-    private int mIndicatorMarginBetween = 0, mIndicatorMarginLayout = 10, mIndicatorEdge = 10;
+    private int mIndicatorMarginBetween = 0,/* mIndicatorMarginLayout = 10, */
+            mIndicatorEdge = 10;
 
     public DefaultIndicator(Context context
             , Drawable drawableDefault
@@ -24,7 +28,7 @@ public class DefaultIndicator extends LinearLayout implements DuBannerIndicator 
             , int colorDefault
             , int colorSelected
             , int indicatorMarginBetween
-            , int indicatorMarginLayout
+                            //, int indicatorMarginLayout
             , int indicatorEdge) {
         super(context);
         mDrawableDefault = drawableDefault;
@@ -32,7 +36,7 @@ public class DefaultIndicator extends LinearLayout implements DuBannerIndicator 
         mColorDefault = colorDefault;
         mColorSelected = colorSelected;
         mIndicatorMarginBetween = indicatorMarginBetween;
-        mIndicatorMarginLayout = indicatorMarginLayout;
+        //mIndicatorMarginLayout = indicatorMarginLayout;
         mIndicatorEdge = indicatorEdge;
     }
 
@@ -68,7 +72,10 @@ public class DefaultIndicator extends LinearLayout implements DuBannerIndicator 
                 if (mDrawableSelected == null && mDrawableDefault == null) {
                     indicator.setColor(isSelected ? mColorSelected : mColorDefault);
                 } else {
-                    ViewCompat.setBackground(indicator, isSelected ? mDrawableSelected : mDrawableDefault);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        indicator.setBackground(isSelected ? mDrawableSelected : mDrawableDefault);
+                    else
+                        indicator.setBackgroundDrawable(isSelected ? mDrawableSelected : mDrawableDefault);
                 }
                 addView(indicator, params);
             }
@@ -79,7 +86,7 @@ public class DefaultIndicator extends LinearLayout implements DuBannerIndicator 
 
         final int mEdge;
         final Paint mPaint;
-        int mColor = 0x00000000;
+        int mColor = Color.TRANSPARENT;
 
         public CircleView(Context context, int edge) {
             super(context);

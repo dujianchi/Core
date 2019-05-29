@@ -10,6 +10,7 @@ import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.coreapp.R;
 import cn.dujc.widget.abstraction.IDuBanner;
 import cn.dujc.widget.banner.DuBanner;
+import cn.dujc.widget.banner.IrregularIndicator;
 
 public class BannerActivity extends BaseActivity {
 
@@ -20,7 +21,8 @@ public class BannerActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        DuBanner duBanner = findViewById(R.id.db_banner);
+        DuBanner duBanner = (DuBanner) findViewById(R.id.db_banner);
+        IrregularIndicator indicator = (IrregularIndicator) findViewById(R.id.ii_indicator);
         duBanner.setImageLoader(new IDuBanner.ImageLoader() {
 
             @Override
@@ -29,5 +31,6 @@ public class BannerActivity extends BaseActivity {
             }
         });
         duBanner.setData(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        duBanner.replaceIndicatorLayout(indicator);
     }
 }
