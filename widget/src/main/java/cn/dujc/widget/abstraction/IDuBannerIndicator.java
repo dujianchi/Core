@@ -1,4 +1,4 @@
-package cn.dujc.widget.banner;
+package cn.dujc.widget.abstraction;
 
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 /**
  * 自定义指示器
  */
-public interface DuBannerIndicator {
+public interface IDuBannerIndicator {
 
     @NonNull
     ViewGroup getView();

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RatingBar2">
+        <attr name="rating_max" format="integer" />
+        <attr name="rating_current" format="integer" />
+        <attr name="star_width" format="dimension" />
+        <attr name="star_height" format="dimension" />
+        <attr name="star_margin" format="dimension" />
+        <attr name="star_selected" format="reference" />
+        <attr name="star_default" format="reference" />
+    </declare-styleable>
+</resources>

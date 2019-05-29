@@ -25,6 +25,8 @@
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.ListActivity" />
         <activity android:name=".ui.CrashActivity" />
+        <activity android:name=".ui.BannerActivity" />
+        <activity android:name=".ui.RatingBarActivity" />
     </application>
 
 </manifest>

@@ -14,11 +14,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import cn.dujc.widget.R;
+import cn.dujc.widget.abstraction.IDuBannerIndicator;
 
 /**
  * 不规则的指示器
  */
-public class IrregularIndicator extends LinearLayout implements DuBannerIndicator {
+public class IrregularIndicator extends LinearLayout implements IDuBannerIndicator {
 
     private SparseArray<View> mChildren = new SparseArray<>();
     private final Drawable mSelectedDrawable, mDefaultDrawable;

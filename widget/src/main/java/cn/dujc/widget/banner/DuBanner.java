@@ -24,30 +24,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.dujc.widget.R;
+import cn.dujc.widget.abstraction.IDuBanner;
+import cn.dujc.widget.abstraction.IDuBannerIndicator;
 
 /**
  * 基于recyclerView的banner
  * Created by jc199 on 2017/6/13.
  */
-public class DuBanner extends FrameLayout {
+public class DuBanner extends FrameLayout implements IDuBanner {
 
     private static final int OFFSET_SCALE = 10000;//因为将RecyclerView设置了int.max为数据的长度，所以需要一个默认的偏移量倍数
     private static final int TIME_DEFAULT = 3500;//默认滚动时间
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager mLayoutManager;
 
-    public interface ImageLoader {
-        void loadImage(View view, ImageView imageView, String url);
-    }
-
-    public interface OnBannerClickListener {
-        void onBannerClicked(View view, int position);
-    }
-
     private RecyclerView mRecyclerView;
     private BannerAdapter mBannerAdapter;
     private OnBannerItemClick mOnBannerItemClick;
-    private DuBannerIndicator mIndicator;
+    private IDuBannerIndicator mIndicator;
     private int mCurrent, mActual;//当前position和实际position
     private int mTimeInterval = TIME_DEFAULT;
     private int mIndicatorMarginLayout = 10;
@@ -131,7 +125,7 @@ public class DuBanner extends FrameLayout {
         mRecyclerView.setFocusableInTouchMode(false);
         addView(mRecyclerView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        mIndicator = new DefaultIndicator(context, drawableDefault, drawableSelected, colorDefault, colorSelected, indicatorMarginBetween, mIndicatorMarginLayout, indicatorEdge);
+        mIndicator = new DefaultIndicator(context, drawableDefault, drawableSelected, colorDefault, colorSelected, indicatorMarginBetween/*, mIndicatorMarginLayout*/, indicatorEdge);
         LayoutParams indicatorParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         indicatorParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         indicatorParams.bottomMargin = mIndicatorMarginLayout;
@@ -195,9 +189,10 @@ public class DuBanner extends FrameLayout {
     /**
      * 替换指示器布局；用于显示一个在banner外部的指示器
      *
-     * @param indicator DuBannerIndicator
+     * @param indicator IDuBannerIndicator
      */
-    public void replaceIndicatorLayout(DuBannerIndicator indicator) {
+    @Override
+    public void replaceIndicatorLayout(IDuBannerIndicator indicator) {
         if (mIndicator != null && mIndicator.getView().getParent() == this) {
             removeView(mIndicator.getView());
         }
@@ -210,6 +205,7 @@ public class DuBanner extends FrameLayout {
      *
      * @param gravity
      */
+    @Override
     public void setIndicatorLayoutGravity(int gravity) {
         if (mIndicator != null) {
             LayoutParams indicatorParams = getIndicatorParams();
@@ -223,6 +219,7 @@ public class DuBanner extends FrameLayout {
      *
      * @param margin
      */
+    @Override
     public void setIndicatorLayoutMargin(int margin) {
         setIndicatorLayoutMargin(margin, margin, margin, margin);
     }
@@ -235,6 +232,7 @@ public class DuBanner extends FrameLayout {
      * @param right
      * @param bottom
      */
+    @Override
     public void setIndicatorLayoutMargin(int left, int top, int right, int bottom) {
         if (mIndicator != null) {
             LayoutParams indicatorParams = getIndicatorParams();
@@ -246,12 +244,14 @@ public class DuBanner extends FrameLayout {
         }
     }
 
+    @Override
     public void setImageLoader(ImageLoader imageLoader) {
         if (mBannerAdapter != null) {
             mBannerAdapter.mImageLoader = imageLoader;
         }
     }
 
+    @Override
     public void setData(List list) {
         mBannerAdapter.mList.clear();
         if (list != null && list.size() > 0) {
@@ -267,6 +267,7 @@ public class DuBanner extends FrameLayout {
         mRecyclerView.scrollToPosition(mActual);
     }
 
+    @Override
     public void setOnBannerClickListener(OnBannerClickListener bannerClickListener) {
         if (mOnBannerItemClick != null) {
             mRecyclerView.removeOnItemTouchListener(mOnBannerItemClick);
@@ -278,6 +279,7 @@ public class DuBanner extends FrameLayout {
     /**
      * 开始滚动，不考虑其他因素，一旦调用此方法，无论如何都会在handler里面开始计算时间，同时mAutoScroll会设置成true
      */
+    @Override
     public void start() {
         mAutoScroll = true;
         sHandler.postDelayed(mRunnable, mTimeInterval);
@@ -286,6 +288,7 @@ public class DuBanner extends FrameLayout {
     /**
      * 停止滚动，不考虑其他因素，一旦调用此方法，将直接移除handler内的callback
      */
+    @Override
     public void stop() {
         sHandler.removeCallbacks(mRunnable);
     }
@@ -293,6 +296,7 @@ public class DuBanner extends FrameLayout {
     /**
      * 开始滚动，此方法可以与生命周期配合使用，调用此方法会先判断是否开启了自动滚动，或者是否正在滚动，并且可滚动的数量是否大于1才会执行滚动
      */
+    @Override
     public void onStart() {
         if (mAutoScroll && mBannerAdapter.mList.size() > 1) {
             start();
@@ -302,6 +306,7 @@ public class DuBanner extends FrameLayout {
     /**
      * 停止滚动，此方法可以与生命周期配合使用，调用此方法会先判断是否在滚动中（mAutoScroll等同于滚动状态）才会执行
      */
+    @Override
     public void onStop() {
         if (mAutoScroll) {
             stop();
@@ -345,7 +350,7 @@ public class DuBanner extends FrameLayout {
         @Override
         public void onBindViewHolder(BannerHolder holder, int position) {
             if (mImageLoader != null) {
-                mImageLoader.loadImage(holder.itemView, holder.mImageView, "https://imagestest.shangwenwan.com/mall/3425cf58-6dfc-4e07-8a2d-e4902ec5c52a?imageMogr2/size-limit/136.2k!");
+                mImageLoader.loadImage(holder.itemView, holder.mImageView, String.valueOf(mList.get(getRealPosition(position))));
             }
         }
 
@@ -391,6 +396,5 @@ public class DuBanner extends FrameLayout {
             return mDetectorCompat.onTouchEvent(e);
         }
     }
-
 
 }
