@@ -10,11 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -315,7 +313,6 @@ public class DuBanner extends FrameLayout implements IDuBanner {
     private static class BannerAdapter extends PagerAdapter {
 
         final List mList = new ArrayList();
-        final SparseArray<OnBannerItemClick> mCachedViews = new SparseArray<>();
         private ImageLoader mImageLoader = new DuBannerDefaultLoader();
         private OnBannerClickListener mOnBannerClickListener;
 
@@ -342,47 +339,37 @@ public class DuBanner extends FrameLayout implements IDuBanner {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             final int realPosition = getRealPosition(position);
-            OnBannerItemClick onBannerItemClick = mCachedViews.get(realPosition);
-            if (onBannerItemClick == null) {
-                ImageView imageView = new ImageView(container.getContext());
-                onBannerItemClick = new OnBannerItemClick(imageView);
-                imageView.setAdjustViewBounds(true);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                imageView.setOnClickListener(onBannerItemClick);
-                mCachedViews.append(realPosition, onBannerItemClick);
-            } else {
-                final ViewParent parent = onBannerItemClick.mImageView.getParent();
-                if (parent instanceof ViewGroup)
-                    ((ViewGroup) parent).removeView(onBannerItemClick.mImageView);
-            }
-            onBannerItemClick.mPosition = position;
+            final ImageView imageView = new ImageView(container.getContext());
+            final OnBannerItemClick onBannerItemClick = new OnBannerItemClick();
+
+            imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            imageView.setOnClickListener(onBannerItemClick);
+
+            onBannerItemClick.mPosition = realPosition;
             onBannerItemClick.mOnBannerClickListener = mOnBannerClickListener;
+
             if (mImageLoader != null) {
-                mImageLoader.loadImage(container, onBannerItemClick.mImageView, String.valueOf(mList.get(realPosition)));
+                mImageLoader.loadImage(container, imageView, String.valueOf(mList.get(realPosition)));
             }
-            container.addView(onBannerItemClick.mImageView);
-            return onBannerItemClick.mImageView;
+
+            container.addView(imageView);
+
+            return imageView;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            final int realPosition = getRealPosition(position);
-            final OnBannerItemClick onBannerItemClick = mCachedViews.get(realPosition);
-            if (onBannerItemClick != null) container.removeView(onBannerItemClick.mImageView);
+            if (object instanceof View) {
+                container.removeView((View) object);
+            }
         }
     }
 
     private static class OnBannerItemClick implements OnClickListener {
-
-        private final ImageView mImageView;
-
         private int mPosition;
         private OnBannerClickListener mOnBannerClickListener;
-
-        public OnBannerItemClick(ImageView imageView) {
-            mImageView = imageView;
-        }
 
         @Override
         public void onClick(View v) {

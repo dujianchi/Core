@@ -30,7 +30,7 @@ public class BannerActivity extends BaseActivity {
                 imageView.setImageResource(R.mipmap.splash);
             }
         });
-        duBanner.setData(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        duBanner.setData(Arrays.asList(0, 0));
         duBanner.replaceIndicatorLayout(indicator);
     }
 }
