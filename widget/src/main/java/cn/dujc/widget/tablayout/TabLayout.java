@@ -31,10 +31,15 @@ public class TabLayout<T> extends HorizontalScrollView {
         }
     };
 
+    public interface OnTabClickListener {
+        void onClick(View v, int index);
+    }
+
     private final TabFactory<T> mTabFactory = new TabFactory<T>();
     private final LinearLayout mInnerLayout;
     private ViewPager mViewPager;
     private ITabWidthCalculator mTabWidthCalculator = new ITabWidthCalculator.FixedImpl();
+    private OnTabClickListener mOnTabClickListener;
 
     public TabLayout(@NonNull Context context) {
         this(context, null, 0);
@@ -78,6 +83,10 @@ public class TabLayout<T> extends HorizontalScrollView {
     @NonNull
     public TabFactory<T> getTabFactory() {
         return mTabFactory;
+    }
+
+    public void setOnTabClickListener(OnTabClickListener onTabClickListener) {
+        mOnTabClickListener = onTabClickListener;
     }
 
     public void setInstaller(ITab<T> installer) {
@@ -138,6 +147,13 @@ public class TabLayout<T> extends HorizontalScrollView {
             if (view.getParent() != null) {
                 ((ViewGroup) view.getParent()).removeView(view);
             }
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnTabClickListener != null)
+                        mOnTabClickListener.onClick(v, mInnerLayout.indexOfChild(v));
+                }
+            });
             mInnerLayout.addView(view);
         }
     }
