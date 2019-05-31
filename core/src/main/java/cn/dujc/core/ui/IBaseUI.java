@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.permission.IOddsPermissionOperator;
 import cn.dujc.core.util.LogUtil;
@@ -72,6 +73,9 @@ public interface IBaseUI {
         TitleCompat getTitleCompat();
 
         View createRootView(View contentView);
+
+        @IToolbar.Style
+        int toolbarStyle();
     }
 
     public static interface IContextCompat {

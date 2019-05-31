@@ -306,7 +306,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     /**
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */
-    protected int toolbarStyle() {
+    @IToolbar.Style
+    @Override
+    public int toolbarStyle() {
         final IToolbar iToolbar = IToolbarHandler.getToolbar(this, mActivity);
         if (iToolbar != null) return iToolbar.toolbarStyle();
         return IToolbar.LINEAR;

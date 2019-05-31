@@ -17,8 +17,10 @@ import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
+import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.core.ui.BaseWebFragment;
+import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.MediaUtil;
@@ -39,7 +41,8 @@ public class MainActivity extends BaseListActivity {
             , "I am OPPO or VIVO"
             , "gson"
             , "ratingBar"
-            , "banner", "", "", "");
+            , "banner"
+            , "go fragment", "", "");
 
     private final int requestCodeSdcard = 123;
 
@@ -134,9 +137,17 @@ public class MainActivity extends BaseListActivity {
                 starter().go(RatingBarActivity.class);
             }
             break;
-            case 8:{
+            case 8: {
                 starter().go(BannerActivity.class);
-            }break;
+            }
+            break;
+            case 9: {
+                FragmentShellActivity.start(starter()
+                                .with(FragmentShellActivity.EXTRA_TOOLBAR_STYLE, IToolbar.FRAME)
+                                .with(BaseWebFragment.EXTRA_URL, "https://www.baidu.com")
+                        , WebFragment.class);
+            }
+            break;
             //case 00:{}break;
         }
     }

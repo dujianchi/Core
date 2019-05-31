@@ -33,6 +33,7 @@ public class FragmentShellActivity extends BaseActivity {
 
     private boolean mFullScreen = false;
     private Boolean mDarkMode = null;
+    @IToolbar.Style
     private int mStyle = IToolbar.LINEAR;
     private Integer mStatusColor = null;
     private String mTitle;
@@ -47,8 +48,9 @@ public class FragmentShellActivity extends BaseActivity {
         return mFullScreen;
     }
 
+    @IToolbar.Style
     @Override
-    protected int toolbarStyle() {
+    public int toolbarStyle() {
         return mStyle;
     }
 
