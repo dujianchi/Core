@@ -107,6 +107,8 @@ public class TabLayout<T> extends HorizontalScrollView {
     private void updateItemState(int position) {
         if (position >= 0 && position < mData.size()) {
             mTabFactory.update(position, mTabFactory.getCurrent() == position);
+            if (mOnTabClickListener != null)
+                mOnTabClickListener.onClick(mInnerLayout.getChildAt(position), position);
         }
     }
 
@@ -147,13 +149,6 @@ public class TabLayout<T> extends HorizontalScrollView {
             if (view.getParent() != null) {
                 ((ViewGroup) view.getParent()).removeView(view);
             }
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnTabClickListener != null)
-                        mOnTabClickListener.onClick(v, mInnerLayout.indexOfChild(v));
-                }
-            });
             mInnerLayout.addView(view);
         }
     }
