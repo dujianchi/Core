@@ -57,6 +57,133 @@ public class RichTextBuilder {
         }
     }
 
+    /**
+     * 批量添加
+     */
+    public static class Texts {
+        private final RichTextBuilder mBuilder;
+        private final StringBuilder mText;
+
+        private Texts(RichTextBuilder builder) {
+            mText = new StringBuilder();
+            mBuilder = builder;
+        }
+
+        public Texts append(boolean b) {
+            mText.append(b);
+            return this;
+        }
+
+        public Texts append(char c) {
+            mText.append(c);
+            return this;
+        }
+
+        public Texts append(int i) {
+            mText.append(i);
+            return this;
+        }
+
+        public Texts append(long l) {
+            mText.append(l);
+            return this;
+        }
+
+        public Texts append(float f) {
+            mText.append(f);
+            return this;
+        }
+
+        public Texts append(double d) {
+            mText.append(d);
+            return this;
+        }
+
+        public Texts append(Object o) {
+            mText.append(o);
+            return this;
+        }
+
+        public Texts append(String str) {
+            mText.append(str);
+            return this;
+        }
+
+        public Texts append(StringBuffer sb) {
+            mText.append(sb);
+            return this;
+        }
+
+        public Texts append(char[] chars) {
+            mText.append(chars);
+            return this;
+        }
+
+        public Texts append(CharSequence csq) {
+            mText.append(csq);
+            return this;
+        }
+
+        public RichTextBuilder create() {
+            return mBuilder;
+        }
+
+        public RichTextBuilder create(Context context, int colorId) {
+            return mBuilder.addTextPart(context, colorId, mText);
+        }
+
+        public RichTextBuilder create(int color) {
+            return mBuilder.addTextPart(color, mText);
+        }
+
+        /**
+         * 添加一个带文本样式的文字，比如删除线{@link android.text.style.StrikethroughSpan}
+         * 、下划线{@link android.text.style.UnderlineSpan}
+         * 、下标{@link android.text.style.SubscriptSpan}
+         * 、上标{@link android.text.style.SuperscriptSpan}
+         */
+        public RichTextBuilder create(CharacterStyle characterStyle) {
+            return mBuilder.addTextPart(mText, characterStyle);
+        }
+
+        public RichTextBuilder create(Context context, int colorId, OnClickListener listener) {
+            return mBuilder.addTextPart(mText, context, colorId, listener);
+        }
+
+        public RichTextBuilder create(int color, OnClickListener listener) {
+            return mBuilder.addTextPart(mText, color, listener);
+        }
+
+        /**
+         * 添加一个指定多少px大小的文字
+         */
+        public RichTextBuilder createPx(int sizeInPx) {
+            return mBuilder.addTextPartPx(mText, sizeInPx);
+        }
+
+        /**
+         * 添加一个指定多少dp大小的文字
+         */
+        public RichTextBuilder createDp(int sizeInDp) {
+            return mBuilder.addTextPartPx(mText, sizeInDp);
+        }
+
+        /**
+         * 添加一个指定倍数的文字，比如0.5即为设置的字体的一半大
+         */
+        public RichTextBuilder createScale(float scale) {
+            return mBuilder.addTextPartScale(mText, scale);
+        }
+
+        /**
+         * 添加一个指定宽度倍数的文字，比如2。0即为设置的字体的2倍宽
+         */
+        public RichTextBuilder createScaleX(float scaleX) {
+            return mBuilder.addTextPartScaleX(mText, scaleX);
+        }
+
+    }
+
     private final SpannableStringBuilder mStringBuilder = new SpannableStringBuilder();
 
     /**
@@ -75,11 +202,49 @@ public class RichTextBuilder {
     }
 
     /**
+     * 添加多个char字符
+     */
+    public RichTextBuilder addTexts(char... texts) {
+        if (texts != null) {
+            for (final char text : texts) {
+                addTextPart(text);
+            }
+        }
+        return this;
+    }
+
+    /**
      * 添加一个纯文本
      */
     public RichTextBuilder addTextPart(CharSequence text) {
         if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
         return this;
+    }
+
+    /**
+     * 添加多个char字符
+     */
+    public RichTextBuilder addTexts(CharSequence... texts) {
+        if (texts != null) {
+            for (final CharSequence text : texts) {
+                addTextPart(text);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 添加一个带颜色的char字符
+     */
+    public RichTextBuilder addTextPart(Context context, int colorId, char text) {
+        return addTextPart(context, colorId, String.valueOf(text));
+    }
+
+    /**
+     * 添加一个带颜色的char字符
+     */
+    public RichTextBuilder addTextPart(int color, char text) {
+        return addTextPart(color, String.valueOf(text));
     }
 
     /**
@@ -199,6 +364,13 @@ public class RichTextBuilder {
             mStringBuilder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return this;
+    }
+
+    /**
+     * 对多个对象批量组合
+     */
+    public Texts batch() {
+        return new Texts(this);
     }
 
 }

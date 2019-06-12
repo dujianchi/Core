@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.util.RichTextBuilder;
+import cn.dujc.coreapp.R;
 
 public class CrashActivity extends BaseActivity implements View.OnClickListener {
 
@@ -19,9 +21,16 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public View getViewV() {
         TextView textView = new TextView(mActivity);
-        textView.setText("click to crash");
+        textView.setText(new RichTextBuilder()
+                .addTextPart(mActivity, R.color.colorAccent, '2')
+                .addTextPart("asdfasdf")
+                .addTextPart('\n')
+                .batch()
+                .append(1).append("click").append(' ').append("to crash")
+                .create(mActivity, R.color.colorPrimary)
+                .build());
         textView.setGravity(Gravity.CENTER);
-        textView.setOnClickListener(this);
+        //textView.setOnClickListener(this);
         return textView;
     }
 
