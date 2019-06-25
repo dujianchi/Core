@@ -42,7 +42,10 @@ public class MainActivity extends BaseListActivity {
             , "gson"
             , "ratingBar"
             , "banner"
-            , "go fragment", "", "");
+            , "go fragment"
+            , "check group"
+            //, ""
+    );
 
     private final int requestCodeSdcard = 123;
 
@@ -146,6 +149,10 @@ public class MainActivity extends BaseListActivity {
                                 .with(FragmentShellActivity.EXTRA_TOOLBAR_STYLE, IToolbar.FRAME)
                                 .with(BaseWebFragment.EXTRA_URL, "https://www.baidu.com")
                         , WebFragment.class);
+            }
+            break;
+            case 10: {
+                starter().go(CheckGroupActivity.class);
             }
             break;
             //case 00:{}break;
