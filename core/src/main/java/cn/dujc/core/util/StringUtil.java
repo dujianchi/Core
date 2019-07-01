@@ -1,5 +1,7 @@
 package cn.dujc.core.util;
 
+import android.text.TextUtils;
+
 import java.util.IllegalFormatException;
 
 /**
@@ -52,6 +54,18 @@ public class StringUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 剪切字符串text，直到出现最后一个sub
+     */
+    public static CharSequence subUntil(StringBuilder text, String sub) {
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(sub)) return text;
+        final int index = text.lastIndexOf(sub);
+        if (index > 0) {
+            return text.substring(0, index);
+        }
+        return text;
     }
 
 }
