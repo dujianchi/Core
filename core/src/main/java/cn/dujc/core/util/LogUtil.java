@@ -22,7 +22,7 @@ import android.util.Log;
  * Log工具，类似android.util.Log。
  * tag自动产生，格式: customTagPrefix:className.methodName(L:lineNumber),
  * customTagPrefix为空时只输出：className.methodName(L:lineNumber)。
- * <p />
+ * <p/>
  * Author: wyouflf
  * Date: 13-7-24
  * Time: 下午12:23
@@ -83,15 +83,17 @@ public class LogUtil {
     }
 
     public static void d(String content) {
+        String tag = generateTag(getCallerStackTraceElement());
+        d(tag, content);
+    }
+
+    public static void d(String tag, String content) {
         if (!allowD) {
             return;
         }
         if (TextUtils.isEmpty(content)) {
             return;
         }
-        StackTraceElement caller = getCallerStackTraceElement();
-        String tag = generateTag(caller);
-
         if (customLogger != null) {
             for (String s : splitContent(content)) {
                 customLogger.d(tag, s);
@@ -375,7 +377,8 @@ public class LogUtil {
             }
             builder.append(objects[length - 1]);
         }
-        d(builder.toString());
+        String tag = generateTag(getCallerStackTraceElement());
+        d(tag, builder.toString());
     }
 
     public static StackTraceElement getCallerStackTraceElement() {
