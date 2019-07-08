@@ -31,6 +31,7 @@ import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
+import cn.dujc.zxing.impl.ZxingActivity;
 
 public class MainActivity extends BaseListActivity {
 
@@ -46,6 +47,8 @@ public class MainActivity extends BaseListActivity {
             , "go fragment"
             , "check group"
             , "show fragment"
+            , "zxing activity"
+            , "zxing fragment"
             //, ""
     );
 
@@ -161,6 +164,12 @@ public class MainActivity extends BaseListActivity {
                 //showFragment();
             }
             break;
+            case 12:{
+                starter().go(ZxingActivity.class);
+            }break;
+            case 13:{
+                starter().go(ZxingFragmentActivity.class);
+            }break;
             //case 00:{}break;
         }
     }
