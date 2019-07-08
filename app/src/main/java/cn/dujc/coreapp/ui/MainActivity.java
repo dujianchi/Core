@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +31,7 @@ import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
+import cn.dujc.zxing.impl.ZxingActivity;
 
 public class MainActivity extends BaseListActivity {
 
@@ -42,7 +44,13 @@ public class MainActivity extends BaseListActivity {
             , "gson"
             , "ratingBar"
             , "banner"
-            , "go fragment", "", "");
+            , "go fragment"
+            , "check group"
+            , "show fragment"
+            , "zxing activity"
+            , "zxing fragment"
+            //, ""
+    );
 
     private final int requestCodeSdcard = 123;
 
@@ -148,6 +156,20 @@ public class MainActivity extends BaseListActivity {
                         , WebFragment.class);
             }
             break;
+            case 10: {
+                starter().go(CheckGroupActivity.class);
+            }
+            break;
+            case 11: {
+                //showFragment();
+            }
+            break;
+            case 12:{
+                starter().go(ZxingActivity.class);
+            }break;
+            case 13:{
+                starter().go(ZxingFragmentActivity.class);
+            }break;
             //case 00:{}break;
         }
     }
@@ -166,6 +188,33 @@ public class MainActivity extends BaseListActivity {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.test);
             String img = MediaUtil.saveImgToGallery(mActivity, bitmap, "bbb", "bbb.png");
             ToastUtil.showToast(mActivity, img);
+        }
+    }
+
+    private Fragment mCurrentFragment;
+
+    private void showFragment(int id, Fragment fragment) {
+        if (mCurrentFragment != null) {
+            getSupportFragmentManager().beginTransaction().hide(mCurrentFragment).commit();
+        }
+        mCurrentFragment = fragment;
+        if (!fragment.isAdded()) {
+            getSupportFragmentManager().beginTransaction().add(id, fragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        }
+    }
+
+    private void showFragment(int id, Fragment fragment, String tag) {
+        if (mCurrentFragment != null) {
+            getSupportFragmentManager().beginTransaction().hide(mCurrentFragment).commit();
+        }
+        mCurrentFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (mCurrentFragment == null) {
+            mCurrentFragment = fragment;
+            getSupportFragmentManager().beginTransaction().add(id, fragment, tag).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
         }
     }
 }

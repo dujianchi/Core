@@ -86,6 +86,8 @@ public interface IBaseUI {
         boolean shouldShowRequestPermissionRationale(String permission);
 
         void requestPermissions(String[] permissions, int requestCode);
+
+        Bundle extras();
     }
 
     public static interface IStarter {
@@ -115,6 +117,8 @@ public interface IBaseUI {
         IStarter clear();
 
         IStarter putAll(Bundle bundle);
+
+        IStarter withSelfExtra();
 
         IStarter with(String key, String param);
 
@@ -262,6 +266,12 @@ public interface IBaseUI {
         public void requestPermissions(String[] permissions, int requestCode) {
             ActivityCompat.requestPermissions(mActivity, permissions, requestCode);
         }
+
+        @Override
+        public Bundle extras() {
+            Intent intent = mActivity.getIntent();
+            return intent == null ? null : intent.getExtras();
+        }
     }
 
     public static class IContextCompatFragmentImpl implements IContextCompat {
@@ -300,6 +310,11 @@ public interface IBaseUI {
         @Override
         public void requestPermissions(String[] permissions, int requestCode) {
             mFragment.requestPermissions(permissions, requestCode);
+        }
+
+        @Override
+        public Bundle extras() {
+            return mFragment.getArguments();
         }
     }
 
@@ -405,7 +420,13 @@ public interface IBaseUI {
 
         @Override
         public IStarter putAll(Bundle bundle) {
-            bundle.putAll(bundle);
+            mBundle.putAll(bundle);
+            return this;
+        }
+
+        @Override
+        public IStarter withSelfExtra() {
+            mBundle.putAll(mContext.extras());
             return this;
         }
 
@@ -725,9 +746,9 @@ public interface IBaseUI {
                 for (String permission : permissions) {
                     showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
                 }
-                if (mSettingsDialog != null && showHint && ( mPermissionOperator == null //系统api需要显示对话框，并且没有设置特异权限的操作
+                if (mSettingsDialog != null && showHint && (mPermissionOperator == null //系统api需要显示对话框，并且没有设置特异权限的操作
                         || !mPermissionOperator.useOddsPermissionOperate(mContext.context()) //设置了特异权限操作，但是不符合特异权限使用条件
-                        || mPermissionOperator.showConfirmDialog(permissions) ) ) {//特异权限允许使用对话框
+                        || mPermissionOperator.showConfirmDialog(permissions))) {//特异权限允许使用对话框
                     mSettingsDialog.showSettingsDialog(mContext, title, message);
                 } else {
                     mContext.requestPermissions(permissions, requestCode);

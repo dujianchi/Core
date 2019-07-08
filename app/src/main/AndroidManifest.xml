@@ -24,6 +24,8 @@
         <activity android:name=".ui.CrashActivity" />
         <activity android:name=".ui.BannerActivity" />
         <activity android:name=".ui.RatingBarActivity" />
+        <activity android:name=".ui.CheckGroupActivity" />
+        <activity android:name=".ui.ZxingFragmentActivity" />
     </application>
 
 </manifest>
