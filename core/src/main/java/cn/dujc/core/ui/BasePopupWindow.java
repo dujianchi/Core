@@ -24,7 +24,6 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
     public BasePopupWindow(Context context) {
         super(context);
         mContext = context;
-        _onCreateView();
     }
 
     @Override
@@ -38,6 +37,12 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
 
     public void showAtLocation(View parent, int gravity) {
         showAtLocation(parent, gravity, 0, 0);
+    }
+
+    @Override
+    public boolean isShowing() {
+        createView();//每次show的时候，系统都会调用此方法判断popupWindow是否已经在showing中，所以在此处创建view，是最合适的
+        return super.isShowing();
     }
 
     @Nullable
@@ -95,4 +100,15 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return new ColorDrawable(_getBackgroundColor(context));
     }
 
+    /**
+     * 每次判断{@link #isShowing()}的时候，都会调用此方法，然后当mRootView为空时，
+     * 走{@link #_onCreateView()}方法，此时会初始化界面元素
+     */
+    private void createView() {
+        if (mRootView == null) {
+            synchronized (BasePopupWindow.class) {
+                if (mRootView == null) _onCreateView();
+            }
+        }
+    }
 }
