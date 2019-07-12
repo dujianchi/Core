@@ -143,14 +143,14 @@ public class BaseWebFragment extends BaseFragment {
         }
     }
 
-    private void init() {
+    protected void init() {
         if (!TextUtils.isEmpty(mTitle)) {
             mActivity.setTitle(mTitle);
         }
 
-        mWebView = new WebView(mActivity.getApplicationContext());
+        mWebView = initWebView();
         ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
-                .addView(mWebView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                .addView(initRootView(), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mProgressBar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
         mProgressBar.setMax(100);
@@ -163,6 +163,14 @@ public class BaseWebFragment extends BaseFragment {
         mWebView.setWebChromeClient(getWebChromeClient());
 
         loadAtFirst();
+    }
+
+    protected WebView initWebView() {
+        return new WebView(mActivity.getApplicationContext());
+    }
+
+    protected View initRootView() {
+        return mWebView;
     }
 
     /**
