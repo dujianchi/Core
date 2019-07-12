@@ -44,8 +44,8 @@ public class BaseWebFragment extends BaseFragment {
     public static final String EXTRA_URL = "EXTRA_URL";
     public static final String EXTRA_DATA = "EXTRA_DATA";
 
+    protected WebView mWebView;
     private ProgressBar mProgressBar;
-    private WebView mWebView;
     private String mUrl;
     private String mData;
     private String mTitle;
@@ -150,7 +150,7 @@ public class BaseWebFragment extends BaseFragment {
 
         mWebView = initWebView();
         ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
-                .addView(initRootView(), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                .addView(initRootView(mWebView), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mProgressBar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
         mProgressBar.setMax(100);
@@ -169,8 +169,8 @@ public class BaseWebFragment extends BaseFragment {
         return new WebView(mActivity.getApplicationContext());
     }
 
-    protected View initRootView() {
-        return mWebView;
+    protected View initRootView(WebView webView) {
+        return webView;
     }
 
     /**
