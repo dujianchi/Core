@@ -48,6 +48,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     //返回操作
     private volatile IBackPressedOperator mBackPressOperator = null;
 
+    protected Fragment mCurrentFragment;//当前显示着的fragment
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         mActivity = this;
@@ -373,6 +375,23 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
      */
     protected boolean alwaysPortrait() {
         return true;
+    }
+
+    protected void showFragment(int id, Fragment fragment) {
+        showFragment(id, fragment, null);
+    }
+
+    protected void showFragment(int id, Fragment fragment, @Nullable String tag) {
+        if (mCurrentFragment != null) {
+            getSupportFragmentManager().beginTransaction().hide(mCurrentFragment).commit();
+        }
+        mCurrentFragment = fragment;
+        if (fragment == null) return;
+        if (!fragment.isAdded()) {
+            getSupportFragmentManager().beginTransaction().add(id, fragment, tag).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        }
     }
 
 }

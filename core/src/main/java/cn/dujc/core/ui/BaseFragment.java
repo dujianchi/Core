@@ -41,6 +41,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     private TitleCompat mTitleCompat = null;
     protected Activity mActivity;
 
+    protected Fragment mCurrentFragment;//当前显示着的fragment
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -289,5 +291,22 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
             mRootView = null;
         }
     }*/
+
+    protected void showFragment(int id, Fragment fragment) {
+        showFragment(id, fragment, null);
+    }
+
+    protected void showFragment(int id, Fragment fragment, @Nullable String tag) {
+        if (mCurrentFragment != null) {
+            getFragmentManager().beginTransaction().hide(mCurrentFragment).commit();
+        }
+        mCurrentFragment = fragment;
+        if (fragment == null) return;
+        if (!fragment.isAdded()) {
+            getFragmentManager().beginTransaction().add(id, fragment, tag).commit();
+        } else {
+            getFragmentManager().beginTransaction().show(fragment).commit();
+        }
+    }
 
 }
