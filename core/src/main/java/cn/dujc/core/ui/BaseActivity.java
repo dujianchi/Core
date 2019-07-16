@@ -39,15 +39,13 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     private IStarter mStarter = null;
     private IParams mParams = null;
     private IPermissionKeeper mPermissionKeeper = null;
-
-    protected Activity mActivity;
-    protected View mToolbar = null;
     private TitleCompat mTitleCompat = null;
-    protected View mRootView = null;
-
     //返回操作
     private volatile IBackPressedOperator mBackPressOperator = null;
 
+    protected View mToolbar = null;
+    protected View mRootView = null;
+    protected Activity mActivity;
     protected Fragment mCurrentFragment;//当前显示着的fragment
 
     @Override
@@ -218,6 +216,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         return null;
     }
 
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    @IToolbar.Style
+    @Override
+    public int toolbarStyle() {
+        final IToolbar iToolbar = IToolbarHandler.getToolbar(this, mActivity);
+        if (iToolbar != null) return iToolbar.toolbarStyle();
+        return IToolbar.LINEAR;
+    }
+
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
@@ -303,17 +312,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                 }
             }
         }
-    }
-
-    /**
-     * 是否线性排列toolbar，否的话则toolbar在布局上方
-     */
-    @IToolbar.Style
-    @Override
-    public int toolbarStyle() {
-        final IToolbar iToolbar = IToolbarHandler.getToolbar(this, mActivity);
-        if (iToolbar != null) return iToolbar.toolbarStyle();
-        return IToolbar.LINEAR;
     }
 
     protected void setupToolbar() {

@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import cn.dujc.core.R;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
@@ -34,13 +36,13 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     private IStarter mStarter = null;
     private IParams mParams = null;
     private IPermissionKeeper mPermissionKeeper = null;
+    private TitleCompat mTitleCompat = null;
+    private WeakReference<Bundle> mSavedInstanceState = null;
+    private final AtomicBoolean mLoaded = new AtomicBoolean(false);//是否已经载入
 
-    private boolean mLoaded = false;//是否已经载入
     protected View mToolbar;
     protected View mRootView;
-    private TitleCompat mTitleCompat = null;
     protected Activity mActivity;
-
     protected Fragment mCurrentFragment;//当前显示着的fragment
 
     @Nullable
@@ -64,10 +66,18 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!mLoaded && mRootView != null) {
-            mLoaded = true;
-            initBasic(savedInstanceState);
+        if (!lazyLoad() || getUserVisibleHint()) {//不知道为什么要有2个判断条件，从hqq那边抄来的代码改的
+            setupBasic(savedInstanceState);
+        } else {
+            mSavedInstanceState = new WeakReference<>(savedInstanceState);
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && lazyLoad())
+            setupBasic(mSavedInstanceState != null ? mSavedInstanceState.get() : null);
     }
 
     @Override
@@ -162,6 +172,17 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Nullable
     public View getViewV() {
         return null;
+    }
+
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    @IToolbar.Style
+    @Override
+    public int toolbarStyle() {
+        final IToolbar iToolbar = IToolbarHandler.getToolbar(this, mActivity);
+        if (iToolbar != null) return iToolbar.toolbarStyle();
+        return IToolbar.LINEAR;
     }
 
     @Nullable
@@ -263,17 +284,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         }
     }
 
-    /**
-     * 是否线性排列toolbar，否的话则toolbar在布局上方
-     */
-    @IToolbar.Style
-    @Override
-    public int toolbarStyle() {
-        final IToolbar iToolbar = IToolbarHandler.getToolbar(this, mActivity);
-        if (iToolbar != null) return iToolbar.toolbarStyle();
-        return IToolbar.LINEAR;
-    }
-
     /*protected void destroyRootViewAndToolbar() {
         mLoaded = false;
         if (mToolbar != null) {
@@ -306,6 +316,22 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
             getFragmentManager().beginTransaction().add(id, fragment, tag).commit();
         } else {
             getFragmentManager().beginTransaction().show(fragment).commit();
+        }
+    }
+
+    /**
+     * 默认不开启延迟 加载
+     *
+     * @return
+     */
+    protected boolean lazyLoad() {
+        return false;
+    }
+
+    private void setupBasic(@Nullable Bundle savedInstanceState) {
+        if (!mLoaded.get() && mRootView != null) {
+            mLoaded.set(true);
+            initBasic(savedInstanceState);
         }
     }
 
