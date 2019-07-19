@@ -125,7 +125,7 @@ public class RichTextBuilder {
         }
 
         public RichTextBuilder create() {
-            return mBuilder;
+            return mBuilder.addTextPart(mText);
         }
 
         public RichTextBuilder create(Context context, int colorId) {
@@ -354,14 +354,22 @@ public class RichTextBuilder {
     }
 
     /**
-     * 添加一个文字，并指定span
+     * 添加一个文字，并指定多个span
      */
-    public RichTextBuilder addPart(CharSequence text, Object span) {
-        if (!TextUtils.isEmpty(text) && span != null) {
-            final int start = mStringBuilder.length();
-            final int end = start + text.length();
-            mStringBuilder.append(text);
-            mStringBuilder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    public RichTextBuilder addPart(CharSequence text, Object... spans) {
+        if (!TextUtils.isEmpty(text)) {
+            if (spans != null && spans.length > 0) {
+                final int start = mStringBuilder.length();
+                final int end = start + text.length();
+                mStringBuilder.append(text);
+                for (Object span : spans) {
+                    if (span != null) {
+                        mStringBuilder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            } else {
+                mStringBuilder.append(text);
+            }
         }
         return this;
     }

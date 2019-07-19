@@ -1,7 +1,10 @@
 package cn.dujc.coreapp.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -28,6 +31,10 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
                 .batch()
                 .append(1).append("click").append(' ').append("to crash")
                 .create(mActivity, R.color.colorPrimary)
+                .addTextPart('\n')
+                .addTextPartScale("2 scale", 2)
+                .addTextPart('\n')
+                .addPart("2 scale red ", new RelativeSizeSpan(2), new ForegroundColorSpan(Color.RED))
                 .build());
         textView.setGravity(Gravity.CENTER);
         //textView.setOnClickListener(this);

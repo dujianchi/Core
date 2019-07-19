@@ -26,6 +26,9 @@
         <activity android:name=".ui.RatingBarActivity" />
         <activity android:name=".ui.CheckGroupActivity" />
         <activity android:name=".ui.ZxingFragmentActivity" />
+        <activity android:name=".ui.PhotoViewActivity" />
+        <activity android:name=".ui.ViewPagerActivity" />
+        <activity android:name=".ui.MultiTypeAdapterActivity" />
     </application>
 
 </manifest>
