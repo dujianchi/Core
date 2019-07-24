@@ -6,7 +6,7 @@ import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.core.util.PermissionUtil;
 import cn.dujc.core.util.RomUtil;
 
-public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
+public class OddsPermissionFuckImpl extends AbstractOddsPermissionOperator {
 
     private final IBaseUI.IPermissionKeeper mPermissionKeeper;
     private final Context mContext;
@@ -36,11 +36,6 @@ public class OddsPermissionFuckImpl implements IOddsPermissionOperator {
             }
         }
         return hasPermission;
-    }
-
-    @Override
-    public boolean doneHere(String... permissions) {
-        return true;
     }
 
     @Override

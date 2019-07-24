@@ -762,7 +762,7 @@ public interface IBaseUI {
                     && mPermissionOperator.useOddsPermissionOperate(mContext.context())
             ) {//使用自定义权限操作
                 final boolean hasPermission = mPermissionOperator.requestPermissions(requestCode, title, message, permissions);
-                if (mPermissionOperator.doneHere(permissions)) {
+                if (mPermissionOperator.doneHere(mContext.context(), permissions)) {
                     if (mCallback != null) {
                         if (hasPermission) {
                             mCallback.onGranted(requestCode, Arrays.asList(permissions));
