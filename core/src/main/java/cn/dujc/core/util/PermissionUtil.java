@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 import android.telephony.TelephonyManager;
 
@@ -129,13 +130,14 @@ public class PermissionUtil {
      */
     @SuppressLint({"HardwareIds", "MissingPermission"})
     public static boolean checkReadPhoneStatePermission(Context context, String permission) {
+        boolean hasPermission = true;
         try {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             tm.getDeviceId();
-            return selfPermissionGranted(context, permission);
         } catch (Exception e) {
-            return false;
+            hasPermission = false;
         }
+        return selfPermissionGranted(context, permission) || hasPermission;
     }
 
 
@@ -266,14 +268,15 @@ public class PermissionUtil {
      * @return
      */
     public static boolean checkLocationsPermission(Context context, String permission) {
+        boolean hasPermission = true;
         try {
             LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             // 无用操作
             lm.getAllProviders();
         } catch (Exception e) {
-            return false;
+            hasPermission = false;
         }
-        return selfPermissionGranted(context, permission);
+        return selfPermissionGranted(context, permission) || hasPermission;
     }
 
     /**
@@ -282,14 +285,15 @@ public class PermissionUtil {
      * @return
      */
     public static boolean checkAudioPermission(Context context) {
+        boolean hasPermission = true;
         try {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             // 无用操作
             audioManager.getMode();
         } catch (Exception e) {
-            return false;
+            hasPermission = false;
         }
-        return selfPermissionGranted(context, Manifest.permission.RECORD_AUDIO);
+        return selfPermissionGranted(context, Manifest.permission.RECORD_AUDIO) || hasPermission;
     }
 
     /**
@@ -298,14 +302,15 @@ public class PermissionUtil {
      * @return
      */
     public static boolean checkSensorsPermission(Context context) {
+        boolean hasPermission = true;
         try {
             SensorManager sorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             // 无用操作
             sorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         } catch (Exception e) {
-            return false;
+            hasPermission = false;
         }
-        return selfPermissionGranted(context, Manifest.permission.BODY_SENSORS);
+        return selfPermissionGranted(context, Manifest.permission.BODY_SENSORS) || hasPermission;
     }
 
 
@@ -344,7 +349,8 @@ public class PermissionUtil {
      * @return
      */
     public static boolean selfPermissionGranted(Context context, String permission) {
-        return PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED;
+        //return PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED;
     }
 
 }

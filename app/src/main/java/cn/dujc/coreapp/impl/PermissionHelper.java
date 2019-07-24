@@ -11,6 +11,11 @@ public class PermissionHelper implements IPermissionSetup {
 
     @Override
     public IOddsPermissionOperator getOddsPermissionOperator(Context context, IBaseUI.IPermissionKeeper permissionKeeper) {
-        return new OddsPermissionFuckImpl(context, permissionKeeper);
+        return new OddsPermissionFuckImpl(context, permissionKeeper)/*{
+            @Override
+            public boolean doneHere(String... permissions) {
+                return false;
+            }
+        }*/;
     }
 }

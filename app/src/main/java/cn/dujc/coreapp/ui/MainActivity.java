@@ -53,6 +53,7 @@ public class MainActivity extends BaseListActivity {
             , "photoview"
             , "viewpager fragment"
             , "multi type adapter"
+            , "permission"
             //, ""
     );
 
@@ -190,6 +191,10 @@ public class MainActivity extends BaseListActivity {
             break;
             case 17: {
                 starter().go(MultiTypeAdapterActivity.class);
+            }
+            break;
+            case 18: {
+                starter().go(PermissionActivity.class);
             }
             break;
             //case 00:{}break;
