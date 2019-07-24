@@ -29,6 +29,7 @@ public class PermissionActivity extends BaseListActivity {
                 , Manifest.permission.READ_PHONE_STATE
                 , Manifest.permission.SEND_SMS
                 , Manifest.permission.READ_EXTERNAL_STORAGE
+                , Manifest.permission.CALL_PHONE
                 //, Manifest.permission.XX
         )) {
             @Override

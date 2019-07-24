@@ -1,8 +1,10 @@
 package cn.dujc.coreapp.ui;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -54,6 +56,7 @@ public class MainActivity extends BaseListActivity {
             , "viewpager fragment"
             , "multi type adapter"
             , "permission"
+            , "call"
             //, ""
     );
 
@@ -195,6 +198,13 @@ public class MainActivity extends BaseListActivity {
             break;
             case 18: {
                 starter().go(PermissionActivity.class);
+            }
+            break;
+            case 19: {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                Uri data = Uri.parse("tel:18059045652");
+                intent.setData(data);
+                startActivity(intent);
             }
             break;
             //case 00:{}break;
