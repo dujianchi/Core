@@ -1,8 +1,10 @@
 package cn.dujc.coreapp.ui;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -53,6 +55,9 @@ public class MainActivity extends BaseListActivity {
             , "photoview"
             , "viewpager fragment"
             , "multi type adapter"
+            , "send broadcast in thread"
+            , "permission"
+            , "call"
             //, ""
     );
 
@@ -190,6 +195,21 @@ public class MainActivity extends BaseListActivity {
             break;
             case 17: {
                 starter().go(MultiTypeAdapterActivity.class);
+            }
+            break;
+            case 18: {
+                starter().go(BroadcastActivity.class);
+            }
+            break;
+            case 19: {
+                starter().go(PermissionActivity.class);
+            }
+            break;
+            case 20: {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                Uri data = Uri.parse("tel:18059045652");
+                intent.setData(data);
+                startActivity(intent);
             }
             break;
             //case 00:{}break;

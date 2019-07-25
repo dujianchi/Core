@@ -60,7 +60,7 @@ public interface IOddsPermissionOperator {
     /**
      * 权限处理流程是否到此结束，此方法在{@link #requestPermissions(int, String, String, String...)}后调用
      */
-    boolean doneHere(String... permissions);
+    boolean doneHere(Context context, String... permissions);
 
     /**
      * 是否显示默认流程的确认对话框

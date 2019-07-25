@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cn.dujc.core.R;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.permission.IOddsPermissionOperator;
@@ -202,6 +203,8 @@ public interface IBaseUI {
     }
 
     public static interface IPermissionKeeper {
+
+        void requestPermissionsNormal(int requestCode, String... permission);
 
         void requestPermissions(int requestCode, @StringRes int title, @StringRes int message, String... permission);
 
@@ -709,9 +712,17 @@ public interface IBaseUI {
         }
 
         @Override
+        public void requestPermissionsNormal(int requestCode, String... permission) {
+            requestPermissions(requestCode
+                    , mContext.context().getString(R.string.core_title_settings_dialog)
+                    , mContext.context().getString(R.string.core_rationale_ask_again)
+                    , permission);
+        }
+
+        @Override
         public void requestPermissions(int requestCode, @StringRes int title, @StringRes int message, String... permission) {
-            final String titleStr = title != 0 ? mContext.context().getString(title) : "";
-            final String messageStr = message != 0 ? mContext.context().getString(message) : "";
+            final String titleStr = mContext.context().getString(title != 0 ? title : R.string.core_title_settings_dialog);
+            final String messageStr = mContext.context().getString(message != 0 ? message : R.string.core_rationale_ask_again);
             requestPermissions(requestCode, titleStr, messageStr, permission);
         }
 
@@ -727,7 +738,7 @@ public interface IBaseUI {
                     && mPermissionOperator.useOddsPermissionOperate(mContext.context())
             ) {//使用自定义权限操作
                 final boolean hasPermission = mPermissionOperator.requestPermissions(requestCode, title, message, permissions);
-                if (mPermissionOperator.doneHere(permissions)) {
+                if (mPermissionOperator.doneHere(mContext.context(), permissions)) {
                     if (mCallback != null) {
                         if (hasPermission) {
                             mCallback.onGranted(requestCode, Arrays.asList(permissions));
@@ -794,6 +805,7 @@ public interface IBaseUI {
             if (has) {
                 for (String permission : permissions) {
                     has = has && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+                    //has = has && PermissionChecker.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
                 }
             }
             return has;
