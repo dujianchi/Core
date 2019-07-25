@@ -55,6 +55,7 @@ public class MainActivity extends BaseListActivity {
             , "photoview"
             , "viewpager fragment"
             , "multi type adapter"
+            , "send broadcast in thread"
             , "permission"
             , "call"
             //, ""
@@ -197,10 +198,14 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 18: {
-                starter().go(PermissionActivity.class);
+                starter().go(BroadcastActivity.class);
             }
             break;
             case 19: {
+                starter().go(PermissionActivity.class);
+            }
+            break;
+            case 20: {
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 Uri data = Uri.parse("tel:18059045652");
                 intent.setData(data);
