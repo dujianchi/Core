@@ -6,7 +6,7 @@ import android.webkit.WebView;
 
 import java.net.URLDecoder;
 
-import cn.dujc.core.ui.BaseWebFragment;
+import cn.dujc.core.ui.impl.BaseWebFragment;
 import cn.dujc.core.util.ToastUtil;
 
 public class WebFragment extends BaseWebFragment {

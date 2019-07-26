@@ -10,7 +10,7 @@ import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.adapter.multi2.MultiTypeAdapter;
 import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
-import cn.dujc.core.ui.BaseListActivity;
+import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.coreapp.R;
 
 public class MultiTypeAdapterActivity extends BaseListActivity {

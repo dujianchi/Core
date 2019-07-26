@@ -1,4 +1,4 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import cn.dujc.core.R;
 import cn.dujc.core.initializer.toolbar.IToolbar;
+import cn.dujc.core.ui.BaseActivity;
 
 public class FragmentShellActivity extends BaseActivity {
 

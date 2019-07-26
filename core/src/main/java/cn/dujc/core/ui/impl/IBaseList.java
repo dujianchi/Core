@@ -1,4 +1,4 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -127,9 +127,9 @@ public interface IBaseList {
             mUI = UI;
         }
 
-        abstract View findViewById(int id);
+        public abstract View findViewById(int id);
 
-        abstract Context context();
+        public abstract Context context();
 
         @Override
         public int getViewId() {
@@ -322,43 +322,4 @@ public interface IBaseList {
         }
     }
 
-    public static class FragmentImpl extends AbsImpl {
-        private BaseListFragment mFragment;
-
-        FragmentImpl(BaseListFragment fragment) {
-            super(fragment);
-            mFragment = fragment;
-        }
-
-        @Override
-        View findViewById(int id) {
-            return mFragment.findViewById(id);
-        }
-
-        @Override
-        Context context() {
-            return mFragment.mActivity;
-        }
-    }
-
-    public static class ActivityImpl extends AbsImpl {
-
-        private final BaseListActivity mActivity;
-
-        ActivityImpl(BaseListActivity activity) {
-            super(activity);
-            mActivity = activity;
-        }
-
-        @Override
-        View findViewById(int id) {
-            return mActivity.findViewById(id);
-        }
-
-        @Override
-        Context context() {
-            return mActivity;
-        }
-
-    }
 }

@@ -25,7 +25,7 @@
             android:launchMode="singleTop"
             android:exported="false"
             android:theme="@style/core_easy_transparent_activity_theme" />
-        <activity android:name=".ui.FragmentShellActivity" />
+        <activity android:name=".ui.impl.FragmentShellActivity" />
     </application>
 
 </manifest>

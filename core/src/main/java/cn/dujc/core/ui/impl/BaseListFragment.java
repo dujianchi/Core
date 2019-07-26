@@ -1,17 +1,39 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.ui.BaseFragment;
 
 /**
  * 基本列表fragment
  * Created by du on 2017/9/27.
  */
 public abstract class BaseListFragment extends BaseFragment implements IBaseList.UI {
+
+    private static class FragmentImpl extends AbsImpl {
+        private BaseListFragment mFragment;
+
+        FragmentImpl(BaseListFragment fragment) {
+            super(fragment);
+            mFragment = fragment;
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return mFragment.findViewById(id);
+        }
+
+        @Override
+        public Context context() {
+            return mFragment.mActivity;
+        }
+    }
 
     private IBaseList mBaseList;
 

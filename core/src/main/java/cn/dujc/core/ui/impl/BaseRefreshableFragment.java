@@ -1,7 +1,9 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+
+import cn.dujc.core.ui.BaseFragment;
 
 /**
  * 可刷新的activity

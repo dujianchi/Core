@@ -1,5 +1,8 @@
 package cn.dujc.coreapp.ui;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -8,12 +11,16 @@ import java.util.List;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.ui.impl.BaseListActivity;
+import cn.dujc.core.ui.impl.BaseListDialog;
 import cn.dujc.core.util.StringUtil;
 
-public class ListActivity extends BaseListActivity {
+public class ListDialog extends BaseListDialog {
 
     private final List<String> mList = new ArrayList<>();
+
+    public ListDialog(Context context) {
+        super(context);
+    }
 
     @Nullable
     @Override
@@ -24,6 +31,12 @@ public class ListActivity extends BaseListActivity {
                 helper.setText(android.R.id.text1, item);
             }
         };
+    }
+
+    @Override
+    public void initBasic(Bundle savedInstanceState) {
+        super.initBasic(savedInstanceState);
+        mRootView.setBackgroundColor(Color.WHITE);
     }
 
     @Override
