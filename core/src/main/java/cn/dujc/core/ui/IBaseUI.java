@@ -35,6 +35,7 @@ import cn.dujc.core.R;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.permission.IOddsPermissionOperator;
+import cn.dujc.core.ui.impl.FragmentShellActivity;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.SerializableTransfer;
 

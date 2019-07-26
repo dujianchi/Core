@@ -1,4 +1,4 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,18 +6,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.ui.BaseActivity;
 
 /**
- * 基本列表fragment
+ * 基本列表activity
  * Created by du on 2017/9/27.
  */
-public abstract class BaseListFragment extends BaseFragment implements IBaseList.UI {
+public abstract class BaseListActivity extends BaseActivity implements IBaseList.UI {
 
     private IBaseList mBaseList;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        if (mBaseList == null) mBaseList = new FragmentImpl(this);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (mBaseList == null) mBaseList = new ActivityImpl(this);
         super.onCreate(savedInstanceState);
     }
 

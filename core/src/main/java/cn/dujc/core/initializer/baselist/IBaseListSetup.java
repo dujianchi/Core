@@ -5,7 +5,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
-import cn.dujc.core.ui.IBaseList;
+import cn.dujc.core.ui.impl.IBaseList;
 
 public interface IBaseListSetup {
 

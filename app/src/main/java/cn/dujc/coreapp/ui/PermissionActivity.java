@@ -10,7 +10,7 @@ import java.util.List;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.ui.BaseListActivity;
+import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.ToastUtil;
 

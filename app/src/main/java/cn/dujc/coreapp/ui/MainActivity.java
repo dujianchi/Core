@@ -20,9 +20,9 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.toolbar.IToolbar;
-import cn.dujc.core.ui.BaseListActivity;
-import cn.dujc.core.ui.BaseWebFragment;
-import cn.dujc.core.ui.FragmentShellActivity;
+import cn.dujc.core.ui.impl.BaseListActivity;
+import cn.dujc.core.ui.impl.BaseWebFragment;
+import cn.dujc.core.ui.impl.FragmentShellActivity;
 import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.MediaUtil;
@@ -58,10 +58,15 @@ public class MainActivity extends BaseListActivity {
             , "send broadcast in thread"
             , "permission"
             , "call"
+            , "list dialog"
+            , "list popupwindow"
             //, ""
     );
 
     private final int requestCodeSdcard = 123;
+    private ListDialog mDialog0;
+    private ListWindow mDialog1;
+
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
@@ -210,6 +215,20 @@ public class MainActivity extends BaseListActivity {
                 Uri data = Uri.parse("tel:18059045652");
                 intent.setData(data);
                 startActivity(intent);
+            }
+            break;
+            case 21: {
+                if (mDialog0 == null) {
+                    mDialog0 = new ListDialog(mActivity);
+                }
+                if (!mDialog0.isShowing()) mDialog0.show();
+            }
+            break;
+            case 22: {
+                if (mDialog1 == null) {
+                    mDialog1 = new ListWindow(mActivity);
+                }
+                if (!mDialog1.isShowing()) mDialog1.showAtLocation(mRootView);
             }
             break;
             //case 00:{}break;

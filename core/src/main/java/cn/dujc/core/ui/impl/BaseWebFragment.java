@@ -1,4 +1,4 @@
-package cn.dujc.core.ui;
+package cn.dujc.core.ui.impl;
 
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import java.lang.reflect.Field;
 
 import cn.dujc.core.R;
+import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.core.util.LogUtil;
 
 /**

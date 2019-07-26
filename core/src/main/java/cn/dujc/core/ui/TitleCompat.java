@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewCompat;
@@ -67,7 +68,7 @@ public class TitleCompat {
     }
 
     private int mStatusBarHeight = 0;
-    private View mFakeStatusBarView;
+    private View mStatusBarPlaceholder;
     private Activity mActivity;
     private Map<View, Integer> mTopViews = new ArrayMap<View, Integer>();//存放padding或margin顶部的View，防止重复新增
 
@@ -112,8 +113,8 @@ public class TitleCompat {
      * @param visibility
      */
     public TitleCompat setFakeStatusBarVisibility(boolean visibility) {
-        if (mFakeStatusBarView != null) {
-            mFakeStatusBarView.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        if (mStatusBarPlaceholder != null) {
+            mStatusBarPlaceholder.setVisibility(visibility ? View.VISIBLE : View.GONE);
         }
         return this;
     }
@@ -122,14 +123,14 @@ public class TitleCompat {
      * 是否将状态栏置底(true)，否则(false)置顶
      */
     public TitleCompat setFakeStatusBarLayerBottom(boolean bottom) {
-        if (mFakeStatusBarView != null) {
-            ViewGroup parent = (ViewGroup) mFakeStatusBarView.getParent();
+        if (mStatusBarPlaceholder != null) {
+            ViewGroup parent = (ViewGroup) mStatusBarPlaceholder.getParent();
             if (parent != null) {
-                parent.removeView(mFakeStatusBarView);
+                parent.removeView(mStatusBarPlaceholder);
                 if (bottom) {
-                    parent.addView(mFakeStatusBarView, 0);
+                    parent.addView(mStatusBarPlaceholder, 0);
                 } else {
-                    parent.addView(mFakeStatusBarView);
+                    parent.addView(mStatusBarPlaceholder);
                 }
             }
         }
@@ -164,9 +165,9 @@ public class TitleCompat {
      * @param drawable
      */
     public TitleCompat setFakeStatusBarColor(Drawable drawable) {
-        if (mFakeStatusBarView != null) {
+        if (mStatusBarPlaceholder != null) {
             setFakeStatusBarVisibility(true);
-            ViewCompat.setBackground(mFakeStatusBarView, drawable);
+            ViewCompat.setBackground(mStatusBarPlaceholder, drawable);
         }
         return this;
     }
@@ -221,23 +222,31 @@ public class TitleCompat {
                 }
             }
 
-            if (mFakeStatusBarView == null) {
+            if (mStatusBarPlaceholder == null) {
                 final View statusBarPlaceholder = mActivity.findViewById(R.id.core_toolbar_status_bar_placeholder);
                 if (statusBarPlaceholder == null) {
                     ViewGroup decorViewGroup = (ViewGroup) decorView;
-                    mFakeStatusBarView = new View(mActivity);
+                    mStatusBarPlaceholder = new View(mActivity);
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mStatusBarHeight);
                     params.gravity = Gravity.TOP;
-                    mFakeStatusBarView.setLayoutParams(params);
-                    mFakeStatusBarView.setVisibility(View.GONE);
-                    decorViewGroup.addView(mFakeStatusBarView);
+                    mStatusBarPlaceholder.setLayoutParams(params);
+                    mStatusBarPlaceholder.setVisibility(View.GONE);
+                    decorViewGroup.addView(mStatusBarPlaceholder);
                 } else {
-                    mFakeStatusBarView = statusBarPlaceholder;
+                    mStatusBarPlaceholder = statusBarPlaceholder;
                 }
-                mFakeStatusBarView.setBackgroundColor(DEFAULT_TINT_COLOR);
+                mStatusBarPlaceholder.setBackgroundColor(DEFAULT_TINT_COLOR);
             }
         }
         return this;
+    }
+
+    /**
+     * 返回状态栏占位符
+     */
+    @Nullable
+    public View getStatusBarPlaceholder() {
+        return mStatusBarPlaceholder;
     }
 
     /**
