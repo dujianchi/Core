@@ -322,43 +322,4 @@ public interface IBaseList {
         }
     }
 
-    public static class FragmentImpl extends AbsImpl {
-        private BaseListFragment mFragment;
-
-        FragmentImpl(BaseListFragment fragment) {
-            super(fragment);
-            mFragment = fragment;
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mFragment.findViewById(id);
-        }
-
-        @Override
-        public Context context() {
-            return mFragment.mActivity;
-        }
-    }
-
-    public static class ActivityImpl extends AbsImpl {
-
-        private final BaseListActivity mActivity;
-
-        ActivityImpl(BaseListActivity activity) {
-            super(activity);
-            mActivity = activity;
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mActivity.findViewById(id);
-        }
-
-        @Override
-        public Context context() {
-            return mActivity;
-        }
-
-    }
 }

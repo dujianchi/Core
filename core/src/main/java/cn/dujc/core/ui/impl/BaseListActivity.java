@@ -1,9 +1,11 @@
 package cn.dujc.core.ui.impl;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.ui.BaseActivity;
@@ -13,6 +15,27 @@ import cn.dujc.core.ui.BaseActivity;
  * Created by du on 2017/9/27.
  */
 public abstract class BaseListActivity extends BaseActivity implements IBaseList.UI {
+
+    private static class ActivityImpl extends AbsImpl {
+
+        private final BaseListActivity mActivity;
+
+        ActivityImpl(BaseListActivity activity) {
+            super(activity);
+            mActivity = activity;
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return mActivity.findViewById(id);
+        }
+
+        @Override
+        public Context context() {
+            return mActivity;
+        }
+
+    }
 
     private IBaseList mBaseList;
 
