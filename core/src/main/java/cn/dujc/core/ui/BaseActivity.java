@@ -9,6 +9,8 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -181,6 +183,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             mPermissionKeeper.setOddsPermissionOperator(operator);
         }
         //}
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        clearFragmentsOnSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -389,6 +397,22 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             getSupportFragmentManager().beginTransaction().add(id, fragment, tag).commit();
         } else {
             getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        }
+    }
+
+    /**
+     * 清除fragment，用于Activity崩溃时，重启Activity后不自动添加fragment
+     */
+    protected void clearFragmentsOnSaveInstanceState(Bundle outState) {
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            for (Fragment fragment : manager.getFragments()) {
+                transaction.remove(fragment);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
