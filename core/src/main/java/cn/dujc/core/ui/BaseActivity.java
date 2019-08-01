@@ -21,9 +21,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
@@ -183,12 +186,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             mPermissionKeeper.setOddsPermissionOperator(operator);
         }
         //}
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        clearFragmentsOnSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -403,12 +400,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     /**
      * 清除fragment，用于Activity崩溃时，重启Activity后不自动添加fragment
      */
-    protected void clearFragmentsOnSaveInstanceState(Bundle outState) {
+    protected void clearFragmentsBeforeRestoreInstanceExcept(Bundle outState, Fragment... fragments) {
         try {
+            List<Fragment> list = fragments == null ? Collections.<Fragment>emptyList() : Arrays.asList(fragments);
+            if (ActivityStackUtil.getInstance().topActivity() != this) return;
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             for (Fragment fragment : manager.getFragments()) {
-                transaction.remove(fragment);
+                if (!list.contains(fragment)) transaction.remove(fragment);
             }
             transaction.commit();
         } catch (Exception e) {
