@@ -11,7 +11,7 @@ import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
-    private final SparseArray<ViewProvider<T>> mProviderArray = new SparseArray<>();
+    protected final SparseArray<ViewProvider<T>> mProviderArray = new SparseArray<>();
 
     public MultiTypeAdapter(@Nullable List<T> data) {
         super(data);
