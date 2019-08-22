@@ -196,8 +196,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     public void notifyFragmentChanged() {/*在这重写需要更新fragment的动作*/}
 
     public void setTitle(CharSequence title) {
-        if (mToolbar != null) {
-            final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_title_id);
+        View toolbar = mToolbar;
+        if (toolbar == null && mActivity instanceof BaseActivity)
+            toolbar = ((BaseActivity) mActivity).mToolbar;
+        if (toolbar != null) {
+            final View textMaybe = toolbar.findViewById(R.id.core_toolbar_title_id);
             if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
         }
     }
@@ -218,8 +221,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
      *                 ，且其所在父类的第index值大于等于position，则认为是要寻找的菜单控件
      */
     public void setTitleMenuText(CharSequence menuText, @IntRange(from = -1, to = 3) int position, @Nullable View.OnClickListener onClickListener) {
-        if (mToolbar != null) {
-            final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
+        View toolbar = mToolbar;
+        if (toolbar == null && mActivity instanceof BaseActivity)
+            toolbar = ((BaseActivity) mActivity).mToolbar;
+        if (toolbar != null) {
+            final View textMaybe = toolbar.findViewById(R.id.core_toolbar_menu_id);
             if (textMaybe instanceof TextView) {
                 textMaybe.setVisibility(View.VISIBLE);
                 ((TextView) textMaybe).setText(menuText);
