@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     //implementation 'cn.dujc.DimensCompat:a640:1.2.2'
     //implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     //LeakCanary --- start
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
