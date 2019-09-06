@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.initializer.refresh.IRefreshListener;
 import cn.dujc.core.ui.BaseFragment;
 
 /**
@@ -141,6 +142,16 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
     @Override
     public void refreshEnable(boolean enable) {
         mBaseList.refreshEnable(enable);
+    }
+
+    @Override
+    public void initRefresh(View refresh) {
+        mBaseList.initRefresh(refresh);
+    }
+
+    @Override
+    public void setOnRefreshListener(IRefreshListener onRefreshListener) {
+        mBaseList.setOnRefreshListener(onRefreshListener);
     }
 
 }
