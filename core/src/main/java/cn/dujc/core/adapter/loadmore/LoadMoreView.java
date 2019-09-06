@@ -1,7 +1,7 @@
 package cn.dujc.core.adapter.loadmore;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 import cn.dujc.core.adapter.BaseViewHolder;
 

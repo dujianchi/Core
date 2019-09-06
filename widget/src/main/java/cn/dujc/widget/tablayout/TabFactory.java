@@ -1,13 +1,13 @@
 package cn.dujc.widget.tablayout;
 
-import android.media.Image;
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import cn.dujc.widget.R;
 

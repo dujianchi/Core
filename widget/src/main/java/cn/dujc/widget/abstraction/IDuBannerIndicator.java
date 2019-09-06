@@ -1,7 +1,8 @@
 package cn.dujc.widget.abstraction;
 
-import android.support.annotation.NonNull;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 /**
  * 自定义指示器

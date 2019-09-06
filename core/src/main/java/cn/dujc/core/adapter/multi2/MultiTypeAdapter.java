@@ -1,7 +1,8 @@
 package cn.dujc.core.adapter.multi2;
 
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 

@@ -3,9 +3,10 @@ package cn.dujc.zxing.open;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 
 public class CaptureViewImpl extends AbsCaptureViewImpl {
 

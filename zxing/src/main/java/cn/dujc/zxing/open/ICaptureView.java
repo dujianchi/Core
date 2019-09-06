@@ -2,7 +2,8 @@ package cn.dujc.zxing.open;
 
 import android.app.Application;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
+
+import androidx.annotation.LayoutRes;
 
 public interface ICaptureView extends ICaptureHandler, IVew {
 

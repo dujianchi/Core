@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
 
 /**
  * 软键盘助手，可以用来设置监听软键盘的弹出和落下、在软键盘外部点击收起软键盘等功能

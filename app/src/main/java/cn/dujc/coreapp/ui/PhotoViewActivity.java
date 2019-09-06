@@ -2,9 +2,10 @@ package cn.dujc.coreapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.Collections;
 import java.util.List;

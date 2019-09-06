@@ -1,10 +1,11 @@
 package cn.dujc.core.adapter;
 
-import android.support.annotation.IdRes;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import androidx.annotation.IdRes;
 
 import java.util.ArrayList;
 import java.util.List;

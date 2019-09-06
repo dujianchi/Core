@@ -2,12 +2,13 @@ package cn.dujc.coreapp.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.core.util.RichTextBuilder;

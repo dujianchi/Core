@@ -1,7 +1,8 @@
 package cn.dujc.core.adapter.util;
 
-import android.support.annotation.LayoutRes;
 import android.util.SparseIntArray;
+
+import androidx.annotation.LayoutRes;
 
 import java.util.List;
 

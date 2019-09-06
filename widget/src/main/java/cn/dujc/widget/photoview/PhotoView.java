@@ -20,9 +20,10 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 /**
  * PhotoView来自https://github.com/chrisbanes/PhotoView，放到自己这个里面是因为新版PhotoView用了androidx而我不兼容androidx，所以复制一份过来用

@@ -2,7 +2,6 @@ package cn.dujc.core.util;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -17,6 +16,8 @@ import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * @author du

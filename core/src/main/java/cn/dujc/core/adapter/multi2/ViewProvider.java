@@ -1,6 +1,6 @@
 package cn.dujc.core.adapter.multi2;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 import cn.dujc.core.adapter.BaseViewHolder;
 

@@ -13,9 +13,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
 import android.telephony.TelephonyManager;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
 import java.io.File;
 import java.io.FileOutputStream;
