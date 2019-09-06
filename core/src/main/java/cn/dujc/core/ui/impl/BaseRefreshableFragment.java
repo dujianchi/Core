@@ -2,9 +2,12 @@ package cn.dujc.core.ui.impl;
 
 import android.view.View;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.ui.BaseFragment;
 
 /**
@@ -18,7 +21,8 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements IR
     @Override
     public View createRootView(View contentView) {
         if (mRefresh == null) {
-            mRefresh = IRefreshHandler.getRefresh(mActivity);
+            final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(mActivity);
+            mRefresh = refreshSetup == null ? null : refreshSetup.create();
             if (mRefresh != null) mRefresh.setOnRefreshListener(this);
         }
         return createRefreshRootView(super.createRootView(contentView));

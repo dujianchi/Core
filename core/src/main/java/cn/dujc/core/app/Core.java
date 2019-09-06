@@ -8,8 +8,8 @@ import cn.dujc.core.initializer.baselist.IBaseListSetup;
 import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
-import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.initializer.toolbar.IToolbarHandler;
 
@@ -29,7 +29,7 @@ public class Core {
     public static void init(Application app
             , Class<? extends IToolbar>[] iToolbar
     ) {
-        init(app, iToolbar, IBaseListSetup.DefaultImpl.class, null, IRefresh.Impl.class);
+        init(app, iToolbar, IBaseListSetup.DefaultImpl.class, null, IRefreshSetup.Impl.class);
     }
 
     /**
@@ -39,7 +39,7 @@ public class Core {
             , Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup
     ) {
-        init(app, iToolbar, iListSetup, null, IRefresh.Impl.class);
+        init(app, iToolbar, iListSetup, null, IRefreshSetup.Impl.class);
     }
 
     /**
@@ -50,7 +50,7 @@ public class Core {
             , Class<? extends IBaseListSetup> iListSetup
             , Class<? extends IPermissionSetup> iPermissionSetup
     ) {
-        init(app, iToolbar, iListSetup, iPermissionSetup, IRefresh.Impl.class);
+        init(app, iToolbar, iListSetup, iPermissionSetup, IRefreshSetup.Impl.class);
     }
 
     /**
@@ -59,7 +59,7 @@ public class Core {
     public static void init(Application app, Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup
             , Class<? extends IPermissionSetup> iPermissionSetup
-            , Class<? extends IRefresh> iRefresh
+            , Class<? extends IRefreshSetup> iRefresh
     ) {
         initActivityStack(app);
         if (iToolbar != null) {
@@ -92,8 +92,8 @@ public class Core {
         if (context != null && clazz != null) IPermissionSetupHandler.setSetupClass(context, clazz);
     }
 
-    private static void initRefresh(Context context, Class<? extends IRefresh> clazz) {
-        if (context != null && clazz != null) IRefreshHandler.setRefreshClass(context, clazz);
+    private static void initRefresh(Context context, Class<? extends IRefreshSetup> clazz) {
+        if (context != null && clazz != null) IRefreshSetupHandler.setRefreshClass(context, clazz);
     }
 
 }

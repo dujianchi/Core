@@ -2,9 +2,12 @@ package cn.dujc.core.ui.impl;
 
 import android.view.View;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.ui.BaseActivity;
 
 /**
@@ -18,7 +21,8 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements IR
     @Override
     public View createRootView(View contentView) {
         if (mRefresh == null) {
-            mRefresh = IRefreshHandler.getRefresh(mActivity);
+            final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(mActivity);
+            mRefresh = refreshSetup == null ? null : refreshSetup.create();
             if (mRefresh != null) mRefresh.setOnRefreshListener(this);
         }
         return createRefreshRootView(super.createRootView(contentView));
@@ -26,6 +30,7 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements IR
 
     private View createRefreshRootView(View rootView) {
         if (mRefresh == null) return rootView;
+        if (mRefresh == rootView) return rootView;
         SwipeRefreshLayout srlLoader = mRefresh.getSwipeRefreshLayout();
         if (srlLoader == null) {
             srlLoader = new SwipeRefreshLayout(mActivity);

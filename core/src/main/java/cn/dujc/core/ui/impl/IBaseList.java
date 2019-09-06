@@ -16,8 +16,9 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.baselist.IBaseListSetup;
 import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
 import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 
 /**
  * @author du
@@ -137,7 +138,8 @@ public interface IBaseList extends IRefresh {
         @Override
         public void initBasic(Bundle savedInstanceState) {
             if (mRefresh == null) {
-                mRefresh = IRefreshHandler.getRefresh(context());
+                final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
+                mRefresh = refreshSetup == null ? null : refreshSetup.create();
                 if (mRefresh != null) {
                     SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
                     if (refreshLayout != null) {
