@@ -3,52 +3,77 @@ package cn.dujc.core.ui.impl;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
+import cn.dujc.core.initializer.refresh.IRefresh;
+import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.ui.BaseFragment;
 
 /**
  * 可刷新的activity
  * Created by du on 2017/9/27.
  */
-public abstract class BaseRefreshableFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseRefreshableFragment extends BaseFragment implements IRefresh, IRefreshListener {
 
-    private SwipeRefreshLayout mSrlLoader;
+    private IRefresh mRefresh;
 
     @Override
-    public View createRootView(View rootView) {
-        return createRefreshRootView(super.createRootView(rootView));
+    public View createRootView(View contentView) {
+        if (mRefresh == null) {
+            final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(mActivity);
+            mRefresh = refreshSetup == null ? null : refreshSetup.create();
+            if (mRefresh != null) mRefresh.setOnRefreshListener(this);
+        }
+        return createRefreshRootView(super.createRootView(contentView));
     }
 
     private View createRefreshRootView(View rootView) {
-        if (mSrlLoader == null) {
-            mSrlLoader = new SwipeRefreshLayout(mActivity);
-            mSrlLoader.setOnRefreshListener(this);
+        if (mRefresh == null) return rootView;
+        SwipeRefreshLayout srlLoader = mRefresh.getSwipeRefreshLayout();
+        if (srlLoader == null) {
+            srlLoader = new SwipeRefreshLayout(mActivity);
+            srlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    BaseRefreshableFragment.this.onRefresh();
+                }
+            });
+            mRefresh.initRefresh(srlLoader);
         }
-        final View childAtTwo = mSrlLoader.getChildAt(1);
-        if (childAtTwo != null) mSrlLoader.removeView(childAtTwo);
-        mSrlLoader.addView(rootView);
-        return mSrlLoader;
+        final View childAtTwo = srlLoader.getChildAt(1);
+        if (childAtTwo != null) srlLoader.removeView(childAtTwo);
+        srlLoader.addView(rootView);
+        return srlLoader;
     }
 
-    protected final SwipeRefreshLayout getSwipeRefreshLayout() {
-        return mSrlLoader;
+    @Override
+    public void initRefresh(View refresh) {
+        if (mRefresh != null) mRefresh.initRefresh(refresh);
     }
 
-    protected final void refreshDone() {
-        if (mSrlLoader != null) {
-            mSrlLoader.setRefreshing(false);
-        }
+    @Override
+    public <T extends View> T getSwipeRefreshLayout() {
+        return mRefresh != null ? (T) mRefresh.getSwipeRefreshLayout() : null;
     }
 
-    protected final void showRefreshing() {
-        if (mSrlLoader != null) {
-            mSrlLoader.setRefreshing(true);
-        }
+    @Override
+    public void refreshDone() {
+        if (mRefresh != null) mRefresh.refreshDone();
     }
 
-    protected final void refreshEnable(boolean enable) {
-        if (mSrlLoader != null) {
-            mSrlLoader.setEnabled(enable);
-        }
+    @Override
+    public void showRefreshing() {
+        if (mRefresh != null) mRefresh.showRefreshing();
+    }
+
+    @Override
+    public void refreshEnable(boolean enable) {
+        if (mRefresh != null) mRefresh.refreshEnable(enable);
+    }
+
+    @Override
+    public void setOnRefreshListener(IRefreshListener onRefreshListener) {
+        if (mRefresh != null) mRefresh.setOnRefreshListener(onRefreshListener);
     }
 
 }

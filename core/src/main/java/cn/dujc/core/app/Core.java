@@ -8,6 +8,8 @@ import cn.dujc.core.initializer.baselist.IBaseListSetup;
 import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.initializer.toolbar.IToolbarHandler;
 
@@ -24,23 +26,41 @@ public class Core {
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar>... iToolbar) {
-        init(app, iToolbar, IBaseListSetup.DefaultImpl.class);
+    public static void init(Application app
+            , Class<? extends IToolbar>[] iToolbar
+    ) {
+        init(app, iToolbar, IBaseListSetup.DefaultImpl.class, null, IRefreshSetup.Impl.class);
+    }
+
+    /**
+     * 初始化框架
+     */
+    public static void init(Application app
+            , Class<? extends IToolbar>[] iToolbar
+            , Class<? extends IBaseListSetup> iListSetup
+    ) {
+        init(app, iToolbar, iListSetup, null, IRefreshSetup.Impl.class);
+    }
+
+    /**
+     * 初始化框架
+     */
+    public static void init(Application app
+            , Class<? extends IToolbar>[] iToolbar
+            , Class<? extends IBaseListSetup> iListSetup
+            , Class<? extends IPermissionSetup> iPermissionSetup
+    ) {
+        init(app, iToolbar, iListSetup, iPermissionSetup, IRefreshSetup.Impl.class);
     }
 
     /**
      * 初始化框架
      */
     public static void init(Application app, Class<? extends IToolbar>[] iToolbar
-            , Class<? extends IBaseListSetup> iListSetup) {
-        init(app, iToolbar, iListSetup, null);
-    }
-
-    /**
-     * 初始化框架
-     */
-    public static void init(Application app, Class<? extends IToolbar>[] iToolbar
-            , Class<? extends IBaseListSetup> iListSetup, Class<? extends IPermissionSetup> iPermissionSetup) {
+            , Class<? extends IBaseListSetup> iListSetup
+            , Class<? extends IPermissionSetup> iPermissionSetup
+            , Class<? extends IRefreshSetup> iRefresh
+    ) {
         initActivityStack(app);
         if (iToolbar != null) {
             initToolbarHelper(app, iToolbar);
@@ -50,6 +70,9 @@ public class Core {
         }
         if (iPermissionSetup != null) {
             initPermissionSetup(app, iPermissionSetup);
+        }
+        if (iRefresh != null) {
+            initRefresh(app, iRefresh);
         }
     }
 
@@ -68,4 +91,9 @@ public class Core {
     private static void initPermissionSetup(Context context, Class<? extends IPermissionSetup> clazz) {
         if (context != null && clazz != null) IPermissionSetupHandler.setSetupClass(context, clazz);
     }
+
+    private static void initRefresh(Context context, Class<? extends IRefreshSetup> clazz) {
+        if (context != null && clazz != null) IRefreshSetupHandler.setRefreshClass(context, clazz);
+    }
+
 }

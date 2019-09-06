@@ -13,12 +13,16 @@ import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.baselist.IBaseListSetup;
 import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
+import cn.dujc.core.initializer.refresh.IRefresh;
+import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 
 /**
  * @author du
  * date 2018/11/1 4:33 PM
  */
-public interface IBaseList {
+public interface IBaseList extends IRefresh {
 
     public static final boolean DEFAULT_END_GONE = true;
 
@@ -93,13 +97,6 @@ public interface IBaseList {
     @Nullable
     public RecyclerView getRecyclerView();
 
-    @Nullable
-    SwipeRefreshLayout getSwipeRefreshLayout();
-
-    void showRefreshing();
-
-    void refreshEnable(boolean enable);
-
     public static interface UI extends IBaseList {
 
         @Nullable
@@ -115,7 +112,7 @@ public interface IBaseList {
     public static abstract class AbsImpl implements IBaseList {
 
         private final UI mUI;
-        private SwipeRefreshLayout mRefreshLayout;
+        private IRefresh mRefresh;
         private RecyclerView mListView;
         private BaseQuickAdapter mQuickAdapter;
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
@@ -138,22 +135,28 @@ public interface IBaseList {
 
         @Override
         public void initBasic(Bundle savedInstanceState) {
-            mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
+            if (mRefresh == null) {
+                final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
+                mRefresh = refreshSetup == null ? null : refreshSetup.create();
+                if (mRefresh != null) {
+                    SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
+                    if (refreshLayout != null) {
+                        mRefresh.initRefresh(refreshLayout);
+                        //refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
+                        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                            @Override
+                            public void onRefresh() {
+                                if (mQuickAdapter != null) {
+                                    mQuickAdapter.resetLoadMore();
+                                }
+                                mUI.reload();
+                            }
+                        });
+                    }
+                }
+            }
             mListView = (RecyclerView) findViewById(R.id.core_list_view_id);
             mUI.doubleClickTitleToTop();
-
-            if (mRefreshLayout != null) {
-                //mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-                mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        if (mQuickAdapter != null) {
-                            mQuickAdapter.resetLoadMore();
-                        }
-                        mUI.reload();
-                    }
-                });
-            }
 
             mQuickAdapter = mUI.initAdapter();
             final RecyclerView.LayoutManager layoutManager = mUI.initLayoutManager();
@@ -199,12 +202,12 @@ public interface IBaseList {
         @Override
         public void coordinateRefreshAndAppbar() {
             View appbarLayout = findViewById(R.id.core_toolbar_appbar_layout);
-            if (mRefreshLayout != null && appbarLayout instanceof AppBarLayout) {
+            if (mRefresh != null && mRefresh.getSwipeRefreshLayout() != null && appbarLayout instanceof AppBarLayout) {
                 mAppbarLayout = (AppBarLayout) appbarLayout;
                 mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
                     @Override
                     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        mRefreshLayout.setEnabled(verticalOffset >= 0);
+                        mRefresh.refreshEnable(verticalOffset >= 0);
                     }
                 };
                 mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
@@ -225,9 +228,19 @@ public interface IBaseList {
         }
 
         @Override
+        public void initRefresh(View refresh) {
+            if (mRefresh != null) mRefresh.initRefresh(refresh);
+        }
+
+        @Override
+        public void setOnRefreshListener(IRefreshListener onRefreshListener) {
+            if (mRefresh != null) mRefresh.setOnRefreshListener(onRefreshListener);
+        }
+
+        @Override
         public void refreshDone() {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.setRefreshing(false);
+            if (mRefresh != null) {
+                mRefresh.refreshDone();
             }
         }
 
@@ -303,21 +316,21 @@ public interface IBaseList {
 
         @Nullable
         @Override
-        public SwipeRefreshLayout getSwipeRefreshLayout() {
-            return mRefreshLayout;
+        public <T extends View> T getSwipeRefreshLayout() {
+            return mRefresh != null ? (T) mRefresh.getSwipeRefreshLayout() : null;
         }
 
         @Override
         public void showRefreshing() {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.setRefreshing(true);
+            if (mRefresh != null) {
+                mRefresh.showRefreshing();
             }
         }
 
         @Override
         public void refreshEnable(boolean enable) {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.setEnabled(enable);
+            if (mRefresh != null) {
+                mRefresh.refreshEnable(enable);
             }
         }
     }
