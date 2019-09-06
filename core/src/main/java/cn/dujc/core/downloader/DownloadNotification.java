@@ -1,7 +1,6 @@
 package cn.dujc.core.downloader;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
@@ -33,20 +32,8 @@ public abstract class DownloadNotification implements OnDownloadListener {
         mContext = context;
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "更新通知", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setDescription("更新通知");
-            notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            mNotificationManager.createNotificationChannel(notificationChannel);
-        }
-        try {
-            mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID);
-        } catch (NoSuchMethodError e) {
-            mNotification = new NotificationCompat.Builder(mContext);
-        }
+        mNotification = new NotificationCompat.Builder(mContext);
+
         mNotificationManager.cancel(mId);
         mNotification
                 .setWhen(System.currentTimeMillis())

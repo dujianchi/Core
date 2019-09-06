@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.initializer.refresh.IRefreshListener;
 import cn.dujc.core.ui.BaseDialog;
 
 public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI {
@@ -138,6 +139,16 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
     @Override
     public void refreshEnable(boolean enable) {
         mBaseList.refreshEnable(enable);
+    }
+
+    @Override
+    public void initRefresh(View refresh) {
+        mBaseList.initRefresh(refresh);
+    }
+
+    @Override
+    public void setOnRefreshListener(IRefreshListener onRefreshListener) {
+        mBaseList.setOnRefreshListener(onRefreshListener);
     }
 
 }

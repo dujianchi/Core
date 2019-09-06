@@ -48,11 +48,6 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
         return null;
     }
 
-    @Nullable
-    public final <T extends View> T findViewById(int resId) {
-        return mRootView != null ? (T) mRootView.findViewById(resId) : null;
-    }
-
     public boolean isCancelable() {
         return mCancelable_;
     }

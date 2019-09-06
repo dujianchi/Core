@@ -79,7 +79,7 @@ public final class TabFactory<T> {
         public View getView(@NonNull ViewGroup parent) {
             if (mItemView == null) {
                 mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_default_tab, parent, false);
-                mItemTextView = mItemView.findViewById(R.id.widget_tab_text);
+                mItemTextView = (TextView) mItemView.findViewById(R.id.widget_tab_text);
             }
             return mItemView;
         }
@@ -154,8 +154,8 @@ public final class TabFactory<T> {
         public View getView(@NonNull ViewGroup parent) {
             if (mItemView == null) {
                 mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_index_tab, parent, false);
-                mItemTextView = mItemView.findViewById(R.id.widget_tab_text);
-                mItemIconView = mItemView.findViewById(R.id.widget_tab_icon);
+                mItemTextView = (TextView) mItemView.findViewById(R.id.widget_tab_text);
+                mItemIconView = (ImageView) mItemView.findViewById(R.id.widget_tab_icon);
             }
             return mItemView;
         }
