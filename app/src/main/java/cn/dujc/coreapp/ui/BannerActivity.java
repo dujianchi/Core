@@ -6,13 +6,14 @@ import android.widget.ImageView;
 
 import java.util.Arrays;
 
-import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.ui.impl.BaseRefreshableActivity;
+import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 import cn.dujc.widget.abstraction.IDuBanner;
 import cn.dujc.widget.banner.DuBanner;
 import cn.dujc.widget.banner.IrregularIndicator;
 
-public class BannerActivity extends BaseActivity {
+public class BannerActivity extends BaseRefreshableActivity {
 
     @Override
     public int getViewId() {
@@ -32,5 +33,11 @@ public class BannerActivity extends BaseActivity {
         });
         duBanner.setData(Arrays.asList(0, 0));
         duBanner.replaceIndicatorLayout(indicator);
+    }
+
+    @Override
+    public void onRefresh() {
+        ToastUtil.showToast(mActivity, "refreshing");
+        refreshDone();
     }
 }
