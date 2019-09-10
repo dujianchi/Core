@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.FrameLayout;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.ui.dialog.IDialog;
 import cn.dujc.core.ui.dialog.OnRootViewClick;
 
@@ -52,6 +53,11 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
     }
 
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(mContext, this, rootView);
+    }
+
     public boolean isCancelable() {
         return mCancelable_;
     }
@@ -71,6 +77,7 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
             Window window = getWindow();
             //window.setBackgroundDrawable(_getBackgroundDrawable(mContext));
             window.setLayout(_getWidth(), _getHeight());
+            rootViewSetup(mRootView);
             initBasic(null);
         }
     }

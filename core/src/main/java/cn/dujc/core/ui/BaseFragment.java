@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
@@ -172,6 +173,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Nullable
     public View getViewV() {
         return null;
+    }
+
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(mActivity, this, rootView);
     }
 
     /**
@@ -337,6 +343,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     private void setupBasic(@Nullable Bundle savedInstanceState) {
         if (!mLoaded.get() && mRootView != null) {
             mLoaded.set(true);
+            rootViewSetup(mRootView);
             initBasic(savedInstanceState);
         }
     }

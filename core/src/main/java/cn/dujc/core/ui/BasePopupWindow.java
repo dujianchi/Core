@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.ui.dialog.IDialog;
 import cn.dujc.core.ui.dialog.OnRootViewClick;
 
@@ -29,6 +30,11 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
     @Override
     public View getViewV() {
         return null;
+    }
+
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(mContext, this, rootView);
     }
 
     public void showAtLocation(View parent) {
@@ -68,6 +74,7 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
             setAnimationStyle(_getAnimationStyle());
             setOutsideTouchable(_getOutsideTouchable());
             setFocusable(_getFocusable());
+            rootViewSetup(mRootView);
             initBasic(null);
         }
     }
