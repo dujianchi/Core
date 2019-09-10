@@ -29,6 +29,7 @@ import java.util.List;
 import cn.dujc.core.R;
 import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.initializer.permission.IPermissionSetup;
 import cn.dujc.core.initializer.permission.IPermissionSetupHandler;
 import cn.dujc.core.initializer.toolbar.IToolbar;
@@ -75,7 +76,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
 
         if (vid != 0 || mRootView != null) {
             mRootView = vid == 0 ? mRootView : getLayoutInflater().inflate(vid, null);
-            setContentView(createRootView(mRootView));
+            View rootView = createRootView(mRootView);
+            setContentView(rootView);
+            rootViewSetup(rootView);
             mTitleCompat = initTransStatusBar();//这句一定要放在setcontent之后，initbasic之前，否则一些沉浸效果无法显现（改逻辑除外）
             initBasic(savedInstanceState);
             setupToolbar();
@@ -139,6 +142,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         if (mTitleCompat == null) mTitleCompat = TitleCompat.setStatusBar(mActivity, true);
         IToolbarHandler.statusColor(this, mActivity, mTitleCompat);
         return mTitleCompat;
+    }
+
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(this, this, rootView);
     }
 
     @Override

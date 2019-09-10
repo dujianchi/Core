@@ -68,4 +68,24 @@ public class StringUtil {
         return text;
     }
 
+    /**
+     * 将超过@param max的字符串换成省略号
+     */
+    public static CharSequence maxString(CharSequence text, int max) {
+        if (TextUtils.isEmpty(text)) return text;
+        final int length = text.length();
+        return length <= max ? text : text.subSequence(0, max);
+    }
+
+    /*public static CharSequence replaceRange(CharSequence text, int start, int end, CharSequence replacement) {
+        if (TextUtils.isEmpty(text)) return text;
+        final int length = text.length();
+        if (start > length) start = 0;
+        CharSequence head, body, tail;
+        head = start <= 0 ? "" : text.subSequence(0, start);
+        body = end <= 0 || end > length ? "" : text.subSequence(start, end);
+        tail = 0 < end && end < length ? text.subSequence(end, length) : "";
+        return new StringBuilder(head).append(body).append(tail);
+    }*/
+
 }

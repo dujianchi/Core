@@ -52,6 +52,8 @@ public interface IBaseUI {
 
     void initBasic(Bundle savedInstanceState);
 
+    void rootViewSetup(View rootView);
+
     public static interface WithToolbar extends IBaseUI {
         /**
          * 自增的request code，每个跳转都是forresult的跳转，那么今后只要记住跳转方法{@link #starter().go(Class)}返回的int值

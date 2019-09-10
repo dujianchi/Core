@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 import java.util.UUID;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.ui.dialog.IDialog;
 import cn.dujc.core.ui.dialog.OnRootViewClick;
 
@@ -95,6 +96,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
         super.onViewCreated(view, savedInstanceState);
         if (!mLoaded && mRootView != null) {
             mLoaded = true;
+            rootViewSetup(mRootView);
             initBasic(savedInstanceState);
         }
     }
@@ -118,6 +120,11 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     @Nullable
     public View getViewV() {
         return null;
+    }
+
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(mActivity, this, rootView);
     }
 
     @Nullable

@@ -19,7 +19,7 @@ public class CaptureActivityImpl extends CaptureViewImpl {
             }
 
             public <T extends View> T findViewById(int resId) {
-                return (T) activity.findViewById(resId);
+                return activity.findViewById(resId);
             }
         }, captureResult);
     }
