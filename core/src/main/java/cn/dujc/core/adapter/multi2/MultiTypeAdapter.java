@@ -30,7 +30,10 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
     @Override
     protected void convert(BaseViewHolder helper, T item) {
-        delegate().getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
+        final IMultiTypeDelegate<T> delegate = getMultiTypeDelegate();
+        if (delegate instanceof ProviderDelegate) {
+            ((ProviderDelegate<T>) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
+        }
     }
 
     public abstract ProviderDelegate<T> delegate();

@@ -52,8 +52,11 @@ public class ListActivity extends BaseListActivity {
 
     public static class Adapter extends MultiTypeAdapter<String> {
 
+        private final ViewProvider<String> mRedProvider, mGreenProvider;
         public Adapter(@Nullable List<String> data) {
             super(data);
+            mRedProvider = new RedProvider();
+            mGreenProvider = new GreenProvider();
         }
 
         @Override
@@ -61,7 +64,7 @@ public class ListActivity extends BaseListActivity {
             return new ProviderDelegate<String>() {
                 @Override
                 public ViewProvider<String> getProvider(List<String> data, int position) {
-                    return position % 2 == 0 ? new RedProvider() : new GreenProvider();
+                    return position % 2 == 0 ? mRedProvider : mGreenProvider;
                 }
             };
         }
