@@ -41,4 +41,6 @@ dependencies {
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     //LeakCanary --- end
+
+    implementation 'com.qmuiteam:qmui:1.4.0'
 }

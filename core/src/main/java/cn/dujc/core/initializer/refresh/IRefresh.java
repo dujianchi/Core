@@ -9,7 +9,7 @@ public interface IRefresh {
     /**
      * 构建刷新布局，在此处构建布局，该new的new，该findViewById的就find，然后构造完的刷新控件需要给{@link #getSwipeRefreshLayout()}用
      */
-    public void initRefresh(View refresh);
+    public <T extends View> T initRefresh(View innerView);
 
     public <T extends View> T getSwipeRefreshLayout();
 
@@ -22,12 +22,20 @@ public interface IRefresh {
     public void setOnRefreshListener(IRefreshListener onRefreshListener);
 
     public static class Impl implements IRefresh {
+
         private IRefreshListener mRefreshListener;
         private SwipeRefreshLayout mSrlLoader;
 
         @Override
-        public void initRefresh(View refresh) {
-            mSrlLoader = (SwipeRefreshLayout) refresh;
+        public <T extends View> T initRefresh(View innerView) {
+            mSrlLoader = new SwipeRefreshLayout(innerView.getContext());
+            mSrlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    if (mRefreshListener != null) mRefreshListener.onRefresh();
+                }
+            });
+            return (T) mSrlLoader;
         }
 
         @Override

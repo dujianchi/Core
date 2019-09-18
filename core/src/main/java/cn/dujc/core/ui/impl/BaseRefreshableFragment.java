@@ -1,8 +1,7 @@
 package cn.dujc.core.ui.impl;
 
 import android.view.View;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.view.ViewGroup;
 
 import cn.dujc.core.initializer.refresh.IRefresh;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
@@ -30,17 +29,7 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements IR
 
     private View createRefreshRootView(View rootView) {
         if (mRefresh == null) return rootView;
-        SwipeRefreshLayout srlLoader = mRefresh.getSwipeRefreshLayout();
-        if (srlLoader == null) {
-            srlLoader = new SwipeRefreshLayout(mActivity);
-            srlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    BaseRefreshableFragment.this.onRefresh();
-                }
-            });
-            mRefresh.initRefresh(srlLoader);
-        }
+        ViewGroup srlLoader = mRefresh.initRefresh(rootView);
         final View childAtTwo = srlLoader.getChildAt(1);
         if (childAtTwo != null) srlLoader.removeView(childAtTwo);
         srlLoader.addView(rootView);
@@ -48,8 +37,9 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements IR
     }
 
     @Override
-    public void initRefresh(View refresh) {
-        if (mRefresh != null) mRefresh.initRefresh(refresh);
+    public <T extends View> T initRefresh(View innerView) {
+        if (mRefresh != null) return mRefresh.initRefresh(innerView);
+        return (T) innerView;
     }
 
     @Override
