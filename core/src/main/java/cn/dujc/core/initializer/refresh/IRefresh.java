@@ -6,6 +6,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public interface IRefresh {
 
+    /**
+     * 构建刷新布局，在此处构建布局，该new的new，该findViewById的就find，然后构造完的刷新控件需要给{@link #getSwipeRefreshLayout()}用
+     */
     public void initRefresh(View refresh);
 
     public <T extends View> T getSwipeRefreshLayout();

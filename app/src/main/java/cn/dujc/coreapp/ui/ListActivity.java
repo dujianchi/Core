@@ -1,5 +1,7 @@
 package cn.dujc.coreapp.ui;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -59,11 +61,7 @@ public class ListActivity extends BaseListActivity {
             return new ProviderDelegate<String>() {
                 @Override
                 public ViewProvider<String> getProvider(List<String> data, int position) {
-                    ViewProvider<String> provider = mProviderArray.get(position);
-                    if (provider == null) {
-                        provider = position % 2 == 0 ? new RedProvider() : new GreenProvider();
-                    }
-                    return provider;
+                    return position % 2 == 0 ? new RedProvider() : new GreenProvider();
                 }
             };
         }
@@ -77,7 +75,7 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
+        public void convert(Context context, BaseViewHolder helper, String item) {
             helper.setText(R.id.text, item);
         }
     }
@@ -90,7 +88,7 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
+        public void convert(Context context, BaseViewHolder helper, String item) {
             helper.setText(R.id.text, item);
         }
     }

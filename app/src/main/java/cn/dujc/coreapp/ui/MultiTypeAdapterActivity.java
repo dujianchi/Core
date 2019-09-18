@@ -1,5 +1,7 @@
 package cn.dujc.coreapp.ui;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
 
 import java.util.Arrays;
@@ -66,7 +68,7 @@ public class MultiTypeAdapterActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
+        public void convert(Context context, BaseViewHolder helper, String item) {
             helper.setText(R.id.text, item);
         }
     }

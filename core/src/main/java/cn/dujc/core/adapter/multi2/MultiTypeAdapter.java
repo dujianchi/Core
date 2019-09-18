@@ -1,7 +1,5 @@
 package cn.dujc.core.adapter.multi2;
 
-import android.util.SparseArray;
-
 import androidx.annotation.Nullable;
 
 import java.util.List;
@@ -12,7 +10,7 @@ import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
-    protected final SparseArray<ViewProvider<T>> mProviderArray = new SparseArray<>();
+    //protected final SparseArray<ViewProvider<T>> mProviderArray = new SparseArray<>();
 
     public MultiTypeAdapter(@Nullable List<T> data) {
         super(data);
@@ -24,7 +22,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
         final IMultiTypeDelegate<T> delegate = getMultiTypeDelegate();
         if (delegate instanceof ProviderDelegate) {
             ViewProvider<T> provider = ((ProviderDelegate<T>) delegate).getProvider(mData, position);
-            mProviderArray.put(position, provider);
+            //mProviderArray.put(position, provider);
             return provider.layoutId();
         }
         return super.getDefItemViewType(position);
@@ -32,7 +30,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
     @Override
     protected void convert(BaseViewHolder helper, T item) {
-        mProviderArray.get(helper.getAdapterPosition()).convert(helper, item);
+        delegate().getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
     }
 
     public abstract ProviderDelegate<T> delegate();

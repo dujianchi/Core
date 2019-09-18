@@ -43,6 +43,7 @@
         <activity android:name=".ui.MultiTypeAdapterActivity" />
         <activity android:name=".ui.BroadcastActivity" />
         <activity android:name=".ui.PermissionActivity" />
+        <activity android:name=".ui.LayerLayoutActivity" />
     </application>
 
 </manifest>

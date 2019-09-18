@@ -61,6 +61,7 @@ public class MainActivity extends BaseListActivity {
             , "call"
             , "list dialog"
             , "list popupwindow"
+            , "layer layout"
             //, ""
     );
 
@@ -232,6 +233,9 @@ public class MainActivity extends BaseListActivity {
                 if (!mDialog1.isShowing()) mDialog1.showAtLocation(mRootView);
             }
             break;
+            case 23:{
+                starter().go(LayerLayoutActivity.class);
+            }break;
             //case 00:{}break;
         }
     }
