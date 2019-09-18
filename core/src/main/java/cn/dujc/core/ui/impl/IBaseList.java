@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -30,7 +29,7 @@ public interface IBaseList extends IRefresh {
 
     int getViewId();
 
-    void initBasic(Bundle savedInstanceState);
+    void initBasic(Bundle savedInstanceState, View rootView);
 
     void onDestroy_();
 
@@ -136,25 +135,12 @@ public interface IBaseList extends IRefresh {
         }
 
         @Override
-        public void initBasic(Bundle savedInstanceState) {
+        public void initBasic(Bundle savedInstanceState, View rootView) {
             if (mRefresh == null) {
                 final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
-                mRefresh = refreshSetup == null ? null : refreshSetup.create();
+                mRefresh = refreshSetup == null ? null : refreshSetup.createList();
                 if (mRefresh != null) {
-                    SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
-                    if (refreshLayout != null) {
-                        mRefresh.initRefresh(refreshLayout);
-                        //refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-                        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                            @Override
-                            public void onRefresh() {
-                                if (mQuickAdapter != null) {
-                                    mQuickAdapter.resetLoadMore();
-                                }
-                                mUI.reload();
-                            }
-                        });
-                    }
+                    mRefresh.initRefresh(rootView);
                 }
             }
             mListView = (RecyclerView) findViewById(R.id.core_list_view_id);
@@ -230,8 +216,9 @@ public interface IBaseList extends IRefresh {
         }
 
         @Override
-        public void initRefresh(View refresh) {
-            if (mRefresh != null) mRefresh.initRefresh(refresh);
+        public <T extends View> T initRefresh(View innerView) {
+            if (mRefresh != null) return mRefresh.initRefresh(innerView);
+            return null;
         }
 
         @Override

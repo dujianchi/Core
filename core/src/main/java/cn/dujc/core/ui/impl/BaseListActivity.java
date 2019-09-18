@@ -54,7 +54,7 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mBaseList.initBasic(savedInstanceState);
+        mBaseList.initBasic(savedInstanceState, mRootView);
     }
 
     @Override
@@ -148,8 +148,8 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
     }
 
     @Override
-    public void initRefresh(View refresh) {
-        mBaseList.initRefresh(refresh);
+    public <T extends View> T initRefresh(View innerView) {
+        return mBaseList.initRefresh(innerView);
     }
 
     @Override

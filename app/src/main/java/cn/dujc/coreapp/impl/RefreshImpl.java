@@ -15,10 +15,15 @@ public class RefreshImpl implements IRefreshSetup {
         return new IRefreshImpl();
     }
 
+    @Override
+    public IRefresh createList() {
+        return null;
+    }
+
     public static class IRefreshImpl implements IRefresh {
 
-        private IRefreshListener mRefreshListener;
-        private QMUIPullRefreshLayout mRefreshLayout;
+        IRefreshListener mRefreshListener;
+        QMUIPullRefreshLayout mRefreshLayout;
 
         @Override
         public <T extends View> T initRefresh(View innerView) {
@@ -62,6 +67,14 @@ public class RefreshImpl implements IRefreshSetup {
         @Override
         public void setOnRefreshListener(IRefreshListener onRefreshListener) {
             mRefreshListener = onRefreshListener;
+        }
+    }
+
+    public static class IRefreshListImpl extends IRefreshImpl{
+        @Override
+        public <T extends View> T initRefresh(View innerView) {
+            mRefreshLayout =
+            return (T) mRefreshLayout;
         }
     }
 }
