@@ -21,7 +21,7 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements IR
     public View createRootView(View contentView) {
         if (mRefresh == null) {
             final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(mActivity);
-            mRefresh = refreshSetup == null ? null : refreshSetup.create();
+            mRefresh = refreshSetup == null ? new Impl() : refreshSetup.create();
             if (mRefresh != null) mRefresh.setOnRefreshListener(this);
         }
         return createRefreshRootView(super.createRootView(contentView));

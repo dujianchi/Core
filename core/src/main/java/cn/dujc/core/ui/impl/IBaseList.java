@@ -148,7 +148,7 @@ public interface IBaseList extends IBaseUI, IRefresh {
         public void initBasic(Bundle savedInstanceState) {
             if (mRefresh == null) {
                 final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
-                mRefresh = refreshSetup == null ? null : refreshSetup.createList();
+                mRefresh = refreshSetup == null ? new ListImpl() : refreshSetup.createList();
                 if (mRefresh != null) {
                     mRefresh.initRefresh(getRootView());
                     mRefresh.setOnRefreshListener(new IRefreshListener() {
