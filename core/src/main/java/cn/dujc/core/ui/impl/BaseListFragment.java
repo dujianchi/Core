@@ -6,7 +6,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
@@ -19,7 +18,9 @@ import cn.dujc.core.ui.BaseFragment;
 public abstract class BaseListFragment extends BaseFragment implements IBaseList.UI {
 
     private static class FragmentImpl extends AbsImpl {
+
         private BaseListFragment mFragment;
+        View mRootView;
 
         FragmentImpl(BaseListFragment fragment) {
             super(fragment);
@@ -34,6 +35,11 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
         @Override
         public Context context() {
             return mFragment.mActivity;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
         }
     }
 
@@ -52,7 +58,8 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mBaseList.initBasic(savedInstanceState, mRootView);
+        if (mBaseList instanceof FragmentImpl) ((FragmentImpl) mBaseList).mRootView = mRootView;
+        mBaseList.initBasic(savedInstanceState);
     }
 
     @Override
@@ -131,7 +138,7 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    public <T extends View> T getSwipeRefreshLayout() {
         return mBaseList.getSwipeRefreshLayout();
     }
 

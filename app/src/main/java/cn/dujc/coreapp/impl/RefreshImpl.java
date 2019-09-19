@@ -7,6 +7,7 @@ import com.qmuiteam.qmui.widget.pullRefreshLayout.QMUIPullRefreshLayout;
 import cn.dujc.core.initializer.refresh.IRefresh;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
 import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.coreapp.R;
 
 public class RefreshImpl implements IRefreshSetup {
 
@@ -17,7 +18,7 @@ public class RefreshImpl implements IRefreshSetup {
 
     @Override
     public IRefresh createList() {
-        return null;
+        return new IRefreshListImpl();
     }
 
     public static class IRefreshImpl implements IRefresh {
@@ -30,10 +31,12 @@ public class RefreshImpl implements IRefreshSetup {
             mRefreshLayout = new QMUIPullRefreshLayout(innerView.getContext());
             mRefreshLayout.setOnPullListener(new QMUIPullRefreshLayout.OnPullListener() {
                 @Override
-                public void onMoveTarget(int offset) { }
+                public void onMoveTarget(int offset) {
+                }
 
                 @Override
-                public void onMoveRefreshView(int offset) { }
+                public void onMoveRefreshView(int offset) {
+                }
 
                 @Override
                 public void onRefresh() {
@@ -70,11 +73,26 @@ public class RefreshImpl implements IRefreshSetup {
         }
     }
 
-    public static class IRefreshListImpl extends IRefreshImpl{
+    public static class IRefreshListImpl extends IRefreshImpl {
         @Override
         public <T extends View> T initRefresh(View innerView) {
-            mRefreshLayout =
+            mRefreshLayout = innerView.findViewById(R.id.core_list_refresh_id);
+            mRefreshLayout.setOnPullListener(new QMUIPullRefreshLayout.OnPullListener() {
+                @Override
+                public void onMoveTarget(int offset) {
+                }
+
+                @Override
+                public void onMoveRefreshView(int offset) {
+                }
+
+                @Override
+                public void onRefresh() {
+                    if (mRefreshListener != null) mRefreshListener.onRefresh();
+                }
+            });
             return (T) mRefreshLayout;
         }
     }
+
 }

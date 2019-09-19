@@ -6,7 +6,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
@@ -21,6 +20,7 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
     private static class ActivityImpl extends AbsImpl {
 
         private final BaseListActivity mActivity;
+        View mRootView;
 
         ActivityImpl(BaseListActivity activity) {
             super(activity);
@@ -37,6 +37,10 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
             return mActivity;
         }
 
+        @Override
+        public View getRootView() {
+            return mRootView;
+        }
     }
 
     private IBaseList mBaseList;
@@ -54,7 +58,8 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mBaseList.initBasic(savedInstanceState, mRootView);
+        if (mBaseList instanceof ActivityImpl) ((ActivityImpl) mBaseList).mRootView = mRootView;
+        mBaseList.initBasic(savedInstanceState);
     }
 
     @Override
@@ -133,7 +138,7 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    public <T extends View> T getSwipeRefreshLayout() {
         return mBaseList.getSwipeRefreshLayout();
     }
 

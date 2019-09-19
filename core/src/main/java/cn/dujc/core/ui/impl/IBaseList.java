@@ -18,18 +18,15 @@ import cn.dujc.core.initializer.refresh.IRefresh;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
 import cn.dujc.core.initializer.refresh.IRefreshSetup;
 import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
+import cn.dujc.core.ui.IBaseUI;
 
 /**
  * @author du
  * date 2018/11/1 4:33 PM
  */
-public interface IBaseList extends IRefresh {
+public interface IBaseList extends IBaseUI, IRefresh {
 
     public static final boolean DEFAULT_END_GONE = true;
-
-    int getViewId();
-
-    void initBasic(Bundle savedInstanceState, View rootView);
 
     void onDestroy_();
 
@@ -47,11 +44,6 @@ public interface IBaseList extends IRefresh {
      * 加载失败（部分刷新）
      */
     void loadFailure();
-
-    /**
-     * 刷新结束
-     */
-    void refreshDone();
 
     /**
      * 加载结束
@@ -98,6 +90,14 @@ public interface IBaseList extends IRefresh {
     @Nullable
     public RecyclerView getRecyclerView();
 
+    @Override
+    @Deprecated
+    View getViewV();
+
+    @Override
+    @Deprecated
+    void rootViewSetup(View rootView);
+
     public static interface UI extends IBaseList {
 
         @Nullable
@@ -135,12 +135,31 @@ public interface IBaseList extends IRefresh {
         }
 
         @Override
-        public void initBasic(Bundle savedInstanceState, View rootView) {
+        @Deprecated
+        public View getViewV() {
+            return null;
+        }
+
+        @Override
+        @Deprecated
+        public void rootViewSetup(View rootView) { }
+
+        @Override
+        public void initBasic(Bundle savedInstanceState) {
             if (mRefresh == null) {
                 final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
                 mRefresh = refreshSetup == null ? null : refreshSetup.createList();
                 if (mRefresh != null) {
-                    mRefresh.initRefresh(rootView);
+                    mRefresh.initRefresh(getRootView());
+                    mRefresh.setOnRefreshListener(new IRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            if (mQuickAdapter != null) {
+                                mQuickAdapter.resetLoadMore();
+                            }
+                            mUI.reload();
+                        }
+                    });
                 }
             }
             mListView = (RecyclerView) findViewById(R.id.core_list_view_id);

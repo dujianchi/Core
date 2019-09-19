@@ -54,6 +54,8 @@ public interface IBaseUI {
 
     void rootViewSetup(View rootView);
 
+    View getRootView();
+
     public static interface WithToolbar extends IBaseUI {
         /**
          * 自增的request code，每个跳转都是forresult的跳转，那么今后只要记住跳转方法{@link #starter().go(Class)}返回的int值

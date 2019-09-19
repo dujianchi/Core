@@ -4,6 +4,8 @@ import android.view.View;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import cn.dujc.core.R;
+
 public interface IRefresh {
 
     /**
@@ -13,6 +15,9 @@ public interface IRefresh {
 
     public <T extends View> T getSwipeRefreshLayout();
 
+    /**
+     * 刷新结束
+     */
     public void refreshDone();
 
     public void showRefreshing();
@@ -23,8 +28,8 @@ public interface IRefresh {
 
     public static class Impl implements IRefresh {
 
-        private IRefreshListener mRefreshListener;
-        private SwipeRefreshLayout mSrlLoader;
+        IRefreshListener mRefreshListener;
+        SwipeRefreshLayout mSrlLoader;
 
         @Override
         public <T extends View> T initRefresh(View innerView) {
@@ -67,6 +72,20 @@ public interface IRefresh {
         @Override
         public void setOnRefreshListener(IRefreshListener onRefreshListener) {
             mRefreshListener = onRefreshListener;
+        }
+    }
+
+    public static class ListImpl extends Impl {
+        @Override
+        public <T extends View> T initRefresh(View innerView) {
+            mSrlLoader = innerView.findViewById(R.id.core_list_refresh_id);
+            mSrlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    if (mRefreshListener != null) mRefreshListener.onRefresh();
+                }
+            });
+            return (T) mSrlLoader;
         }
     }
 }

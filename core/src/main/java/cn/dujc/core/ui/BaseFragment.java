@@ -181,6 +181,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         IRootViewSetupHandler.setup(mActivity, this, rootView);
     }
 
+    @Override
+    public View getRootView() {
+        return mRootView;
+    }
+
     /**
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */

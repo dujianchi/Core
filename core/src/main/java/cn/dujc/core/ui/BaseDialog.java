@@ -59,6 +59,11 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
         IRootViewSetupHandler.setup(mContext, this, rootView);
     }
 
+    @Override
+    public View getRootView() {
+        return mRootView;
+    }
+
     public boolean isCancelable() {
         return mCancelable_;
     }

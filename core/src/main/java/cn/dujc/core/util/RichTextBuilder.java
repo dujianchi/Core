@@ -37,10 +37,10 @@ public class RichTextBuilder {
     public static class TextClickableSpan extends ClickableSpan {
 
         private final CharSequence mText;
-        private final int mColor;
+        private final Integer mColor;
         private final OnClickListener mOnClickListener;
 
-        public TextClickableSpan(CharSequence text, int color, OnClickListener onClickListener) {
+        public TextClickableSpan(CharSequence text, Integer color, OnClickListener onClickListener) {
             mText = text;
             mColor = color;
             mOnClickListener = onClickListener;
@@ -53,8 +53,8 @@ public class RichTextBuilder {
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            //super.updateDrawState(ds);
-            if (mColor != 0) ds.setColor(mColor);
+            if (mColor != null) ds.setColor(mColor);
+            else super.updateDrawState(ds);
         }
     }
 

@@ -14,6 +14,7 @@ import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.core.util.StringUtil;
+import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
 public class ListActivity extends BaseListActivity {
@@ -48,6 +49,7 @@ public class ListActivity extends BaseListActivity {
             mList.add(StringUtil.format("index %d", index + size));
         }
         notifyDataSetChanged(mList.size() >= 150);
+        ToastUtil.showToast(mActivity, "refreshed");
     }
 
     public static class Adapter extends MultiTypeAdapter<String> {

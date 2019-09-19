@@ -38,6 +38,11 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         IRootViewSetupHandler.setup(mContext, this, rootView);
     }
 
+    @Override
+    public View getRootView() {
+        return mRootView;
+    }
+
     public void showAtLocation(View parent) {
         showAtLocation(parent, Gravity.CENTER);
     }

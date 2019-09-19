@@ -14,7 +14,7 @@ public interface IRefreshSetup {
 
         @Override
         public IRefresh createList() {
-            return null;
+            return new IRefresh.ListImpl();
         }
     }
 }

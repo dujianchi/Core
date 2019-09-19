@@ -6,7 +6,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
@@ -17,6 +16,7 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
 
     private static class ListImpl extends AbsImpl {
         private final BaseListPopupWindow mUi;
+        View mRootView;
 
         public ListImpl(BaseListPopupWindow ui) {
             super(ui);
@@ -31,6 +31,11 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
         @Override
         public Context context() {
             return mUi.mContext;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
         }
     }
 
@@ -48,7 +53,8 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mBaseList.initBasic(savedInstanceState, mRootView);
+        if (mBaseList instanceof ListImpl) ((ListImpl) mBaseList).mRootView = mRootView;
+        mBaseList.initBasic(savedInstanceState);
     }
 
     @Override
@@ -127,7 +133,7 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    public <T extends View> T getSwipeRefreshLayout() {
         return mBaseList.getSwipeRefreshLayout();
     }
 

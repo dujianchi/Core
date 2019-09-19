@@ -150,6 +150,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     }
 
     @Override
+    public View getRootView() {
+        return mRootView;
+    }
+
+    @Override
     public TitleCompat getTitleCompat() {
         return mTitleCompat;
     }
