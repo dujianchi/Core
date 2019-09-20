@@ -970,13 +970,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return getOnItemLongClickListener().onItemLongClick(BaseQuickAdapter.this, v, position);
     }
 
-    private IMultiTypeDelegate<T> mMultiTypeDelegate;
+    private IMultiTypeDelegate mMultiTypeDelegate;
 
-    public void setMultiTypeDelegate(IMultiTypeDelegate<T> multiTypeDelegate) {
+    public void setMultiTypeDelegate(IMultiTypeDelegate multiTypeDelegate) {
         mMultiTypeDelegate = multiTypeDelegate;
     }
 
-    public IMultiTypeDelegate<T> getMultiTypeDelegate() {
+    public IMultiTypeDelegate getMultiTypeDelegate() {
         return mMultiTypeDelegate;
     }
 

@@ -54,7 +54,7 @@ public class ListActivity extends BaseListActivity {
 
     public static class Adapter extends MultiTypeAdapter<String> {
 
-        private final ViewProvider<String> mRedProvider, mGreenProvider;
+        private final ViewProvider mRedProvider, mGreenProvider;
         public Adapter(@Nullable List<String> data) {
             super(data);
             mRedProvider = new RedProvider();
@@ -62,17 +62,17 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public ProviderDelegate<String> delegate() {
-            return new ProviderDelegate<String>() {
+        public ProviderDelegate delegate() {
+            return new ProviderDelegate() {
                 @Override
-                public ViewProvider<String> getProvider(List<String> data, int position) {
+                public ViewProvider getProvider(List<?> data, int position) {
                     return position % 2 == 0 ? mRedProvider : mGreenProvider;
                 }
             };
         }
     }
 
-    public static class RedProvider implements ViewProvider<String> {
+    public static class RedProvider implements ViewProvider {
 
         @Override
         public int layoutId() {
@@ -80,12 +80,12 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(Context context, BaseViewHolder helper, String item) {
-            helper.setText(R.id.text, item);
+        public void convert(Context context, BaseViewHolder helper, Object item) {
+            helper.setText(R.id.text, StringUtil.concat(item));
         }
     }
 
-    public static class GreenProvider implements ViewProvider<String> {
+    public static class GreenProvider implements ViewProvider {
 
         @Override
         public int layoutId() {
@@ -93,8 +93,8 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(Context context, BaseViewHolder helper, String item) {
-            helper.setText(R.id.text, item);
+        public void convert(Context context, BaseViewHolder helper, Object item) {
+            helper.setText(R.id.text, StringUtil.concat(item));
         }
     }
 

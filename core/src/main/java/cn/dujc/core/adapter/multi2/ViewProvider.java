@@ -6,9 +6,9 @@ import androidx.annotation.LayoutRes;
 
 import cn.dujc.core.adapter.BaseViewHolder;
 
-public interface ViewProvider<T> {
+public interface ViewProvider {
     @LayoutRes
     public int layoutId();
 
-    public void convert(Context context, BaseViewHolder helper, T item);
+    public void convert(Context context, BaseViewHolder helper, Object item);
 }

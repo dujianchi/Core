@@ -11,11 +11,11 @@ import cn.dujc.core.adapter.BaseViewHolder;
 /**
  * 以id作为type的delegate
  */
-public abstract class TypeAsIdDelegate<T> implements IMultiTypeDelegate<T> {
+public abstract class TypeAsIdDelegate<T> implements IMultiTypeDelegate {
 
     @Override
-    public final int getDefItemViewType(List<T> data, int position) {
-        T item = data.get(position);
+    public final int getDefItemViewType(List<?> data, int position) {
+        Object item = data.get(position);
         return item != null ? getItemLayoutId(item) : R.layout.core_adapter_just_in_case;
     }
 
@@ -28,7 +28,7 @@ public abstract class TypeAsIdDelegate<T> implements IMultiTypeDelegate<T> {
      * 获取当前item对应的layoutId
      */
     @LayoutRes
-    protected abstract int getItemLayoutId(T data);
+    protected abstract int getItemLayoutId(Object data);
 
     public final void setup(BaseQuickAdapter<T, ? extends BaseViewHolder> adapter) {
         if (adapter != null) adapter.setMultiTypeDelegate(this);

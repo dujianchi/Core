@@ -10,7 +10,7 @@ import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
-    //protected final SparseArray<ViewProvider<T>> mProviderArray = new SparseArray<>();
+    //protected final SparseArray<ViewProvider> mProviderArray = new SparseArray<>();
 
     public MultiTypeAdapter(@Nullable List<T> data) {
         super(data);
@@ -19,9 +19,9 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
     @Override
     protected int getDefItemViewType(int position) {
-        final IMultiTypeDelegate<T> delegate = getMultiTypeDelegate();
+        final IMultiTypeDelegate delegate = getMultiTypeDelegate();
         if (delegate instanceof ProviderDelegate) {
-            ViewProvider<T> provider = ((ProviderDelegate<T>) delegate).getProvider(mData, position);
+            ViewProvider provider = ((ProviderDelegate) delegate).getProvider(mData, position);
             //mProviderArray.put(position, provider);
             return provider.layoutId();
         }
@@ -30,11 +30,11 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
     @Override
     protected void convert(BaseViewHolder helper, T item) {
-        final IMultiTypeDelegate<T> delegate = getMultiTypeDelegate();
+        final IMultiTypeDelegate delegate = getMultiTypeDelegate();
         if (delegate instanceof ProviderDelegate) {
-            ((ProviderDelegate<T>) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
+            ((ProviderDelegate) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
         }
     }
 
-    public abstract ProviderDelegate<T> delegate();
+    public abstract ProviderDelegate delegate();
 }

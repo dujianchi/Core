@@ -42,6 +42,14 @@ public class StringUtil {
     }
 
     /**
+     * toString，为null时当作""返回
+     */
+    public static String toString(Object object) {
+        if (object == null) return "";
+        return String.valueOf(object);
+    }
+
+    /**
      * 安全的格式化输出，如果参数对不上不会崩溃，而是输出format的内容
      */
     public static String format(String format, Object... args) {
@@ -69,10 +77,10 @@ public class StringUtil {
     }
 
     /**
-     * 将超过@param max的字符串换成省略号
+     * 将超过@param max的字符串裁掉，max小于1无效
      */
     public static CharSequence maxString(CharSequence text, int max) {
-        if (TextUtils.isEmpty(text)) return text;
+        if (TextUtils.isEmpty(text) || max < 1) return text;
         final int length = text.length();
         return length <= max ? text : text.subSequence(0, max);
     }
