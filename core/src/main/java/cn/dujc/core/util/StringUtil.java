@@ -3,12 +3,15 @@ package cn.dujc.core.util;
 import android.text.TextUtils;
 
 import java.util.IllegalFormatException;
+import java.util.Random;
 
 /**
  * 字符串相关工具
  * Created by du on 2017/10/16.
  */
 public class StringUtil {
+
+    private static Random sRandom = null;
 
     /**
      * 字符串拼接
@@ -85,6 +88,26 @@ public class StringUtil {
         return length <= max ? text : text.subSequence(0, max);
     }
 
+    /**
+     * 随机生成字符串
+     * @param length 生成长度
+     */
+    public static CharSequence random(int length) {
+        if (length <= 0) return "";
+        StringBuilder result = new StringBuilder();
+        Random random = getRandom();
+        for (int index = 0; index < length; index++) {
+            boolean isNumber = random.nextBoolean();
+            if (isNumber) {
+                result.append(random.nextInt(10));
+            } else {
+                char c = (char) (random.nextInt(26) + (random.nextBoolean() ? 65 : 97));
+                result.append(c);
+            }
+        }
+        return result;
+    }
+
     /*public static CharSequence replaceRange(CharSequence text, int start, int end, CharSequence replacement) {
         if (TextUtils.isEmpty(text)) return text;
         final int length = text.length();
@@ -96,4 +119,14 @@ public class StringUtil {
         return new StringBuilder(head).append(body).append(tail);
     }*/
 
+    private static Random getRandom() {
+        if (sRandom == null) {
+            synchronized (StringUtil.class) {
+                if (sRandom == null) {
+                    sRandom = new Random();
+                }
+            }
+        }
+        return sRandom;
+    }
 }
