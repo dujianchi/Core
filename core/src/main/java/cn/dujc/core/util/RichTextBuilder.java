@@ -17,7 +17,14 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
 import android.view.View;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author du
@@ -47,12 +54,12 @@ public class RichTextBuilder {
         }
 
         @Override
-        public void onClick(View widget) {
+        public void onClick(@NonNull View widget) {
             if (mOnClickListener != null) mOnClickListener.onClick(widget, mText);
         }
 
         @Override
-        public void updateDrawState(TextPaint ds) {
+        public void updateDrawState(@NonNull TextPaint ds) {
             if (mColor != null) ds.setColor(mColor);
             else super.updateDrawState(ds);
         }
@@ -129,7 +136,7 @@ public class RichTextBuilder {
             return mBuilder.addTextPart(mText);
         }
 
-        public RichTextBuilder create(Context context, int colorId) {
+        public RichTextBuilder create(Context context, @ColorRes int colorId) {
             return mBuilder.addTextPart(context, colorId, mText);
         }
 
@@ -147,7 +154,7 @@ public class RichTextBuilder {
             return mBuilder.addTextPart(mText, characterStyle);
         }
 
-        public RichTextBuilder create(Context context, int colorId, OnClickListener listener) {
+        public RichTextBuilder create(Context context, @ColorRes int colorId, OnClickListener listener) {
             return mBuilder.addTextPart(mText, context, colorId, listener);
         }
 
@@ -181,6 +188,106 @@ public class RichTextBuilder {
          */
         public RichTextBuilder createScaleX(float scaleX) {
             return mBuilder.addTextPartScaleX(mText, scaleX);
+        }
+
+    }
+
+    /**
+     * 批量属性
+     */
+    public static class Styles {
+        private final RichTextBuilder mBuilder;
+        private final List<Object> mStyles;
+
+        private Styles(RichTextBuilder builder) {
+            mBuilder = builder;
+            mStyles = new ArrayList<>();
+        }
+
+        /**
+         * 添加颜色
+         */
+        public Styles addStyle(Context context, @ColorRes int colorId) {
+            return addStyle(ContextCompat.getColor(context, colorId));
+        }
+
+        /**
+         * 添加颜色
+         */
+        public Styles addStyle(int color) {
+            mStyles.add(new ForegroundColorSpan(color));
+            return this;
+        }
+
+        /**
+         * 添加一个带文本样式的文字，比如删除线{@link android.text.style.StrikethroughSpan}
+         * 、下划线{@link android.text.style.UnderlineSpan}
+         * 、下标{@link android.text.style.SubscriptSpan}
+         * 、上标{@link android.text.style.SuperscriptSpan}
+         */
+        public Styles addStyle(CharacterStyle characterStyle) {
+            mStyles.add(characterStyle);
+            return this;
+        }
+
+        /**
+         * 添加字体大小
+         */
+        public Styles addStylePx(Context context, @DimenRes int sizeId) {
+            if (context != null)
+                mStyles.add(new AbsoluteSizeSpan(context.getResources().getDimensionPixelOffset(sizeId)));
+            return this;
+        }
+
+        /**
+         * 添加字体大小
+         */
+        public Styles addStylePx(int sizeInPx) {
+            mStyles.add(new AbsoluteSizeSpan(sizeInPx));
+            return this;
+        }
+
+        /**
+         * 添加字体大小
+         */
+        public Styles addStyleDp(int sizeInDp) {
+            mStyles.add(new AbsoluteSizeSpan(sizeInDp, true));
+            return this;
+        }
+
+        /**
+         * 添加字体大小比例
+         */
+        public Styles addStyleScale(float scale) {
+            mStyles.add(new RelativeSizeSpan(scale));
+            return this;
+        }
+
+        /**
+         * 添加字体水平比例
+         */
+        public Styles addStyleScaleX(float scaleX) {
+            mStyles.add(new ScaleXSpan(scaleX));
+            return this;
+        }
+
+        /**
+         * 添加内容
+         */
+        public RichTextBuilder fillContent(Object... texts) {
+            StringBuilder text = new StringBuilder();
+            if (texts != null && texts.length > 0) {
+                for (Object obj : texts) {
+                    if (obj != null) text.append(obj);
+                }
+                final int spanSize = mStyles.size();
+                if (spanSize > 0 && text.length() > 0) {
+                    Object[] spans = new Object[spanSize];
+                    mStyles.toArray(spans);
+                    mBuilder.addPart(text, spans);
+                }
+            }
+            return mBuilder;
         }
 
     }
@@ -237,7 +344,7 @@ public class RichTextBuilder {
     /**
      * 添加一个带颜色的char字符
      */
-    public RichTextBuilder addTextPart(Context context, int colorId, char text) {
+    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, char text) {
         return addTextPart(context, colorId, String.valueOf(text));
     }
 
@@ -251,7 +358,7 @@ public class RichTextBuilder {
     /**
      * 添加一个带颜色的文字
      */
-    public RichTextBuilder addTextPart(Context context, int colorId, CharSequence text) {
+    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, CharSequence text) {
         if (context == null || colorId == 0) return addTextPart(text);
         return addPart(text, new ForegroundColorSpan(ContextCompat.getColor(context, colorId)));
     }
@@ -276,7 +383,7 @@ public class RichTextBuilder {
     /**
      * 添加一个带颜色和点击事件的文字
      */
-    public RichTextBuilder addTextPart(CharSequence text, Context context, int colorId, OnClickListener listener) {
+    public RichTextBuilder addTextPart(CharSequence text, Context context, @ColorRes int colorId, OnClickListener listener) {
         return addPart(text, new TextClickableSpan(text, ContextCompat.getColor(context, colorId), listener));
     }
 
@@ -318,7 +425,7 @@ public class RichTextBuilder {
     /**
      * 添加一个图片
      */
-    public RichTextBuilder addImage(Context context, int drawableId) {
+    public RichTextBuilder addImage(Context context, @DrawableRes int drawableId) {
         if (drawableId == 0) return this;
         return addImage(ContextCompat.getDrawable(context, drawableId));
     }
@@ -382,4 +489,7 @@ public class RichTextBuilder {
         return new Texts(this);
     }
 
+    public Styles styles() {
+        return new Styles(this);
+    }
 }
