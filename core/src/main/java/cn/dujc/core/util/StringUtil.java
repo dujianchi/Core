@@ -90,15 +90,24 @@ public class StringUtil {
 
     /**
      * 随机生成字符串
+     *
      * @param length 生成长度
      */
     public static CharSequence random(int length) {
+        return random(length, false);
+    }
+
+    /**
+     * 随机生成字符串
+     *
+     * @param length 生成长度
+     */
+    public static CharSequence random(int length, boolean allNumber) {
         if (length <= 0) return "";
         StringBuilder result = new StringBuilder();
         Random random = getRandom();
         for (int index = 0; index < length; index++) {
-            boolean isNumber = random.nextBoolean();
-            if (isNumber) {
+            if (allNumber || random.nextBoolean()) {
                 result.append(random.nextInt(10));
             } else {
                 char c = (char) (random.nextInt(26) + (random.nextBoolean() ? 65 : 97));
