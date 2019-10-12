@@ -43,4 +43,5 @@ dependencies {
     //LeakCanary --- end
 
     implementation 'com.qmuiteam:qmui:1.4.0'
+    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 }

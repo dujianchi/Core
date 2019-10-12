@@ -44,6 +44,9 @@
         <activity android:name=".ui.BroadcastActivity" />
         <activity android:name=".ui.PermissionActivity" />
         <activity android:name=".ui.LayerLayoutActivity" />
+        <activity android:name=".ui.ItemDeleteListActivity" />
+        <activity android:name=".ui.CountDownTimerActivity" />
+        <activity android:name=".ui.WheelPickerActivity" />
     </application>
 
 </manifest>

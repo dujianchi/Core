@@ -62,6 +62,9 @@ public class MainActivity extends BaseListActivity {
             , "list dialog"
             , "list popupwindow"
             , "layer layout"
+            , "item delete"
+            , "CountDownTimer"
+            , "wheel picker"
             //, ""
     );
 
@@ -235,6 +238,15 @@ public class MainActivity extends BaseListActivity {
             break;
             case 23:{
                 starter().go(LayerLayoutActivity.class);
+            }break;
+            case 24:{
+                starter().go(ItemDeleteListActivity.class);
+            }break;
+            case 25:{
+                starter().go(CountDownTimerActivity.class);
+            }break;
+            case 26:{
+                starter().go(WheelPickerActivity.class);
             }break;
             //case 00:{}break;
         }
