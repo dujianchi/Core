@@ -2,8 +2,10 @@ package cn.dujc.core.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,9 +59,24 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return super.isShowing();
     }
 
+    @Override
+    public void showAsDropDown(View anchor, int xOff, int yOff, int gravity) {
+        showAsDropDownFix24(anchor);
+        super.showAsDropDown(anchor, xOff, yOff, gravity);
+    }
+
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    public void showAsDropDownFix24(View anchor) {
+        if (Build.VERSION.SDK_INT == 24) {
+            Rect rect = new Rect();
+            anchor.getGlobalVisibleRect(rect);
+            int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
+            setHeight(h);
+        }
     }
 
     public void _onCreateView() {
