@@ -49,7 +49,7 @@ public class MainActivity extends BaseListActivity {
             , "banner"
             , "go fragment"
             , "check group"
-            , "show fragment"
+            , "------- other test --------"
             , "zxing activity"
             , "zxing fragment"
             , "show popupWindow"
@@ -180,7 +180,23 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 11: {
-                //showFragment();
+                System.out.println(StringUtil.replaceRange("12345678901", 1, 2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, 2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, 5, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, -2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -9, 5, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -9, -2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -2, -9, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 0, 0, "*"));
+                System.out.println(StringUtil.replaceRange(null, 0, 3, "*"));
+                System.out.println(StringUtil.replaceRange("123", 3, 4, "*"));
+                System.out.println(StringUtil.replaceRange("123", 5, 4, "*"));
+                System.out.println(StringUtil.repeat("33.", 3));
+                System.out.println(StringUtil.repeat("33.", 4));
+                System.out.println(StringUtil.repeat("33.", 5));
+                System.out.println(StringUtil.repeat("33.", 6));
+                System.out.println(StringUtil.repeat("33.", 7));
+                System.out.println(StringUtil.concatWithSeparate("-", 7, 8, 9, "a"));
             }
             break;
             case 12: {
@@ -236,18 +252,22 @@ public class MainActivity extends BaseListActivity {
                 if (!mDialog1.isShowing()) mDialog1.showAtLocation(mRootView);
             }
             break;
-            case 23:{
+            case 23: {
                 starter().go(LayerLayoutActivity.class);
-            }break;
-            case 24:{
+            }
+            break;
+            case 24: {
                 starter().go(ItemDeleteListActivity.class);
-            }break;
-            case 25:{
+            }
+            break;
+            case 25: {
                 starter().go(CountDownTimerActivity.class);
-            }break;
-            case 26:{
+            }
+            break;
+            case 26: {
                 starter().go(WheelPickerActivity.class);
-            }break;
+            }
+            break;
             //case 00:{}break;
         }
     }

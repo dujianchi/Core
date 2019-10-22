@@ -34,10 +34,10 @@ public class StringUtil {
         if (objects != null) {
             for (Object obj : objects) {
                 if (obj != null) {
-                    stringBuilder.append(obj);
-                    if (separate != null) {
+                    if (separate != null && stringBuilder.length() > 0) {
                         stringBuilder.append(separate);
                     }
+                    stringBuilder.append(obj);
                 }
             }
         }
@@ -117,16 +117,73 @@ public class StringUtil {
         return result;
     }
 
-    /*public static CharSequence replaceRange(CharSequence text, int start, int end, CharSequence replacement) {
+    /**
+     * 重复字符串到一定长度
+     *
+     * @param text   字符串
+     * @param length 长度
+     */
+    public static CharSequence repeat(CharSequence text, int length) {
+        if (TextUtils.isEmpty(text)) return text;
+        StringBuilder result = new StringBuilder();
+        int resLength = 0;
+        while (resLength < length) {
+            if (length - resLength >= text.length()) {
+                result.append(text);
+                resLength = result.length();
+            } else {
+                result.append(text.subSequence(0, length - resLength));
+                resLength = length;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 替代范围内的字符串
+     *
+     * @param text        被替代
+     * @param start       起始位置，负数则从后往前属
+     * @param end         结束位置，负数则从后往前属
+     * @param replacement 替换
+     */
+    public static CharSequence replaceRange(CharSequence text, int start, int end, CharSequence replacement) {
+        return replaceRange(text, start, end, replacement, true);
+    }
+
+    /**
+     * 替代范围内的字符串
+     *
+     * @param text              被替代
+     * @param start             起始位置，负数则从后往前属
+     * @param end               结束位置，负数则从后往前属
+     * @param replacement       替换
+     * @param repeatReplacement 是否重复到与原字符串相等长度
+     */
+    public static CharSequence replaceRange(CharSequence text, int start, int end, CharSequence replacement, boolean repeatReplacement) {
         if (TextUtils.isEmpty(text)) return text;
         final int length = text.length();
-        if (start > length) start = 0;
+        if (start > length) {
+            start = 0;
+        } else if (start < 0) {
+            start = length + start;
+        }
+        if (end > length) {
+            end = length;
+        } else if (end < 0) {
+            end = length + end;
+        }
+        if (end < start) {
+            return text;
+        } else if (start < 0 || end < 0 || start >= end) {
+            return text;
+        }
         CharSequence head, body, tail;
-        head = start <= 0 ? "" : text.subSequence(0, start);
-        body = end <= 0 || end > length ? "" : text.subSequence(start, end);
-        tail = 0 < end && end < length ? text.subSequence(end, length) : "";
+        head = text.subSequence(0, start);
+        body = replacement == null ? "" : repeatReplacement ? repeat(replacement, end - start) : replacement;//text.subSequence(start, end);
+        tail = text.subSequence(end, length);
         return new StringBuilder(head).append(body).append(tail);
-    }*/
+    }
 
     private static Random getRandom() {
         if (sRandom == null) {
