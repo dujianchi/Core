@@ -899,7 +899,7 @@ public class WheelPicker extends View implements IWheelPicker, Runnable {
 
     @Override
     public void setSelectedItemPosition(int position) {
-        setSelectedItemPosition(position);
+        setSelectedItemPosition(position, false);
     }
 
     public void setSelectedItemPosition(int position, final boolean animated) {
