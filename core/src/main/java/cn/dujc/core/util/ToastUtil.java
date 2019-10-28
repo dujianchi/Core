@@ -2,7 +2,6 @@ package cn.dujc.core.util;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -18,7 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import cn.dujc.core.bridge.ActivityStackUtil;
+import cn.dujc.core.ui.base.ToastXHandlerActivity;
 
 /**
  * 在目前的实现方式中实现自定义view的toast会有问题，以后再来改（2018年11月7日）
@@ -82,13 +81,9 @@ public class ToastUtil {
                 toast.show();
             }
         } else {
-            Context ctx = context;
-            if (context instanceof Application) {
-                ctx = ActivityStackUtil.getInstance().topActivity();
-            }
-            if (ctx != null) {
+            if (context != null) {
                 try {
-                    ToastX.makeText(ctx, text, duration).show();
+                    ToastXHandlerActivity.start(context, text);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

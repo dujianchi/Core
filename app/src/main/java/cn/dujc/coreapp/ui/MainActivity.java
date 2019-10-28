@@ -108,6 +108,7 @@ public class MainActivity extends BaseListActivity {
         switch (position) {
             case 0: {
                 ToastUtil.showToast(mActivity, "toast");
+                //ToastXHandlerActivity.start(mActivity, "toast");
             }
             break;
             case 1: {
