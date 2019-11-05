@@ -185,6 +185,34 @@ public class StringUtil {
         return new StringBuilder(head).append(body).append(tail);
     }
 
+    /**
+     * 裁切字符串
+     *
+     * @param text  被替代
+     * @param start 起始位置，负数则从后往前属
+     * @param end   结束位置，负数则从后往前属
+     */
+    public static CharSequence subString(CharSequence text, int start, int end) {
+        if (TextUtils.isEmpty(text)) return text;
+        final int length = text.length();
+        if (start > length) {
+            start = 0;
+        } else if (start < 0) {
+            start = length + start;
+        }
+        if (end > length) {
+            end = length;
+        } else if (end < 0) {
+            end = length + end;
+        }
+        if (end < start) {
+            return text;
+        } else if (start < 0 || end < 0 || start >= end) {
+            return text;
+        }
+        return text.subSequence(start, end);
+    }
+
     private static Random getRandom() {
         if (sRandom == null) {
             synchronized (StringUtil.class) {

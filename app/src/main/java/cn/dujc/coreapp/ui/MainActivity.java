@@ -181,7 +181,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 11: {
-                System.out.println(StringUtil.replaceRange("12345678901", 1, 2, "*"));
+                /*System.out.println(StringUtil.replaceRange("12345678901", 1, 2, "*"));
                 System.out.println(StringUtil.replaceRange("12345678901", 2, 2, "*"));
                 System.out.println(StringUtil.replaceRange("12345678901", 2, 5, "*"));
                 System.out.println(StringUtil.replaceRange("12345678901", 2, -2, "*"));
@@ -197,7 +197,20 @@ public class MainActivity extends BaseListActivity {
                 System.out.println(StringUtil.repeat("33.", 5));
                 System.out.println(StringUtil.repeat("33.", 6));
                 System.out.println(StringUtil.repeat("33.", 7));
-                System.out.println(StringUtil.concatWithSeparate("-", 7, 8, 9, "a"));
+                System.out.println(StringUtil.concatWithSeparate("-", 7, 8, 9, "a"));*/
+
+                System.out.println(StringUtil.subString("12345678901", 1, 2));
+                System.out.println(StringUtil.subString("12345678901", 2, 2));
+                System.out.println(StringUtil.subString("12345678901", 2, 5));
+                System.out.println(StringUtil.subString("12345678901", 2, -2));
+                System.out.println(StringUtil.subString("12345678901", -9, 5));
+                System.out.println(StringUtil.subString("12345678901", -9, -2));
+                System.out.println(StringUtil.subString("12345678901", -2, -9));
+                System.out.println(StringUtil.subString("12345678901", 0, 0));
+                System.out.println(StringUtil.subString(null, 0, 3));
+                System.out.println(StringUtil.subString("12345678901", 3, 4));
+                System.out.println(StringUtil.subString("123", 3, 4));
+                System.out.println(StringUtil.subString("123", 5, 4));
             }
             break;
             case 12: {
