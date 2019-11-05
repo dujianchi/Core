@@ -192,7 +192,7 @@ public class StringUtil {
      * @param start 起始位置，负数则从后往前属
      * @param end   结束位置，负数则从后往前属
      */
-    public static CharSequence subString(CharSequence text, int start, int end) {
+    public static CharSequence subSequence(CharSequence text, int start, int end) {
         if (TextUtils.isEmpty(text)) return text;
         final int length = text.length();
         if (start > length) {
