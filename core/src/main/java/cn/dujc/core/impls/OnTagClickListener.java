@@ -2,10 +2,13 @@ package cn.dujc.core.impls;
 
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 /**
  * 携带tag的点击事件
  */
 public abstract class OnTagClickListener implements View.OnClickListener {
+
     protected Object mTag;
 
     public OnTagClickListener() {
@@ -15,8 +18,18 @@ public abstract class OnTagClickListener implements View.OnClickListener {
         mTag = tag;
     }
 
-    public Object getTag() {
-        return mTag;
+    /**
+     * 数据本善为null 或者 类型对不上返回null
+     */
+    @Nullable
+    public <T> T getTag() {
+        T t = null;
+        try {
+            t = (T) mTag;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+        return t;
     }
 
     public OnTagClickListener setTag(Object tag) {
