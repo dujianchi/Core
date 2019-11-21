@@ -6,12 +6,11 @@ import java.util.List;
 
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
-import cn.dujc.core.adapter.BaseViewHolder;
 
 /**
  * 以id作为type的delegate
  */
-public abstract class TypeAsIdDelegate<T> implements IMultiTypeDelegate {
+public abstract class TypeAsIdDelegate implements IMultiTypeDelegate {
 
     @Override
     public final int getDefItemViewType(List<?> data, int position) {
@@ -30,7 +29,7 @@ public abstract class TypeAsIdDelegate<T> implements IMultiTypeDelegate {
     @LayoutRes
     protected abstract int getItemLayoutId(Object data);
 
-    public final void setup(BaseQuickAdapter<T, ? extends BaseViewHolder> adapter) {
+    public final void setup(BaseQuickAdapter adapter) {
         if (adapter != null) adapter.setMultiTypeDelegate(this);
     }
 }
