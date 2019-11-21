@@ -199,18 +199,18 @@ public class MainActivity extends BaseListActivity {
                 System.out.println(StringUtil.repeat("33.", 7));
                 System.out.println(StringUtil.concatWithSeparate("-", 7, 8, 9, "a"));*/
 
-                System.out.println(StringUtil.subString("12345678901", 1, 2));
-                System.out.println(StringUtil.subString("12345678901", 2, 2));
-                System.out.println(StringUtil.subString("12345678901", 2, 5));
-                System.out.println(StringUtil.subString("12345678901", 2, -2));
-                System.out.println(StringUtil.subString("12345678901", -9, 5));
-                System.out.println(StringUtil.subString("12345678901", -9, -2));
-                System.out.println(StringUtil.subString("12345678901", -2, -9));
-                System.out.println(StringUtil.subString("12345678901", 0, 0));
-                System.out.println(StringUtil.subString(null, 0, 3));
-                System.out.println(StringUtil.subString("12345678901", 3, 4));
-                System.out.println(StringUtil.subString("123", 3, 4));
-                System.out.println(StringUtil.subString("123", 5, 4));
+                System.out.println(StringUtil.subSequence("12345678901", 1, 2));
+                System.out.println(StringUtil.subSequence("12345678901", 2, 2));
+                System.out.println(StringUtil.subSequence("12345678901", 2, 5));
+                System.out.println(StringUtil.subSequence("12345678901", 2, -2));
+                System.out.println(StringUtil.subSequence("12345678901", -9, 5));
+                System.out.println(StringUtil.subSequence("12345678901", -9, -2));
+                System.out.println(StringUtil.subSequence("12345678901", -2, -9));
+                System.out.println(StringUtil.subSequence("12345678901", 0, 0));
+                System.out.println(StringUtil.subSequence(null, 0, 3));
+                System.out.println(StringUtil.subSequence("12345678901", 3, 4));
+                System.out.println(StringUtil.subSequence("123", 3, 4));
+                System.out.println(StringUtil.subSequence("123", 5, 4));
             }
             break;
             case 12: {
