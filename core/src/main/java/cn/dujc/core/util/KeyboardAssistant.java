@@ -138,8 +138,9 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
      *
      * @param onKeyboardOutTouchListener 内部方法返回true即消耗事件，不再触发默认隐藏键盘隐藏方法
      */
-    public void setOnKeyboardOutTouchListener(OnKeyboardOutTouchListener onKeyboardOutTouchListener) {
+    public KeyboardAssistant setOnKeyboardOutTouchListener(OnKeyboardOutTouchListener onKeyboardOutTouchListener) {
         mOnKeyboardOutTouchListener = onKeyboardOutTouchListener;
+        return this;
     }
 
     /**
