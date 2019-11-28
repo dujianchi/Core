@@ -262,7 +262,7 @@ public class BitmapUtil {
         Bitmap bitmap = Bitmap.createBitmap(width, height
                 , Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT
                         ? Bitmap.Config.ARGB_8888
-                        : Bitmap.Config.ARGB_4444);//4.4以上只有8888可以选，565的只有4.4以下可用，444没有透明度，8没有颜色
+                        : Bitmap.Config.ARGB_4444);//只有8888可以选了，4444的只有4.4以下可用，565没有透明度，8没有颜色
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
         return bitmap;
