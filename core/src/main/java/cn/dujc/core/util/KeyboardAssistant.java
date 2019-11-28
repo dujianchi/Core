@@ -25,6 +25,10 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
         public void onKeyboardShowingGoHiding();//由显示到隐藏
     }
 
+    public static interface OnKeyboardOutTouchListener {
+        public boolean handleOutTouchKeyboard();
+    }
+
     public static class OnKeyboardShowingChangeListenerImpl
             implements OnKeyboardShowingChangeListener {//用class而不用interface的原因是因为我可以不用非得实现3个方法，而是想要哪个实现哪个
 
@@ -61,6 +65,7 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
     private final Activity mActivity;
     private final int mHeightPixels;
     private final OnKeyboardShowingChangeListener mOnKeyboardShowingChangeListener;
+    private OnKeyboardOutTouchListener mOnKeyboardOutTouchListener;
     private boolean mShowing = false;//键盘是否显示中
     private boolean mTouchable = false;//Activity外部是否能点击
     private View mRootView;
@@ -71,9 +76,14 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
     }
 
     public KeyboardAssistant(@NonNull Activity activity, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
+        this(activity, false, onKeyboardShowingChangeListener);
+    }
+
+    public KeyboardAssistant(@NonNull Activity activity, boolean fix5497, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
         mActivity = activity;
         mOnKeyboardShowingChangeListener = onKeyboardShowingChangeListener;
         mHeightPixels = mActivity.getResources().getDisplayMetrics().heightPixels;
+        if (fix5497) SoftHideKeyBoardUtil.assistActivity(activity);
     }
 
     /**
@@ -116,10 +126,20 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
                 final int distance = mHeightPixels / mDistanceDividend;//触发距离为屏幕的十分之一
                 //当点中的区域距离文本框的距离大于屏幕高度的十分之一，认定点中了文本框外部的空白区域
                 if (y > t + distance || y < b - distance) {//仅考虑Y轴上的距离，因为X轴上的距离可能会有一些诸如发送一类的按钮，就省得再去判断了
-                    KeyboardAssistant.hideSystemInput(mActivity);
+                    if (mOnKeyboardOutTouchListener == null || !mOnKeyboardOutTouchListener.handleOutTouchKeyboard())
+                        KeyboardAssistant.hideSystemInput(mActivity);
                 }
             }
         }
+    }
+
+    /**
+     * 设置点中键盘外部的事件，需要到{@link #setOutsideTouchable(boolean)}启用
+     *
+     * @param onKeyboardOutTouchListener 内部方法返回true即消耗事件，不再触发默认隐藏键盘隐藏方法
+     */
+    public void setOnKeyboardOutTouchListener(OnKeyboardOutTouchListener onKeyboardOutTouchListener) {
+        mOnKeyboardOutTouchListener = onKeyboardOutTouchListener;
     }
 
     /**
