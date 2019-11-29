@@ -36,6 +36,7 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
                 .addTextPartScale("2 scale", 2)
                 .addTextPart('\n')
                 .addPart("2 scale red ", new RelativeSizeSpan(2), new ForegroundColorSpan(Color.RED))
+                .ifNotNone("aaa").append("aaa").create()
                 .build());
         textView.setGravity(Gravity.CENTER);
         //textView.setOnClickListener(this);

@@ -69,8 +69,8 @@ public class RichTextBuilder {
      * 批量添加
      */
     public static class Texts {
-        private final RichTextBuilder mBuilder;
-        private final StringBuilder mText;
+        final RichTextBuilder mBuilder;
+        final StringBuilder mText;
 
         private Texts(RichTextBuilder builder) {
             mText = new StringBuilder();
@@ -190,6 +190,93 @@ public class RichTextBuilder {
             return mBuilder.addTextPartScaleX(mText, scaleX);
         }
 
+    }
+
+    /**
+     * 某x个变量不为空的时候的操作
+     */
+    public static class NotEmptyTexts extends Texts {
+
+        private final CharSequence[] mTexts;
+
+        private NotEmptyTexts(RichTextBuilder builder, CharSequence... texts) {
+            super(builder);
+            mTexts = texts;
+        }
+
+        private boolean isEmpty() {
+            if (mTexts == null || mTexts.length == 0) return true;
+            for (CharSequence text : mTexts) {
+                if (TextUtils.isEmpty(text)) return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Texts append(boolean b) {
+            if (isEmpty()) return this;
+            return super.append(b);
+        }
+
+        @Override
+        public Texts append(char c) {
+            if (isEmpty()) return this;
+            return super.append(c);
+        }
+
+        @Override
+        public Texts append(int i) {
+            if (isEmpty()) return this;
+            return super.append(i);
+        }
+
+        @Override
+        public Texts append(long l) {
+            if (isEmpty()) return this;
+            return super.append(l);
+        }
+
+        @Override
+        public Texts append(float f) {
+            if (isEmpty()) return this;
+            return super.append(f);
+        }
+
+        @Override
+        public Texts append(double d) {
+            if (isEmpty()) return this;
+            return super.append(d);
+        }
+
+        @Override
+        public Texts append(Object o) {
+            if (isEmpty()) return this;
+            return super.append(o);
+        }
+
+        @Override
+        public Texts append(String str) {
+            if (isEmpty()) return this;
+            return super.append(str);
+        }
+
+        @Override
+        public Texts append(StringBuffer sb) {
+            if (isEmpty()) return this;
+            return super.append(sb);
+        }
+
+        @Override
+        public Texts append(char[] chars) {
+            if (isEmpty()) return this;
+            return super.append(chars);
+        }
+
+        @Override
+        public Texts append(CharSequence csq) {
+            if (isEmpty()) return this;
+            return super.append(csq);
+        }
     }
 
     /**
@@ -489,6 +576,13 @@ public class RichTextBuilder {
         return new Texts(this);
     }
 
+    public NotEmptyTexts ifNotNone(CharSequence... texts) {
+        return new NotEmptyTexts(this, texts);
+    }
+
+    /**
+     * 对多个对象配置多种样式
+     */
     public Styles styles() {
         return new Styles(this);
     }
