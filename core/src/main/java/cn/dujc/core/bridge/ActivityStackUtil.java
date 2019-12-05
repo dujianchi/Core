@@ -157,6 +157,7 @@ public class ActivityStackUtil {
 
     /**
      * 清除管理栈
+     *
      * @deprecated 如果脑袋不清楚，最好不要调用此方法
      */
     @Deprecated
@@ -246,6 +247,20 @@ public class ActivityStackUtil {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * 是否包含某个类
+     *
+     * @param clazz 某个类
+     * @return 是否包含某个类
+     */
+    public synchronized final boolean contains(Class<? extends Activity> clazz) {
+        if (clazz == null) return false;
+        for (Activity activity : mActivities) {
+            if (activity != null && activity.getClass().equals(clazz)) return true;
+        }
+        return false;
     }
 
     /**
