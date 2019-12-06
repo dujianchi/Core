@@ -16,6 +16,7 @@ import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
@@ -530,6 +531,7 @@ public class RichTextBuilder {
      *
      * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
      *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
      */
     public RichTextBuilder addImage(Drawable drawable, int verticalAlignment) {
         if (drawable == null) return this;
@@ -538,9 +540,45 @@ public class RichTextBuilder {
 
     /**
      * 添加一个图片
+     */
+    public RichTextBuilder addImage(Drawable drawable, TextView textView) {
+        if (drawable == null) return this;
+        return addImage(drawable, textView, DynamicDrawableSpan.ALIGN_BASELINE);
+    }
+
+    /**
+     * 添加一个图片
+     */
+    public RichTextBuilder addImage(Drawable drawable, int width, int height) {
+        return addImage(drawable, width, height, DynamicDrawableSpan.ALIGN_BASELINE);
+    }
+
+    /**
+     * 添加一个图片
+     *
+     * @param textView          以此TextView字体大小为准
+     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
+     */
+    public RichTextBuilder addImage(Drawable drawable, TextView textView, int verticalAlignment) {
+        if (drawable == null) return this;
+        int width, height;
+        if (textView == null) {
+            width = drawable.getIntrinsicWidth();
+            height = drawable.getIntrinsicHeight();
+        } else {
+            width = height = (int) (textView.getTextSize() + 0.999F);
+        }
+        return addImage(drawable, width, height, verticalAlignment);
+    }
+
+    /**
+     * 添加一个图片
      *
      * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
      *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
      */
     public RichTextBuilder addImage(Drawable drawable, int width, int height, int verticalAlignment) {
         if (drawable == null) return this;
