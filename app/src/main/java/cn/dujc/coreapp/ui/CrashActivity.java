@@ -26,6 +26,7 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
     public View getViewV() {
         TextView textView = new TextView(mActivity);
         textView.setText(new RichTextBuilder()
+                .addTextWithDefault("12", "123")
                 .addTextPart(mActivity, R.color.colorAccent, '2')
                 .addTextPart("asdfasdf")
                 .addTextPart('\n')

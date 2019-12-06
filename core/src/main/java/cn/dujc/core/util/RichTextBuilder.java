@@ -444,6 +444,13 @@ public class RichTextBuilder {
     }
 
     /**
+     * 添加一个带默认值的变量，在值为null时使用默认值
+     */
+    public RichTextBuilder addTextWithDefault(Object text, Object _default) {
+        return addTextPart(text == null ? _default == null ? "" : String.valueOf(_default) : String.valueOf(text));
+    }
+
+    /**
      * 添加一个带颜色的文字
      */
     public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, CharSequence text) {
