@@ -14,11 +14,11 @@ import cn.dujc.core.ui.IBaseUI;
  */
 public abstract class BaseAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder> {
 
-    public BaseAdapter(int layoutResId, @Nullable List<T> data) {
+    public BaseAdapter(int layoutResId, @Nullable List<? extends T> data) {
         super(layoutResId, data);
     }
 
-    public BaseAdapter(@Nullable List<T> data) {
+    public BaseAdapter(@Nullable List<? extends T> data) {
         super(data);
     }
 

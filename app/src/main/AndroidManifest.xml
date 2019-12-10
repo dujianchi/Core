@@ -47,6 +47,7 @@
         <activity android:name=".ui.ItemDeleteListActivity" />
         <activity android:name=".ui.CountDownTimerActivity" />
         <activity android:name=".ui.WheelPickerActivity" />
+        <activity android:name=".ui.ListViewActivity" />
     </application>
 
 </manifest>

@@ -20,8 +20,8 @@ public abstract class BaseAdapterL<T> extends BaseAdapter {
 
     public BaseAdapterL() {}
 
-    public BaseAdapterL(List<T> mList) {
-        this.mList = mList;
+    public BaseAdapterL(List<? extends T> mList) {
+        this.mList = (List<T>) mList;
     }
 
     @Override

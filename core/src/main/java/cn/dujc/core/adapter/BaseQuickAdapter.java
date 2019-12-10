@@ -462,14 +462,14 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      * @param layoutResId The layout resource id of each item.
      * @param data        A new list is created out of this one to avoid mutable list
      */
-    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<T> data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
+    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<? extends T> data) {
+        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
         if (layoutResId != 0) {
             this.mLayoutResId = layoutResId;
         }
     }
 
-    public BaseQuickAdapter(@Nullable List<T> data) {
+    public BaseQuickAdapter(@Nullable List<? extends T> data) {
         this(0, data);
     }
 
@@ -482,8 +482,8 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      *
      * @param data
      */
-    public void setNewData(@Nullable List<T> data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
+    public void setNewData(@Nullable List<? extends T> data) {
+        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
         resetLoadMore();
         mLastPosition = -1;
         notifyDataSetChanged();

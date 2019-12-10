@@ -65,6 +65,7 @@ public class MainActivity extends BaseListActivity {
             , "item delete"
             , "CountDownTimer"
             , "wheel picker"
+            , "listview"
             //, ""
     );
 
@@ -95,9 +96,9 @@ public class MainActivity extends BaseListActivity {
     @Nullable
     @Override
     public BaseQuickAdapter initAdapter() {
-        return new BaseAdapter<String>(android.R.layout.simple_list_item_1, mList) {
+        return new BaseAdapter<CharSequence>(android.R.layout.simple_list_item_1, mList) {
             @Override
-            protected void convert(BaseViewHolder helper, String item) {
+            protected void convert(BaseViewHolder helper, CharSequence item) {
                 helper.setText(android.R.id.text1, item);
             }
         };
@@ -282,6 +283,9 @@ public class MainActivity extends BaseListActivity {
                 starter().go(WheelPickerActivity.class);
             }
             break;
+            case 27:{
+                starter().go(ListViewActivity.class);
+            }break;
             //case 00:{}break;
         }
     }
