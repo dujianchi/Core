@@ -66,6 +66,7 @@ public class MainActivity extends BaseListActivity {
             , "CountDownTimer"
             , "wheel picker"
             , "listview"
+            , "grid test"
             //, ""
     );
 
@@ -285,6 +286,9 @@ public class MainActivity extends BaseListActivity {
             break;
             case 27:{
                 starter().go(ListViewActivity.class);
+            }break;
+            case 28:{
+                starter().go(GridViewTestActivity.class);
             }break;
             //case 00:{}break;
         }

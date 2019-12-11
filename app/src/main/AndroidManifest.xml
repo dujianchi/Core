@@ -48,6 +48,7 @@
         <activity android:name=".ui.CountDownTimerActivity" />
         <activity android:name=".ui.WheelPickerActivity" />
         <activity android:name=".ui.ListViewActivity" />
+        <activity android:name=".ui.GridViewTestActivity" />
     </application>
 
 </manifest>
