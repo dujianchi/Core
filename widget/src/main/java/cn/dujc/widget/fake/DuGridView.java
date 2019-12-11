@@ -199,6 +199,9 @@ public class DuGridView extends RelativeLayout {
                 RelativeLayout.LayoutParams params = (LayoutParams) child.getLayoutParams();
                 if (params == null) {
                     params = new LayoutParams(childWidth, childHeight);
+                } else {
+                    params.width = childWidth;
+                    params.height = childHeight;
                 }
                 if (index % mGridColumn == 0) {
                     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, TRUE);
