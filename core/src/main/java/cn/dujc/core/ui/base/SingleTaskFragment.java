@@ -4,18 +4,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.ui.BaseFragment;
 
 /**
- * 自带倒计时的Activity，通常用来做启动页
+ * 自带倒计时的Fragment，通常用来做启动页
  */
-public abstract class SingleTaskActivity extends BaseActivity {
+public abstract class SingleTaskFragment extends BaseFragment {
 
     private static Handler sHandler = new Handler(Looper.getMainLooper());
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!isFinishing() || !cancelTaskWhenFinish()) onTaskExecute();
+            if (getUserVisibleHint() || !cancelTaskWhenFinish()) onTaskExecute();
             cancelTask();
         }
     };
@@ -26,20 +26,20 @@ public abstract class SingleTaskActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (cancelTaskWhenPause()) cancelTask();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         cancelTask();
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (cancelTaskWhenFinish()) cancelTask();
     }
 
