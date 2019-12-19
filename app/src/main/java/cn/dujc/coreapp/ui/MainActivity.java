@@ -34,6 +34,7 @@ import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
 import cn.dujc.coreapp.ui.window.Popup;
+import cn.dujc.widget.resizeable.ResizeableTextImpl;
 import cn.dujc.zxing.impl.ZxingActivity;
 
 public class MainActivity extends BaseListActivity {
@@ -119,6 +120,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 2: {
+                ResizeableTextImpl.setGlobalScale(mActivity, 3.0F);
                 starter().go(ListActivity.class);
             }
             break;
@@ -284,12 +286,14 @@ public class MainActivity extends BaseListActivity {
                 starter().go(WheelPickerActivity.class);
             }
             break;
-            case 27:{
+            case 27: {
                 starter().go(ListViewActivity.class);
-            }break;
-            case 28:{
+            }
+            break;
+            case 28: {
                 starter().go(GridViewTestActivity.class);
-            }break;
+            }
+            break;
             //case 00:{}break;
         }
     }

@@ -16,6 +16,7 @@ import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.core.util.StringUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
+import cn.dujc.widget.resizeable.ResizeableTextView;
 
 public class ListActivity extends BaseListActivity {
 
@@ -81,7 +82,9 @@ public class ListActivity extends BaseListActivity {
 
         @Override
         public void convert(Context context, BaseViewHolder helper, Object item) {
-            helper.setText(R.id.text, StringUtil.concat(item));
+            ResizeableTextView textView = helper.getView(R.id.text);
+            //textView.updateScale(2F);
+            textView.setText(StringUtil.concat(item));
         }
     }
 
@@ -94,7 +97,9 @@ public class ListActivity extends BaseListActivity {
 
         @Override
         public void convert(Context context, BaseViewHolder helper, Object item) {
-            helper.setText(R.id.text, StringUtil.concat(item));
+            ResizeableTextView textView = helper.getView(R.id.text);
+            //textView.updateScale(4F);
+            textView.setText(StringUtil.concat(item));
         }
     }
 
