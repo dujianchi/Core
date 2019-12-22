@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import java.math.BigDecimal;
 
+import cn.dujc.core.app.Core;
+
 /**
  * @author du
  * date 2018/7/29 下午9:26
@@ -28,7 +30,7 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).intValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -47,7 +49,7 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).longValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -68,7 +70,7 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -86,7 +88,7 @@ public class Numbers {
             final BigDecimal multiplierB = numberFromString(multiplier, null);
             return multiplicandB.multiply(multiplierB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -104,7 +106,7 @@ public class Numbers {
             final BigDecimal subtrahendB = numberFromString(subtrahend, null);
             return minuendB.subtract(subtrahendB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -122,7 +124,7 @@ public class Numbers {
             final BigDecimal addendB = numberFromString(addend, null);
             return augendB.add(addendB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -140,7 +142,7 @@ public class Numbers {
             final BigDecimal divisorB = numberFromString(divisor, 1.0);
             return dividendB.divide(divisorB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -164,9 +166,9 @@ public class Numbers {
             if (number.contains(" ")) number = number.replace(" ", "");
             result = new BigDecimal(number);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return result;
     }

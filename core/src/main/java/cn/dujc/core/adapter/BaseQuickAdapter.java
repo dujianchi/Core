@@ -58,6 +58,7 @@ import cn.dujc.core.adapter.entity.IExpandable;
 import cn.dujc.core.adapter.loadmore.LoadMoreView;
 import cn.dujc.core.adapter.loadmore.SimpleLoadMoreView;
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
+import cn.dujc.core.app.Core;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -71,7 +72,8 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     /**
      * activity销毁时可以调用一下这个方法，然后可以在adapter内处理一些需要回收的事情
      */
-    public void onRecycled() {}
+    public void onRecycled() {
+    }
 
     //load more
     private boolean mNextLoadEnable = false;
@@ -1039,13 +1041,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
                 return (K) constructor.newInstance(view);
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }

@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import cn.dujc.core.app.Core;
+
 public class BitmapUtil {
 
     public static byte[] toBytes(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
@@ -87,7 +89,7 @@ public class BitmapUtil {
             try {
                 out.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             return shrinkImage(result, sizeInKb, true);//中间产生的过渡图片都可以回收
         }
@@ -121,9 +123,9 @@ public class BitmapUtil {
             outputStream.flush();
             outputStream.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         if (recycle && bitmap != null)//此处不能回收bitmap，否则后面会不能用
             bitmap.recycle();
@@ -158,7 +160,7 @@ public class BitmapUtil {
             is = new FileInputStream(file);
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -188,7 +190,7 @@ public class BitmapUtil {
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
             is.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         newOpts = null;
         return bitmap;
@@ -220,7 +222,7 @@ public class BitmapUtil {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             degree = 0;
         }
         return degree;

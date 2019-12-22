@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.content.IRootViewSetupHandler;
@@ -425,7 +426,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             }
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 

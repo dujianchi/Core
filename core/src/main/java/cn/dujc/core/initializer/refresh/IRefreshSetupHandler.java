@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 
 /**
@@ -46,7 +47,7 @@ public final class IRefreshSetupHandler {
             }
             sRefresh = createByNewInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -62,7 +63,7 @@ public final class IRefreshSetupHandler {
                 if (invoke instanceof IRefreshSetup) return (IRefreshSetup) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -81,7 +82,7 @@ public final class IRefreshSetupHandler {
                     return (IRefreshSetup) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -97,9 +98,9 @@ public final class IRefreshSetupHandler {
             final Class<?> refreshClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createRefreshByClass((Class<? extends IRefreshSetup>) refreshClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return sRefresh;
     }

@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.ui.base.ToastXHandlerActivity;
 
 /**
@@ -85,7 +86,7 @@ public class ToastUtil {
                 try {
                     ToastXHandlerActivity.start(context, text);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }

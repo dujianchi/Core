@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import java.util.IllegalFormatException;
 import java.util.Random;
 
+import cn.dujc.core.app.Core;
+
 /**
  * 字符串相关工具
  * Created by du on 2017/10/16.
@@ -60,9 +62,9 @@ public class StringUtil {
         try {
             result = String.format(format, args);
         } catch (IllegalFormatException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return result;
     }

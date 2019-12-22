@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.downloader.Downloader;
 import cn.dujc.core.downloader.IDownloadHttpClient;
 import cn.dujc.core.downloader.OnDownloadListener;
@@ -80,7 +81,7 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
             try {
                 call.cancel();
             } catch (Throwable e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
     }
@@ -131,20 +132,20 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
             }
             outputStream.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }

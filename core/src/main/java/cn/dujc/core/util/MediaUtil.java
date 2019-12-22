@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import cn.dujc.core.app.Core;
+
 /**
  * Created by Du JC on 2015/12/14.
  */
@@ -97,14 +99,14 @@ public class MediaUtil {
             retriever.setDataSource(filePath);
             bitmap = retriever.getFrameAtTime();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             try {
                 retriever.release();
             } catch (RuntimeException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return bitmap;
@@ -140,7 +142,7 @@ public class MediaUtil {
                     break;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             degree = 0;
         }
         return degree;
@@ -207,15 +209,15 @@ public class MediaUtil {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }

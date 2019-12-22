@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import java.lang.reflect.Field;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.core.util.LogUtil;
 
@@ -114,7 +115,7 @@ public class BaseWebFragment extends BaseFragment {
                 mWebView.destroy();
                 mWebView = null;
             } catch (Throwable ex) {
-                ex.printStackTrace();
+                if (Core.DEBUG) ex.printStackTrace();
             }
             setConfigCallback(null);
         }
@@ -141,7 +142,7 @@ public class BaseWebFragment extends BaseFragment {
             field.setAccessible(true);
             field.set(configCallback, windowManager);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 

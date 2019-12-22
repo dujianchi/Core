@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 
 /**
@@ -49,7 +50,7 @@ public final class IBaseListSetupHandler {
             }
             sSetup = createByNewInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -65,7 +66,7 @@ public final class IBaseListSetupHandler {
                 if (invoke instanceof IBaseListSetup) return (IBaseListSetup) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -84,7 +85,7 @@ public final class IBaseListSetupHandler {
                     return (IBaseListSetup) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -100,9 +101,9 @@ public final class IBaseListSetupHandler {
             final Class<?> setupClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createSetupByClass((Class<? extends IBaseListSetup>) setupClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return sSetup;
     }

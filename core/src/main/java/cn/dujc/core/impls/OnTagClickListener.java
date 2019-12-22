@@ -4,6 +4,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import cn.dujc.core.app.Core;
+
 /**
  * 携带tag的点击事件
  */
@@ -27,7 +29,7 @@ public abstract class OnTagClickListener implements View.OnClickListener {
         try {
             t = (T) mTag;
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return t;
     }

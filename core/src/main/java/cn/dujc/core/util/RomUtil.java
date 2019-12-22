@@ -8,6 +8,8 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import cn.dujc.core.app.Core;
+
 public class RomUtil {
 
     private static final String TAG = "Rom";
@@ -114,7 +116,7 @@ public class RomUtil {
                 try {
                     input.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }
