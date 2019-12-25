@@ -61,7 +61,6 @@ public class BaseWebFragment extends BaseFragment {
         mUrl = extras().get(EXTRA_URL, "");
         mData = extras().get(EXTRA_DATA, "");
         mTitle = extras().get(EXTRA_TITLE, "");
-        mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
         init();
     }
 
@@ -147,9 +146,7 @@ public class BaseWebFragment extends BaseFragment {
     }
 
     protected void init() {
-        if (!TextUtils.isEmpty(mTitle)) {
-            mActivity.setTitle(mTitle);
-        }
+        _onReceivedTitle(null, mTitle);
 
         mWebView = initWebView();
         ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
@@ -201,7 +198,7 @@ public class BaseWebFragment extends BaseFragment {
 
     protected void _onReceivedTitle(WebView view, String title) {
         if (TextUtils.isEmpty(mTitle)) {//传到当前fragment的title为空时，使用webview获得的title
-            mActivity.setTitle(title);
+            setTitle(title);
         }
     }
 
