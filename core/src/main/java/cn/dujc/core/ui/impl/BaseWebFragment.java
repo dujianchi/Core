@@ -197,7 +197,7 @@ public class BaseWebFragment extends BaseFragment {
     }
 
     protected void _onReceivedTitle(WebView view, String title) {
-        if (TextUtils.isEmpty(mTitle)) {//传到当前fragment的title为空时，使用webview获得的title
+        if (TextUtils.isEmpty(mTitle) && !TextUtils.isEmpty(title)) {//传到当前fragment的title为空时，使用webview获得的title
             setTitle(title);
         }
     }
