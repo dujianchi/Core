@@ -3,7 +3,7 @@ package cn.dujc.coreapp.entity;
 import java.io.Serializable;
 import java.util.List;
 
-public class Bean1 implements Serializable {
+public class Bean1 extends Bean<String> implements Serializable {
     private static final long serialVersionUID = -3824251436674975025L;
 
     /**

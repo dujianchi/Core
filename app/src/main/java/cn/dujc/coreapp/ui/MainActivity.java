@@ -14,7 +14,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
@@ -34,6 +36,7 @@ import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
 import cn.dujc.coreapp.ui.window.Popup;
+import cn.dujc.coreapp.util.BeanUtils;
 import cn.dujc.widget.resizeable.ResizeableTextImpl;
 import cn.dujc.zxing.impl.ZxingActivity;
 
@@ -68,6 +71,7 @@ public class MainActivity extends BaseListActivity {
             , "wheel picker"
             , "listview"
             , "grid test"
+            , "fields"
             //, ""
     );
 
@@ -292,6 +296,12 @@ public class MainActivity extends BaseListActivity {
             break;
             case 28: {
                 starter().go(GridViewTestActivity.class);
+            }
+            break;
+            case 29: {
+                Bean1 bean = new Bean1();
+                Map<String, Object> map = new HashMap<>();
+                BeanUtils.copyFiledFromMap(bean, map);
             }
             break;
             //case 00:{}break;
