@@ -28,6 +28,7 @@ public class BeanUtils {
     }
 
     public static void setFieldValue(Field field, Object value) {
+        if (value == null) return;
         field.setAccessible(true);
         //todo
     }
