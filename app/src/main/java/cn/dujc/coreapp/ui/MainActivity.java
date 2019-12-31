@@ -140,7 +140,9 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 5: {
-                ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo()));
+                int _10dp = getResources().getDimensionPixelOffset(R.dimen._10dp);
+                int _10sp = getResources().getDimensionPixelOffset(R.dimen._10sp);
+                ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo(), " dp:sp = ", _10dp, '/', _10sp));
             }
             break;
             case 6: {

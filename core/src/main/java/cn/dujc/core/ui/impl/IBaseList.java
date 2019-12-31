@@ -71,6 +71,8 @@ public interface IBaseList extends IBaseUI, IRefresh {
      */
     void recyclerViewOtherSetup();
 
+    void recyclerViewSetupBeforeAdapter();
+
     /**
      * 双击标题回到顶部
      */
@@ -142,7 +144,8 @@ public interface IBaseList extends IBaseUI, IRefresh {
 
         @Override
         @Deprecated
-        public void rootViewSetup(View rootView) { }
+        public void rootViewSetup(View rootView) {
+        }
 
         @Override
         public void initBasic(Bundle savedInstanceState) {
@@ -286,6 +289,11 @@ public interface IBaseList extends IBaseUI, IRefresh {
         @Override
         public void recyclerViewOtherSetup() {
             IBaseListSetupHandler.setup(context(), mListView, mQuickAdapter);
+        }
+
+        @Override
+        public void recyclerViewSetupBeforeAdapter() {
+            IBaseListSetupHandler.setupBefore(context(), mListView, mQuickAdapter);
         }
 
         @Override

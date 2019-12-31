@@ -114,6 +114,11 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
     }
 
     @Override
+    public void recyclerViewSetupBeforeAdapter() {
+        mBaseList.recyclerViewSetupBeforeAdapter();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }

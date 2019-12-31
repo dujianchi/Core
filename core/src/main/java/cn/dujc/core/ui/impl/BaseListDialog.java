@@ -109,6 +109,11 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
     }
 
     @Override
+    public void recyclerViewSetupBeforeAdapter() {
+        mBaseList.recyclerViewSetupBeforeAdapter();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }

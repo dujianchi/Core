@@ -12,6 +12,8 @@ public interface IBaseListSetup {
 
     public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter);
 
+    public void recyclerViewSetupBefore(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter);
+
     public boolean endGone();
 
     public static class DefaultImpl implements IBaseListSetup {
@@ -21,6 +23,10 @@ public interface IBaseListSetup {
             if (recyclerView != null) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
             }
+        }
+
+        @Override
+        public void recyclerViewSetupBefore(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
         }
 
         @Override

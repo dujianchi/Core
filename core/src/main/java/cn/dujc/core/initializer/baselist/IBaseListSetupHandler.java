@@ -113,5 +113,10 @@ public final class IBaseListSetupHandler {
         if (setup != null) setup.recyclerViewOtherSetup(context, recyclerView, adapter);
     }
 
+    public static void setupBefore(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+        IBaseListSetup setup = getSetup(context);
+        if (setup != null) setup.recyclerViewSetupBefore(context, recyclerView, adapter);
+    }
+
 
 }

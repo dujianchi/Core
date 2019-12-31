@@ -114,6 +114,11 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
     }
 
     @Override
+    public void recyclerViewSetupBeforeAdapter() {
+        mBaseList.recyclerViewSetupBeforeAdapter();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }
