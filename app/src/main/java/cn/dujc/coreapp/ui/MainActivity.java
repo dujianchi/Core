@@ -72,6 +72,7 @@ public class MainActivity extends BaseListActivity {
             , "listview"
             , "grid test"
             , "fields"
+            , "fragment s"
             //, ""
     );
 
@@ -302,6 +303,10 @@ public class MainActivity extends BaseListActivity {
                 Bean1 bean = new Bean1();
                 Map<String, Object> map = new HashMap<>();
                 BeanUtils.copyFiledFromMap(bean, map);
+            }
+            break;
+            case 30: {
+                starter().go(FragmentsActivity.class);
             }
             break;
             //case 00:{}break;

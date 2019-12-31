@@ -303,10 +303,17 @@ public class ActivityStackUtil {
             }
             if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
                 final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
-                if (fragments != null && fragments.size() > 0) {
-                    for (Fragment fragment : fragments) {
-                        onEvent(fragment, flag, value);
-                    }
+                sendFragmentEvent(flag, value, fragments);
+            }
+        }
+    }
+
+    private static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
+        if (fragments != null && fragments.size() > 0) {
+            for (Fragment fragment : fragments) {
+                onEvent(fragment, flag, value);
+                if (fragment != null) {
+                    sendFragmentEvent(flag, value, fragment.getChildFragmentManager().getFragments());
                 }
             }
         }

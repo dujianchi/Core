@@ -51,6 +51,7 @@
         <activity android:name=".ui.WheelPickerActivity" />
         <activity android:name=".ui.ListViewActivity" />
         <activity android:name=".ui.GridViewTestActivity" />
+        <activity android:name=".ui.FragmentsActivity" />
     </application>
 
 </manifest>

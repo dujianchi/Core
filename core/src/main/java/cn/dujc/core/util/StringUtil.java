@@ -157,8 +157,8 @@ public class StringUtil {
      * 替代范围内的字符串
      *
      * @param text              被替代
-     * @param start             起始位置，负数则从后往前属
-     * @param end               结束位置，负数则从后往前属
+     * @param start             起始位置，负数则从后往前数
+     * @param end               结束位置，负数则从后往前数
      * @param replacement       替换
      * @param repeatReplacement 是否重复到与原字符串相等长度
      */
@@ -191,8 +191,8 @@ public class StringUtil {
      * 裁切字符串
      *
      * @param text  被替代
-     * @param start 起始位置，负数则从后往前属
-     * @param end   结束位置，负数则从后往前属
+     * @param start 起始位置，负数则从后往前数
+     * @param end   结束位置，负数则从后往前数
      */
     public static CharSequence subSequence(CharSequence text, int start, int end) {
         if (TextUtils.isEmpty(text)) return text;
@@ -213,6 +213,32 @@ public class StringUtil {
             return text;
         }
         return text.subSequence(start, end);
+    }
+
+    /**
+     * 判断文本中是否所有字符都一样
+     *
+     * @param text 文本
+     * @return 文本为空或者全一样返回 true
+     */
+    public static boolean isAllSame(CharSequence text) {
+        if (TextUtils.isEmpty(text)) return true;
+        char first = text.charAt(0);
+        for (int index = 0, length = text.length(); index < length; index++) {
+            if (first != text.charAt(index)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * 文本是否为空
+     *
+     * @param text 文本
+     * @return
+     */
+    public static boolean isBlank(CharSequence text) {
+        if (TextUtils.isEmpty(text)) return true;
+        return text.toString().trim().isEmpty();
     }
 
     private static Random getRandom() {
