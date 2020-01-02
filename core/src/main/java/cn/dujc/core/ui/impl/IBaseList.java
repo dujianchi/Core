@@ -71,7 +71,15 @@ public interface IBaseList extends IBaseUI, IRefresh {
      */
     void recyclerViewOtherSetup();
 
+    /**
+     * setAdapter之前的方法，介于{@link #recyclerViewOtherSetup()}和{@link #recyclerViewSetupBeforeLayoutManager()}
+     */
     void recyclerViewSetupBeforeAdapter();
+
+    /**
+     * setLayoutManager之前的方法
+     */
+    void recyclerViewSetupBeforeLayoutManager();
 
     /**
      * 双击标题回到顶部
@@ -118,6 +126,7 @@ public interface IBaseList extends IBaseUI, IRefresh {
         private IRefresh mRefresh;
         private RecyclerView mListView;
         private BaseQuickAdapter mQuickAdapter;
+        private RecyclerView.LayoutManager mLayoutManager;
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
         private AppBarLayout mAppbarLayout;
         private long mLastDoubleTap = 0;
@@ -169,10 +178,12 @@ public interface IBaseList extends IBaseUI, IRefresh {
             mUI.doubleClickTitleToTop();
 
             mQuickAdapter = mUI.initAdapter();
-            final RecyclerView.LayoutManager layoutManager = mUI.initLayoutManager();
+            mLayoutManager = mUI.initLayoutManager();
 
-            mListView.setLayoutManager(layoutManager);
+            mUI.recyclerViewSetupBeforeLayoutManager();
+            mListView.setLayoutManager(mLayoutManager);
             if (mQuickAdapter != null) {
+                mUI.recyclerViewSetupBeforeAdapter();
                 mListView.setAdapter(mQuickAdapter);
 
                 mQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -293,7 +304,12 @@ public interface IBaseList extends IBaseUI, IRefresh {
 
         @Override
         public void recyclerViewSetupBeforeAdapter() {
-            IBaseListSetupHandler.setupBefore(context(), mListView, mQuickAdapter);
+            IBaseListSetupHandler.setupBeforeAdapter(context(), mListView, mQuickAdapter);
+        }
+
+        @Override
+        public void recyclerViewSetupBeforeLayoutManager() {
+            IBaseListSetupHandler.setupBeforeLayoutManager(context(), mListView, mLayoutManager);
         }
 
         @Override

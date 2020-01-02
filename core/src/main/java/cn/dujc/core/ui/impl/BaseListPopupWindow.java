@@ -114,6 +114,11 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
     }
 
     @Override
+    public void recyclerViewSetupBeforeLayoutManager() {
+        mBaseList.recyclerViewSetupBeforeLayoutManager();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }

@@ -12,7 +12,9 @@ public interface IBaseListSetup {
 
     public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter);
 
-    public void recyclerViewSetupBefore(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter);
+    public void recyclerViewSetupBeforeAdapter(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter);
+
+    public void recyclerViewSetupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager);
 
     public boolean endGone();
 
@@ -26,7 +28,11 @@ public interface IBaseListSetup {
         }
 
         @Override
-        public void recyclerViewSetupBefore(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+        public void recyclerViewSetupBeforeAdapter(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+        }
+
+        @Override
+        public void recyclerViewSetupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
         }
 
         @Override
