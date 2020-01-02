@@ -2,15 +2,22 @@ package cn.dujc.core.bridge;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
+
+import cn.dujc.core.util.CacheMap;
+import cn.dujc.core.util.ContextUtil;
 
 /**
  * activity管理栈
@@ -24,34 +31,41 @@ public class ActivityStackUtil {
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
+    private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
     private static ActivityStackUtil sInstance = null;
 
     private ActivityStackUtil() {
         mLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
             @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            public void onActivityCreated(@NotNull Activity activity, Bundle savedInstanceState) {
                 addActivity(activity);
             }
 
             @Override
-            public void onActivityStarted(Activity activity) { }
+            public void onActivityStarted(@NotNull Activity activity) {
+            }
 
             @Override
-            public void onActivityResumed(Activity activity) { }
+            public void onActivityResumed(@NotNull Activity activity) {
+            }
 
             @Override
-            public void onActivityPaused(Activity activity) { }
+            public void onActivityPaused(@NotNull Activity activity) {
+            }
 
             @Override
-            public void onActivityStopped(Activity activity) { }
+            public void onActivityStopped(@NotNull Activity activity) {
+            }
 
             @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+            public void onActivitySaveInstanceState(@NotNull Activity activity, @NotNull Bundle outState) {
+            }
 
             @Override
-            public void onActivityDestroyed(Activity activity) {
+            public void onActivityDestroyed(@NotNull Activity activity) {
                 removeActivity(activity);
+                removeExtraEvent(activity);
             }
         };
     }
@@ -304,6 +318,37 @@ public class ActivityStackUtil {
             if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
                 final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
                 sendFragmentEvent(flag, value, fragments);
+            }
+        }
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            IEvent event = mExtraEvents.get(context);
+            if (event != null) {
+                event.onMyEvent(flag, value);
+            }
+        }
+    }
+
+    public synchronized void addExtraEvent(Context context, IEvent event) {
+        mExtraEvents.put(context, event);
+    }
+
+    public synchronized void removeExtraEvent(IEvent remove) {
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            IEvent event = mExtraEvents.get(context);
+            if (event == remove) {
+                mExtraEvents.remove(context);
+            }
+        }
+    }
+
+    private synchronized void removeExtraEvent(Activity activity) {
+        if (activity == null) return;
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            if (context == activity || ContextUtil.getActivity(context) == activity) {
+                mExtraEvents.remove(context);
             }
         }
     }
