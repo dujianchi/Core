@@ -2,6 +2,8 @@ package cn.dujc.core.util;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.IllegalFormatException;
 import java.util.Random;
 
@@ -49,6 +51,7 @@ public class StringUtil {
     /**
      * toString，为null时当作""返回
      */
+    @NonNull
     public static String toString(Object object) {
         if (object == null) return "";
         return String.valueOf(object);

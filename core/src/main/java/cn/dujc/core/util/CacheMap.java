@@ -1,5 +1,8 @@
 package cn.dujc.core.util;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,12 +34,12 @@ public class CacheMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public boolean containsKey(@androidx.annotation.Nullable Object key) {
+    public boolean containsKey(@Nullable Object key) {
         return mCacheContainer.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(@androidx.annotation.Nullable Object value) {
+    public boolean containsValue(@Nullable Object value) {
         if (value == null)
             return mCacheContainer.containsValue(value);
 
@@ -51,29 +54,29 @@ public class CacheMap<K, V> implements Map<K, V> {
         return false;
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     @Override
-    public V get(@androidx.annotation.Nullable Object key) {
+    public V get(@Nullable Object key) {
         WeakReference<V> weakValue = mCacheContainer.get(key);
         return weakValue != null ? weakValue.get() : null;
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     @Override
     public V put(K key, V value) {
         mCacheContainer.put(key, new WeakReference<V>(value));
         return value;
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     @Override
-    public V remove(@androidx.annotation.Nullable Object key) {
+    public V remove(@Nullable Object key) {
         WeakReference<V> weakValue = mCacheContainer.remove(key);
         return weakValue != null ? weakValue.get() : null;
     }
 
     @Override
-    public void putAll(@androidx.annotation.NonNull Map<? extends K, ? extends V> m) {
+    public void putAll(@NonNull Map<? extends K, ? extends V> m) {
         int numKeysToBeAdded = m.size();
         if (numKeysToBeAdded == 0)
             return;
@@ -87,13 +90,13 @@ public class CacheMap<K, V> implements Map<K, V> {
         mCacheContainer.clear();
     }
 
-    @androidx.annotation.NonNull
+    @NonNull
     @Override
     public Set<K> keySet() {
         return mCacheContainer.keySet();
     }
 
-    @androidx.annotation.NonNull
+    @NonNull
     @Override
     public Collection<V> values() {
         Collection<WeakReference<V>> values = mCacheContainer.values();
@@ -105,7 +108,7 @@ public class CacheMap<K, V> implements Map<K, V> {
         return result;
     }
 
-    @androidx.annotation.NonNull
+    @NonNull
     @Override
     public Set<Entry<K, V>> entrySet() {
         Set<Entry<K, WeakReference<V>>> entries = mCacheContainer.entrySet();

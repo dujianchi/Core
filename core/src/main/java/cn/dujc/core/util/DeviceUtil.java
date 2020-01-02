@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 
 import java.io.File;
@@ -26,6 +27,7 @@ public class DeviceUtil {
             , Manifest.permission.BLUETOOTH
             , Manifest.permission.ACCESS_WIFI_STATE
     })
+    @NonNull
     public static String getDeviceId(Context context) {
         SharedPreferences savedInfo = context.getSharedPreferences(SAVED_INFO, Context.MODE_PRIVATE);
         String id = savedInfo.getString(DEVICE_ID, "");
@@ -52,6 +54,7 @@ public class DeviceUtil {
             , Manifest.permission.BLUETOOTH
             , Manifest.permission.ACCESS_WIFI_STATE
     })
+    @NonNull
     private static String uuid(Context context) {
         final String fakeMac = "02:00:00:00:00:00";
         String tmDevice = null;

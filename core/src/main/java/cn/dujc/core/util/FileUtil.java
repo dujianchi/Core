@@ -1,5 +1,7 @@
 package cn.dujc.core.util;
 
+import androidx.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +18,7 @@ import cn.dujc.core.app.Core;
 
 public class FileUtil {
 
+    @NonNull
     public static byte[] toBytes(File file) {
         if (file != null && file.exists()) {
             FileInputStream inputStream = null;
@@ -47,6 +50,7 @@ public class FileUtil {
         return new byte[0];
     }
 
+    @NonNull
     public static List<String> readLines(File file) {
         List<String> result = new ArrayList<>();
         if (!file.exists()) return result;

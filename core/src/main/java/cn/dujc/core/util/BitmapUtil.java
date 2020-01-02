@@ -9,6 +9,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,7 @@ import cn.dujc.core.app.Core;
 
 public class BitmapUtil {
 
+    @NonNull
     public static byte[] toBytes(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -33,6 +35,7 @@ public class BitmapUtil {
         return new byte[0];
     }
 
+    @Nullable
     public static Bitmap fromBytes(byte[] bytes) {
         if (bytes.length != 0) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -99,6 +102,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, File file) {
         return saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.JPEG, 100, true);
     }
@@ -106,6 +110,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, String file, Bitmap.CompressFormat format, int quality, boolean recycle) {
         return saveBitmapToFile(bitmap, new File(file), format, quality, recycle);
     }
@@ -113,6 +118,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, File file, Bitmap.CompressFormat format, int quality, boolean recycle) {
         if (file.exists())
             file.delete();
@@ -136,6 +142,7 @@ public class BitmapUtil {
      * 图片处理
      * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
+    @Nullable
     public static Bitmap decodeSmallerFromFile(String path, int shortEdge, int longEdge) {
         return decodeSmallerFromFile(new File(path), shortEdge, longEdge);
     }
@@ -144,6 +151,7 @@ public class BitmapUtil {
      * 图片处理
      * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
+    @Nullable
     public static Bitmap decodeSmallerFromFile(File file, int shortEdge, int longEdge) {
         LogUtil.d("---------------   path =     " + file);
         if (file == null) {
@@ -235,6 +243,7 @@ public class BitmapUtil {
      * @param degrees 原始图片的角度
      * @return Bitmap 旋转后的图片
      */
+    @Nullable
     public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
         if (degrees == 0 || null == bitmap) {
             return bitmap;
@@ -253,6 +262,7 @@ public class BitmapUtil {
     /**
      * 把一个view保存成图片，比如用在地图的自定义marker
      */
+    @Nullable
     public static Bitmap viewToBitmap(View view) {
         if (view == null) return null;
         //build bitmap

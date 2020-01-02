@@ -198,7 +198,7 @@ public class Numbers {
     }
 
     /**
-     * 讲字符串转为BieDecimal高精度浮点数
+     * 将字符串转为BigDecimal高精度浮点数
      */
     @Nullable
     public static BigDecimal numberFromString(String valueStr, Double defaultIfError) {
