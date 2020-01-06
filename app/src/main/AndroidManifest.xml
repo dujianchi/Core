@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:name=".App"
@@ -40,6 +42,13 @@
         <activity android:name=".ui.MultiTypeAdapterActivity" />
         <activity android:name=".ui.BroadcastActivity" />
         <activity android:name=".ui.PermissionActivity" />
+        <activity android:name=".ui.LayerLayoutActivity" />
+        <activity android:name=".ui.ItemDeleteListActivity" />
+        <activity android:name=".ui.CountDownTimerActivity" />
+        <activity android:name=".ui.WheelPickerActivity" />
+        <activity android:name=".ui.ListViewActivity" />
+        <activity android:name=".ui.GridViewTestActivity" />
+        <activity android:name=".ui.FragmentsActivity" />
     </application>
 
 </manifest>

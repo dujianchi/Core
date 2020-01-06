@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.core.ui.TitleCompat;
@@ -84,7 +85,7 @@ public final class IToolbarHandler {
             TOOLBARS.put(clazz, fromInstance);
             return fromInstance;
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -101,7 +102,7 @@ public final class IToolbarHandler {
                 if (invoke instanceof IToolbar) return (IToolbar) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -117,7 +118,7 @@ public final class IToolbarHandler {
     //            return (IToolbar) method.invoke(null);
     //        }
     //    } catch (Exception e) {
-    //        e.printStackTrace();
+    //        if (Core.DEBUG) e.printStackTrace();
     //    }
     //    return null;
     //}
@@ -136,7 +137,7 @@ public final class IToolbarHandler {
                     return (IToolbar) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -188,9 +189,9 @@ public final class IToolbarHandler {
                 IToolbar iToolbar = createToolbarByClass((Class<? extends IToolbar>) toolbarClass);
                 if (toolbarCanUseHere(iToolbar, user)) return iToolbar;
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } catch (ClassCastException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;

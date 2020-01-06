@@ -1,8 +1,12 @@
 package cn.dujc.core.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
+
+import cn.dujc.core.app.Core;
 
 /**
  * @author du
@@ -10,7 +14,8 @@ import java.math.BigDecimal;
  */
 public class Numbers {
 
-    private Numbers() { }
+    private Numbers() {
+    }
 
     /**
      * 字符串转int
@@ -28,7 +33,7 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).intValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -47,7 +52,7 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).longValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -68,7 +73,28 @@ public class Numbers {
         try {
             return numberFromString(numberStr, defaultValue).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 字符串转float
+     *
+     * @return 默认值 0
+     */
+    public static float stringToFloat(String numberStr) {
+        return stringToFloat(numberStr, 0);
+    }
+
+    /**
+     * 字符串转float
+     */
+    public static float stringToFloat(String numberStr, float defaultValue) {
+        try {
+            return numberFromString(numberStr, (double) defaultValue).floatValue();
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
             return defaultValue;
         }
     }
@@ -86,7 +112,7 @@ public class Numbers {
             final BigDecimal multiplierB = numberFromString(multiplier, null);
             return multiplicandB.multiply(multiplierB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -104,7 +130,7 @@ public class Numbers {
             final BigDecimal subtrahendB = numberFromString(subtrahend, null);
             return minuendB.subtract(subtrahendB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -122,7 +148,7 @@ public class Numbers {
             final BigDecimal addendB = numberFromString(addend, null);
             return augendB.add(addendB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
@@ -140,21 +166,40 @@ public class Numbers {
             final BigDecimal divisorB = numberFromString(divisor, 1.0);
             return dividendB.divide(divisorB).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             return "";
         }
     }
 
     /**
+     * 格式化float格式
+     */
+    @NonNull
+    public static String formatFloat(float price, int scale) {
+        return new BigDecimal(price).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
+    }
+
+    /**
      * 格式化double格式
      */
+    @NonNull
     public static String formatDouble(double price, int scale) {
         return new BigDecimal(price).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
     }
 
     /**
-     * 讲字符串转为BieDecimal高精度浮点数
+     * 格式化double格式
      */
+    @Nullable
+    public static String formatDouble(String number, int scale) {
+        BigDecimal decimal = numberFromString(number, 0.0);
+        return decimal != null ? decimal.setScale(scale, BigDecimal.ROUND_HALF_UP).toString() : null;
+    }
+
+    /**
+     * 将字符串转为BigDecimal高精度浮点数
+     */
+    @Nullable
     public static BigDecimal numberFromString(String valueStr, Double defaultIfError) {
         BigDecimal result = defaultIfError != null ? new BigDecimal(defaultIfError) : null;
         if (TextUtils.isEmpty(valueStr)) return result;
@@ -164,9 +209,9 @@ public class Numbers {
             if (number.contains(" ")) number = number.replace(" ", "");
             result = new BigDecimal(number);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return result;
     }

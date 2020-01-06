@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 
 /**
@@ -48,7 +49,7 @@ public final class IBaseListSetupHandler {
             }
             sSetup = createByNewInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -64,7 +65,7 @@ public final class IBaseListSetupHandler {
                 if (invoke instanceof IBaseListSetup) return (IBaseListSetup) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -83,7 +84,7 @@ public final class IBaseListSetupHandler {
                     return (IBaseListSetup) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -99,9 +100,9 @@ public final class IBaseListSetupHandler {
             final Class<?> setupClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createSetupByClass((Class<? extends IBaseListSetup>) setupClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return sSetup;
     }
@@ -109,6 +110,16 @@ public final class IBaseListSetupHandler {
     public static void setup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
         IBaseListSetup setup = getSetup(context);
         if (setup != null) setup.recyclerViewOtherSetup(context, recyclerView, adapter);
+    }
+
+    public static void setupBeforeAdapter(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+        IBaseListSetup setup = getSetup(context);
+        if (setup != null) setup.recyclerViewSetupBeforeAdapter(context, recyclerView, adapter);
+    }
+
+    public static void setupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
+        IBaseListSetup setup = getSetup(context);
+        if (setup != null) setup.recyclerViewSetupBeforeLayoutManager(context, recyclerView, layoutManager);
     }
 
 

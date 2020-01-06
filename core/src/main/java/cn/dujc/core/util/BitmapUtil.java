@@ -2,11 +2,14 @@ package cn.dujc.core.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,8 +18,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import cn.dujc.core.app.Core;
+
 public class BitmapUtil {
 
+    @NonNull
     public static byte[] toBytes(Bitmap bitmap, Bitmap.CompressFormat compressFormat) {
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -28,6 +34,7 @@ public class BitmapUtil {
         return new byte[0];
     }
 
+    @Nullable
     public static Bitmap fromBytes(byte[] bytes) {
         if (bytes.length != 0) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -84,7 +91,7 @@ public class BitmapUtil {
             try {
                 out.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             return shrinkImage(result, sizeInKb, true);//中间产生的过渡图片都可以回收
         }
@@ -94,6 +101,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, File file) {
         return saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.JPEG, 100, true);
     }
@@ -101,6 +109,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, String file, Bitmap.CompressFormat format, int quality, boolean recycle) {
         return saveBitmapToFile(bitmap, new File(file), format, quality, recycle);
     }
@@ -108,6 +117,7 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    @NonNull
     public static String saveBitmapToFile(Bitmap bitmap, File file, Bitmap.CompressFormat format, int quality, boolean recycle) {
         if (file.exists())
             file.delete();
@@ -118,9 +128,9 @@ public class BitmapUtil {
             outputStream.flush();
             outputStream.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         if (recycle && bitmap != null)//此处不能回收bitmap，否则后面会不能用
             bitmap.recycle();
@@ -131,6 +141,7 @@ public class BitmapUtil {
      * 图片处理
      * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
+    @Nullable
     public static Bitmap decodeSmallerFromFile(String path, int shortEdge, int longEdge) {
         return decodeSmallerFromFile(new File(path), shortEdge, longEdge);
     }
@@ -139,6 +150,7 @@ public class BitmapUtil {
      * 图片处理
      * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
+    @Nullable
     public static Bitmap decodeSmallerFromFile(File file, int shortEdge, int longEdge) {
         LogUtil.d("---------------   path =     " + file);
         if (file == null) {
@@ -155,7 +167,7 @@ public class BitmapUtil {
             is = new FileInputStream(file);
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -185,7 +197,7 @@ public class BitmapUtil {
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
             is.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         newOpts = null;
         return bitmap;
@@ -217,7 +229,7 @@ public class BitmapUtil {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             degree = 0;
         }
         return degree;
@@ -230,6 +242,7 @@ public class BitmapUtil {
      * @param degrees 原始图片的角度
      * @return Bitmap 旋转后的图片
      */
+    @Nullable
     public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
         if (degrees == 0 || null == bitmap) {
             return bitmap;
@@ -245,5 +258,25 @@ public class BitmapUtil {
         return bmp;
     }
 
+    /**
+     * 把一个view保存成图片，比如用在地图的自定义marker
+     */
+    @Nullable
+    public static Bitmap viewToBitmap(View view) {
+        if (view == null) return null;
+        //build bitmap
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        int width = view.getMeasuredWidth();
+        int height = view.getMeasuredHeight();
+        view.layout(0, 0, width, height);
+        Bitmap bitmap = Bitmap.createBitmap(width, height
+                , Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT
+                        ? Bitmap.Config.ARGB_8888
+                        : Bitmap.Config.ARGB_4444);//只有8888可以选了，4444的只有4.4以下可用，565没有透明度，8没有颜色
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
 
 }

@@ -1,6 +1,5 @@
 package cn.dujc.widget.tablayout;
 
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.LayoutInflater;

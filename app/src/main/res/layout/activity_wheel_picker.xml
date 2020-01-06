@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <cn.dujc.widget.wheelpicker.WheelPicker
+        android:id="@+id/wp_pop_0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:widget_wheel_curtain_color="@color/colorPrimary"
+        app:widget_wheel_ellipsize="end"
+        app:widget_wheel_item_align="center"
+        app:widget_wheel_item_text_color="@color/colorAccent"
+        app:widget_wheel_selected_item_text_color="@color/colorPrimaryDark" />
+
+    <cn.dujc.widget.wheelpicker.WheelPicker
+        android:id="@+id/wp_pop_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:widget_wheel_curtain_color="@color/colorPrimary"
+        app:widget_wheel_ellipsize="end"
+        app:widget_wheel_item_align="center"
+        app:widget_wheel_item_text_color="@color/colorAccent"
+        app:widget_wheel_selected_item_text_color="@color/colorPrimaryDark" />
+</LinearLayout>

@@ -9,7 +9,6 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
-import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 
 /**
  * Android的顶部沉浸效果 工具
@@ -382,25 +382,25 @@ public class TitleCompat {
             try {
                 mSetStatusBarColorIcon = Activity.class.getMethod("setStatusBarDarkIcon", int.class);
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             try {
                 mSetStatusBarDarkIcon = Activity.class.getMethod("setStatusBarDarkIcon", boolean.class);
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             try {
                 mStatusBarColorFiled = WindowManager.LayoutParams.class.getField("statusBarColor");
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             try {
                 Field field = View.class.getField("SYSTEM_UI_FLAG_LIGHT_STATUS_BAR");
                 SYSTEM_UI_FLAG_LIGHT_STATUS_BAR = field.getInt(null);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
 
@@ -440,9 +440,9 @@ public class TitleCompat {
                 try {
                     mSetStatusBarColorIcon.invoke(activity, color);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             } else {
                 boolean whiteColor = isBlackColor(color, 50);
@@ -468,7 +468,7 @@ public class TitleCompat {
                     setStatusBarDarkIcon(window.getDecorView(), true);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
 
@@ -501,13 +501,13 @@ public class TitleCompat {
                     return true;
                 }
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } catch (Throwable e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
             return false;
         }
@@ -547,7 +547,7 @@ public class TitleCompat {
                         window.setAttributes(winParams);
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }
@@ -575,9 +575,9 @@ public class TitleCompat {
                 try {
                     mSetStatusBarDarkIcon.invoke(activity, dark);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             } else {
                 if (flag) {

@@ -8,6 +8,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import cn.dujc.core.app.Core;
+
 /**
  * @author du
  * date 2018/5/17 下午12:43
@@ -25,9 +27,9 @@ public class DefaultSSLSocketFactory {
             sslContext.init(null, new TrustManager[]{trustManager}, null);
             sslSocketFactory = sslContext.getSocketFactory();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (KeyManagementException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 

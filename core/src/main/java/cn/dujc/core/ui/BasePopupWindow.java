@@ -2,8 +2,10 @@ package cn.dujc.core.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import cn.dujc.core.R;
+import cn.dujc.core.initializer.content.IRootViewSetupHandler;
 import cn.dujc.core.ui.dialog.IDialog;
 import cn.dujc.core.ui.dialog.OnRootViewClick;
 
@@ -31,6 +34,16 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return null;
     }
 
+    @Override
+    public void rootViewSetup(View rootView) {
+        IRootViewSetupHandler.setup(mContext, this, rootView);
+    }
+
+    @Override
+    public View getRootView() {
+        return mRootView;
+    }
+
     public void showAtLocation(View parent) {
         showAtLocation(parent, Gravity.CENTER);
     }
@@ -45,9 +58,24 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return super.isShowing();
     }
 
+    @Override
+    public void showAsDropDown(View anchor, int xOff, int yOff, int gravity) {
+        showAsDropDownFix24(anchor);
+        super.showAsDropDown(anchor, xOff, yOff, gravity);
+    }
+
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    public void showAsDropDownFix24(View anchor) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            Rect rect = new Rect();
+            anchor.getGlobalVisibleRect(rect);
+            int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
+            setHeight(h);
+        }
     }
 
     public void _onCreateView() {
@@ -68,6 +96,7 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
             setAnimationStyle(_getAnimationStyle());
             setOutsideTouchable(_getOutsideTouchable());
             setFocusable(_getFocusable());
+            rootViewSetup(mRootView);
             initBasic(null);
         }
     }

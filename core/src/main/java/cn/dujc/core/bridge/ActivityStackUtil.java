@@ -2,14 +2,20 @@ package cn.dujc.core.bridge;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
+
+import cn.dujc.core.util.CacheMap;
+import cn.dujc.core.util.ContextUtil;
 
 /**
  * activity管理栈
@@ -23,34 +29,41 @@ public class ActivityStackUtil {
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
+    private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
     private static ActivityStackUtil sInstance = null;
 
     private ActivityStackUtil() {
         mLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
             @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
                 addActivity(activity);
             }
 
             @Override
-            public void onActivityStarted(Activity activity) { }
+            public void onActivityStarted(@NonNull Activity activity) {
+            }
 
             @Override
-            public void onActivityResumed(Activity activity) { }
+            public void onActivityResumed(@NonNull Activity activity) {
+            }
 
             @Override
-            public void onActivityPaused(Activity activity) { }
+            public void onActivityPaused(@NonNull Activity activity) {
+            }
 
             @Override
-            public void onActivityStopped(Activity activity) { }
+            public void onActivityStopped(@NonNull Activity activity) {
+            }
 
             @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+            }
 
             @Override
-            public void onActivityDestroyed(Activity activity) {
+            public void onActivityDestroyed(@NonNull Activity activity) {
                 removeActivity(activity);
+                removeExtraEvent(activity);
             }
         };
     }
@@ -156,6 +169,7 @@ public class ActivityStackUtil {
 
     /**
      * 清除管理栈
+     *
      * @deprecated 如果脑袋不清楚，最好不要调用此方法
      */
     @Deprecated
@@ -248,6 +262,20 @@ public class ActivityStackUtil {
     }
 
     /**
+     * 是否包含某个类
+     *
+     * @param clazz 某个类
+     * @return 是否包含某个类
+     */
+    public synchronized final boolean contains(Class<? extends Activity> clazz) {
+        if (clazz == null) return false;
+        for (Activity activity : mActivities) {
+            if (activity != null && activity.getClass().equals(clazz)) return true;
+        }
+        return false;
+    }
+
+    /**
      * 关闭所有Activity，除了某个Activity的实例，最终只会存在一个
      *
      * @param activity activity.this
@@ -287,10 +315,48 @@ public class ActivityStackUtil {
             }
             if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
                 final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
-                if (fragments != null && fragments.size() > 0) {
-                    for (Fragment fragment : fragments) {
-                        onEvent(fragment, flag, value);
-                    }
+                sendFragmentEvent(flag, value, fragments);
+            }
+        }
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            IEvent event = mExtraEvents.get(context);
+            if (event != null) {
+                event.onMyEvent(flag, value);
+            }
+        }
+    }
+
+    public synchronized void addExtraEvent(Context context, IEvent event) {
+        mExtraEvents.put(context, event);
+    }
+
+    public synchronized void removeExtraEvent(IEvent remove) {
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            IEvent event = mExtraEvents.get(context);
+            if (event == remove) {
+                mExtraEvents.remove(context);
+            }
+        }
+    }
+
+    private synchronized void removeExtraEvent(Activity activity) {
+        if (activity == null) return;
+        Set<Context> contexts = mExtraEvents.keySet();
+        for (final Context context : contexts) {
+            if (context == activity || ContextUtil.getActivity(context) == activity) {
+                mExtraEvents.remove(context);
+            }
+        }
+    }
+
+    private static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
+        if (fragments != null && fragments.size() > 0) {
+            for (Fragment fragment : fragments) {
+                onEvent(fragment, flag, value);
+                if (fragment != null) {
+                    sendFragmentEvent(flag, value, fragment.getChildFragmentManager().getFragments());
                 }
             }
         }

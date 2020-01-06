@@ -3,6 +3,7 @@ package cn.dujc.core.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.support.annotation.Nullable;
 
 /**
  * @author du
@@ -13,6 +14,7 @@ public class ContextUtil {
     /**
      * Get activity instance from desired context.
      */
+    @Nullable
     public static Activity getActivity(Context context) {
         if (context == null) return null;
         if (context instanceof Activity) return (Activity) context;

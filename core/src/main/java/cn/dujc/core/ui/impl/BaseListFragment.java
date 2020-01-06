@@ -3,7 +3,6 @@ package cn.dujc.core.ui.impl;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -18,7 +17,9 @@ import cn.dujc.core.ui.BaseFragment;
 public abstract class BaseListFragment extends BaseFragment implements IBaseList.UI {
 
     private static class FragmentImpl extends AbsImpl {
+
         private BaseListFragment mFragment;
+        View mRootView;
 
         FragmentImpl(BaseListFragment fragment) {
             super(fragment);
@@ -33,6 +34,11 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
         @Override
         public Context context() {
             return mFragment.mActivity;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
         }
     }
 
@@ -51,6 +57,7 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
+        if (mBaseList instanceof FragmentImpl) ((FragmentImpl) mBaseList).mRootView = mRootView;
         mBaseList.initBasic(savedInstanceState);
     }
 
@@ -106,6 +113,16 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
     }
 
     @Override
+    public void recyclerViewSetupBeforeAdapter() {
+        mBaseList.recyclerViewSetupBeforeAdapter();
+    }
+
+    @Override
+    public void recyclerViewSetupBeforeLayoutManager() {
+        mBaseList.recyclerViewSetupBeforeLayoutManager();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }
@@ -130,7 +147,7 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    public <T extends View> T getSwipeRefreshLayout() {
         return mBaseList.getSwipeRefreshLayout();
     }
 
@@ -145,8 +162,8 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
     }
 
     @Override
-    public void initRefresh(View refresh) {
-        mBaseList.initRefresh(refresh);
+    public <T extends View> T initRefresh(View innerView) {
+        return mBaseList.initRefresh(innerView);
     }
 
     @Override

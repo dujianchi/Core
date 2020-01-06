@@ -1,12 +1,13 @@
 package cn.dujc.core.adapter.multi2;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 
 import cn.dujc.core.adapter.BaseViewHolder;
 
-public interface ViewProvider<T> {
+public interface ViewProvider {
     @LayoutRes
     public int layoutId();
 
-    public void convert(BaseViewHolder helper, T item);
+    public void convert(Context context, BaseViewHolder helper, Object item);
 }

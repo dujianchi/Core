@@ -6,6 +6,9 @@ import android.os.Looper;
 
 import cn.dujc.core.ui.BaseActivity;
 
+/**
+ * 自带倒计时的Activity，通常用来做启动页
+ */
 public abstract class SingleTaskActivity extends BaseActivity {
 
     private static Handler sHandler = new Handler(Looper.getMainLooper());
@@ -38,6 +41,10 @@ public abstract class SingleTaskActivity extends BaseActivity {
     public void finish() {
         super.finish();
         if (cancelTaskWhenFinish()) cancelTask();
+    }
+
+    public final Handler getHandler() {
+        return sHandler;
     }
 
     /**

@@ -13,7 +13,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
@@ -33,6 +35,8 @@ import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
 import cn.dujc.coreapp.ui.window.Popup;
+import cn.dujc.coreapp.util.BeanUtils;
+import cn.dujc.widget.resizeable.ResizeableTextImpl;
 import cn.dujc.zxing.impl.ZxingActivity;
 
 public class MainActivity extends BaseListActivity {
@@ -48,7 +52,7 @@ public class MainActivity extends BaseListActivity {
             , "banner"
             , "go fragment"
             , "check group"
-            , "show fragment"
+            , "------- other test --------"
             , "zxing activity"
             , "zxing fragment"
             , "show popupWindow"
@@ -60,6 +64,14 @@ public class MainActivity extends BaseListActivity {
             , "call"
             , "list dialog"
             , "list popupwindow"
+            , "layer layout"
+            , "item delete"
+            , "CountDownTimer"
+            , "wheel picker"
+            , "listview"
+            , "grid test"
+            , "fields"
+            , "fragment s"
             //, ""
     );
 
@@ -90,9 +102,9 @@ public class MainActivity extends BaseListActivity {
     @Nullable
     @Override
     public BaseQuickAdapter initAdapter() {
-        return new BaseAdapter<String>(android.R.layout.simple_list_item_1, mList) {
+        return new BaseAdapter<CharSequence>(android.R.layout.simple_list_item_1, mList) {
             @Override
-            protected void convert(BaseViewHolder helper, String item) {
+            protected void convert(BaseViewHolder helper, CharSequence item) {
                 helper.setText(android.R.id.text1, item);
             }
         };
@@ -103,6 +115,7 @@ public class MainActivity extends BaseListActivity {
         switch (position) {
             case 0: {
                 ToastUtil.showToast(mActivity, "toast");
+                //ToastXHandlerActivity.start(mActivity, "toast");
             }
             break;
             case 1: {
@@ -111,6 +124,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 2: {
+                ResizeableTextImpl.setGlobalScale(mActivity, 3.0F);
                 starter().go(ListActivity.class);
             }
             break;
@@ -125,7 +139,9 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 5: {
-                ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo()));
+                int _10dp = getResources().getDimensionPixelOffset(R.dimen._10dp);
+                int _10sp = getResources().getDimensionPixelOffset(R.dimen._10sp);
+                ToastUtil.showToast(mActivity, StringUtil.concat("I am OPPO = ", RomUtil.isOppo(), " I am VIVO = ", RomUtil.isVivo(), " dp:sp = ", _10dp, '/', _10sp));
             }
             break;
             case 6: {
@@ -175,7 +191,36 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 11: {
-                //showFragment();
+                /*System.out.println(StringUtil.replaceRange("12345678901", 1, 2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, 2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, 5, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 2, -2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -9, 5, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -9, -2, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", -2, -9, "*"));
+                System.out.println(StringUtil.replaceRange("12345678901", 0, 0, "*"));
+                System.out.println(StringUtil.replaceRange(null, 0, 3, "*"));
+                System.out.println(StringUtil.replaceRange("123", 3, 4, "*"));
+                System.out.println(StringUtil.replaceRange("123", 5, 4, "*"));
+                System.out.println(StringUtil.repeat("33.", 3));
+                System.out.println(StringUtil.repeat("33.", 4));
+                System.out.println(StringUtil.repeat("33.", 5));
+                System.out.println(StringUtil.repeat("33.", 6));
+                System.out.println(StringUtil.repeat("33.", 7));
+                System.out.println(StringUtil.concatWithSeparate("-", 7, 8, 9, "a"));*/
+
+                System.out.println(StringUtil.subSequence("12345678901", 1, 2));
+                System.out.println(StringUtil.subSequence("12345678901", 2, 2));
+                System.out.println(StringUtil.subSequence("12345678901", 2, 5));
+                System.out.println(StringUtil.subSequence("12345678901", 2, -2));
+                System.out.println(StringUtil.subSequence("12345678901", -9, 5));
+                System.out.println(StringUtil.subSequence("12345678901", -9, -2));
+                System.out.println(StringUtil.subSequence("12345678901", -2, -9));
+                System.out.println(StringUtil.subSequence("12345678901", 0, 0));
+                System.out.println(StringUtil.subSequence(null, 0, 3));
+                System.out.println(StringUtil.subSequence("12345678901", 3, 4));
+                System.out.println(StringUtil.subSequence("123", 3, 4));
+                System.out.println(StringUtil.subSequence("123", 5, 4));
             }
             break;
             case 12: {
@@ -229,6 +274,40 @@ public class MainActivity extends BaseListActivity {
                     mDialog1 = new ListWindow(mActivity);
                 }
                 if (!mDialog1.isShowing()) mDialog1.showAtLocation(mRootView);
+            }
+            break;
+            case 23: {
+                starter().go(LayerLayoutActivity.class);
+            }
+            break;
+            case 24: {
+                starter().go(ItemDeleteListActivity.class);
+            }
+            break;
+            case 25: {
+                starter().go(CountDownTimerActivity.class);
+            }
+            break;
+            case 26: {
+                starter().go(WheelPickerActivity.class);
+            }
+            break;
+            case 27: {
+                starter().go(ListViewActivity.class);
+            }
+            break;
+            case 28: {
+                starter().go(GridViewTestActivity.class);
+            }
+            break;
+            case 29: {
+                Bean1 bean = new Bean1();
+                Map<String, Object> map = new HashMap<>();
+                BeanUtils.copyFiledFromMap(bean, map);
+            }
+            break;
+            case 30: {
+                starter().go(FragmentsActivity.class);
             }
             break;
             //case 00:{}break;

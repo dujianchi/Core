@@ -1,11 +1,12 @@
 package cn.dujc.core.ui.impl;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.ViewGroup;
 
 import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
 import cn.dujc.core.ui.BaseActivity;
 
 /**
@@ -19,7 +20,8 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements IR
     @Override
     public View createRootView(View contentView) {
         if (mRefresh == null) {
-            mRefresh = IRefreshHandler.getRefresh(mActivity);
+            final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(mActivity);
+            mRefresh = refreshSetup == null ? new Impl() : refreshSetup.create();
             if (mRefresh != null) mRefresh.setOnRefreshListener(this);
         }
         return createRefreshRootView(super.createRootView(contentView));
@@ -27,17 +29,8 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements IR
 
     private View createRefreshRootView(View rootView) {
         if (mRefresh == null) return rootView;
-        SwipeRefreshLayout srlLoader = mRefresh.getSwipeRefreshLayout();
-        if (srlLoader == null) {
-            srlLoader = new SwipeRefreshLayout(mActivity);
-            srlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    BaseRefreshableActivity.this.onRefresh();
-                }
-            });
-            mRefresh.initRefresh(srlLoader);
-        }
+        if (mRefresh == rootView) return rootView;
+        ViewGroup srlLoader = mRefresh.initRefresh(rootView);
         final View childAtTwo = srlLoader.getChildAt(1);
         if (childAtTwo != null) srlLoader.removeView(childAtTwo);
         srlLoader.addView(rootView);
@@ -45,8 +38,9 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements IR
     }
 
     @Override
-    public void initRefresh(View refresh) {
-        if (mRefresh != null) mRefresh.initRefresh(refresh);
+    public <T extends View> T initRefresh(View innerView) {
+        if (mRefresh != null) return mRefresh.initRefresh(innerView);
+        else return (T) innerView;
     }
 
     @Override

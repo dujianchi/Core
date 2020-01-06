@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,20 +13,18 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.initializer.baselist.IBaseListSetup;
 import cn.dujc.core.initializer.baselist.IBaseListSetupHandler;
 import cn.dujc.core.initializer.refresh.IRefresh;
-import cn.dujc.core.initializer.refresh.IRefreshHandler;
 import cn.dujc.core.initializer.refresh.IRefreshListener;
+import cn.dujc.core.initializer.refresh.IRefreshSetup;
+import cn.dujc.core.initializer.refresh.IRefreshSetupHandler;
+import cn.dujc.core.ui.IBaseUI;
 
 /**
  * @author du
  * date 2018/11/1 4:33 PM
  */
-public interface IBaseList extends IRefresh {
+public interface IBaseList extends IBaseUI, IRefresh {
 
     public static final boolean DEFAULT_END_GONE = true;
-
-    int getViewId();
-
-    void initBasic(Bundle savedInstanceState);
 
     void onDestroy_();
 
@@ -45,11 +42,6 @@ public interface IBaseList extends IRefresh {
      * 加载失败（部分刷新）
      */
     void loadFailure();
-
-    /**
-     * 刷新结束
-     */
-    void refreshDone();
 
     /**
      * 加载结束
@@ -78,6 +70,16 @@ public interface IBaseList extends IRefresh {
     void recyclerViewOtherSetup();
 
     /**
+     * setAdapter之前的方法，介于{@link #recyclerViewOtherSetup()}和{@link #recyclerViewSetupBeforeLayoutManager()}
+     */
+    void recyclerViewSetupBeforeAdapter();
+
+    /**
+     * setLayoutManager之前的方法
+     */
+    void recyclerViewSetupBeforeLayoutManager();
+
+    /**
      * 双击标题回到顶部
      */
     void doubleClickTitleToTop();
@@ -95,6 +97,14 @@ public interface IBaseList extends IRefresh {
 
     @Nullable
     public RecyclerView getRecyclerView();
+
+    @Override
+    @Deprecated
+    View getViewV();
+
+    @Override
+    @Deprecated
+    void rootViewSetup(View rootView);
 
     public static interface UI extends IBaseList {
 
@@ -114,6 +124,7 @@ public interface IBaseList extends IRefresh {
         private IRefresh mRefresh;
         private RecyclerView mListView;
         private BaseQuickAdapter mQuickAdapter;
+        private RecyclerView.LayoutManager mLayoutManager;
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
         private AppBarLayout mAppbarLayout;
         private long mLastDoubleTap = 0;
@@ -133,34 +144,44 @@ public interface IBaseList extends IRefresh {
         }
 
         @Override
+        @Deprecated
+        public View getViewV() {
+            return null;
+        }
+
+        @Override
+        @Deprecated
+        public void rootViewSetup(View rootView) {
+        }
+
+        @Override
         public void initBasic(Bundle savedInstanceState) {
             if (mRefresh == null) {
-                mRefresh = IRefreshHandler.getRefresh(context());
+                final IRefreshSetup refreshSetup = IRefreshSetupHandler.getRefresh(context());
+                mRefresh = refreshSetup == null ? new ListImpl() : refreshSetup.createList();
                 if (mRefresh != null) {
-                    SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.core_list_refresh_id);
-                    if (refreshLayout != null) {
-                        mRefresh.initRefresh(refreshLayout);
-                        //refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-                        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                            @Override
-                            public void onRefresh() {
-                                if (mQuickAdapter != null) {
-                                    mQuickAdapter.resetLoadMore();
-                                }
-                                mUI.reload();
+                    mRefresh.initRefresh(getRootView());
+                    mRefresh.setOnRefreshListener(new IRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            if (mQuickAdapter != null) {
+                                mQuickAdapter.resetLoadMore();
                             }
-                        });
-                    }
+                            mUI.reload();
+                        }
+                    });
                 }
             }
             mListView = (RecyclerView) findViewById(R.id.core_list_view_id);
             mUI.doubleClickTitleToTop();
 
             mQuickAdapter = mUI.initAdapter();
-            final RecyclerView.LayoutManager layoutManager = mUI.initLayoutManager();
+            mLayoutManager = mUI.initLayoutManager();
 
-            mListView.setLayoutManager(layoutManager);
+            mUI.recyclerViewSetupBeforeLayoutManager();
+            mListView.setLayoutManager(mLayoutManager);
             if (mQuickAdapter != null) {
+                mUI.recyclerViewSetupBeforeAdapter();
                 mListView.setAdapter(mQuickAdapter);
 
                 mQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -226,8 +247,9 @@ public interface IBaseList extends IRefresh {
         }
 
         @Override
-        public void initRefresh(View refresh) {
-            if (mRefresh != null) mRefresh.initRefresh(refresh);
+        public <T extends View> T initRefresh(View innerView) {
+            if (mRefresh != null) return mRefresh.initRefresh(innerView);
+            return null;
         }
 
         @Override
@@ -276,6 +298,16 @@ public interface IBaseList extends IRefresh {
         @Override
         public void recyclerViewOtherSetup() {
             IBaseListSetupHandler.setup(context(), mListView, mQuickAdapter);
+        }
+
+        @Override
+        public void recyclerViewSetupBeforeAdapter() {
+            IBaseListSetupHandler.setupBeforeAdapter(context(), mListView, mQuickAdapter);
+        }
+
+        @Override
+        public void recyclerViewSetupBeforeLayoutManager() {
+            IBaseListSetupHandler.setupBeforeLayoutManager(context(), mListView, mLayoutManager);
         }
 
         @Override

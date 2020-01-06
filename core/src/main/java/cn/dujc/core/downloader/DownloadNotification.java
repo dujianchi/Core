@@ -3,8 +3,6 @@ package cn.dujc.core.downloader;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import cn.dujc.core.util.ToastUtil;
@@ -15,7 +13,6 @@ import cn.dujc.core.util.ToastUtil;
  */
 public abstract class DownloadNotification implements OnDownloadListener {
 
-    private static final String CHANNEL_ID = "downloader";
     private final int mId = 123;
     private Context mContext;
     private NotificationManager mNotificationManager;

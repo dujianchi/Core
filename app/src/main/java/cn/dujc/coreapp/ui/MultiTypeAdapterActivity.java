@@ -1,5 +1,6 @@
 package cn.dujc.coreapp.ui;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import cn.dujc.core.adapter.multi2.MultiTypeAdapter;
 import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.ui.impl.BaseListActivity;
+import cn.dujc.core.util.StringUtil;
 import cn.dujc.coreapp.R;
 
 public class MultiTypeAdapterActivity extends BaseListActivity {
@@ -53,7 +55,7 @@ public class MultiTypeAdapterActivity extends BaseListActivity {
         loadDone(true, false);
     }
 
-    private static class Provider implements ViewProvider<String> {
+    private static class Provider implements ViewProvider {
         private final int mLayoutId;
 
         public Provider(int layoutId) {
@@ -66,8 +68,8 @@ public class MultiTypeAdapterActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
-            helper.setText(R.id.text, item);
+        public void convert(Context context, BaseViewHolder helper, Object item) {
+            helper.setText(R.id.text, StringUtil.concat(item));
         }
     }
 
@@ -78,10 +80,10 @@ public class MultiTypeAdapterActivity extends BaseListActivity {
         }
 
         @Override
-        public ProviderDelegate<String> delegate() {
-            return new ProviderDelegate<String>() {
+        public ProviderDelegate delegate() {
+            return new ProviderDelegate() {
                 @Override
-                public ViewProvider<String> getProvider(List<String> data, int position) {
+                public ViewProvider getProvider(List<?> data, int position) {
                     return new Provider(position % 2 == 0 ? R.layout.item_type_0 : R.layout.item_type_1);
                 }
             };

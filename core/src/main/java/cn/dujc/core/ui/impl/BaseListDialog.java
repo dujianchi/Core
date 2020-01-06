@@ -3,7 +3,6 @@ package cn.dujc.core.ui.impl;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -16,6 +15,7 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
 
     private static class ListImpl extends AbsImpl {
         private final BaseListDialog mUi;
+        View mRootView;
 
         public ListImpl(BaseListDialog ui) {
             super(ui);
@@ -30,6 +30,11 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
         @Override
         public Context context() {
             return mUi.mContext;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
         }
     }
 
@@ -47,6 +52,7 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
+        if (mBaseList instanceof ListImpl) ((ListImpl) mBaseList).mRootView = mRootView;
         mBaseList.initBasic(savedInstanceState);
     }
 
@@ -102,6 +108,16 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
     }
 
     @Override
+    public void recyclerViewSetupBeforeAdapter() {
+        mBaseList.recyclerViewSetupBeforeAdapter();
+    }
+
+    @Override
+    public void recyclerViewSetupBeforeLayoutManager() {
+        mBaseList.recyclerViewSetupBeforeLayoutManager();
+    }
+
+    @Override
     public void doubleClickTitleToTop() {
         mBaseList.doubleClickTitleToTop();
     }
@@ -126,7 +142,7 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    public <T extends View> T getSwipeRefreshLayout() {
         return mBaseList.getSwipeRefreshLayout();
     }
 
@@ -141,8 +157,8 @@ public abstract class BaseListDialog extends BaseDialog implements IBaseList.UI 
     }
 
     @Override
-    public void initRefresh(View refresh) {
-        mBaseList.initRefresh(refresh);
+    public <T extends View> T initRefresh(View innerView) {
+        return mBaseList.initRefresh(innerView);
     }
 
     @Override

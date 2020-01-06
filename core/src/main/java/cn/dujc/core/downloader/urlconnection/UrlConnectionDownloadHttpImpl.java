@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.downloader.Downloader;
 import cn.dujc.core.downloader.IDownloadHttpClient;
 import cn.dujc.core.downloader.OnDownloadListener;
@@ -56,12 +57,12 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                     try {
                         downloader.setRequestMethod("GET");
                     } catch (ProtocolException e) {
-                        e.printStackTrace();
+                        if (Core.DEBUG) e.printStackTrace();
                     }
                     try {
                         downloader.connect();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        if (Core.DEBUG) e.printStackTrace();
                     }
                     try {
                         final InputStream inputStream = downloader.getInputStream();
@@ -77,7 +78,7 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                             });
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        if (Core.DEBUG) e.printStackTrace();
                         onError(e.getLocalizedMessage(), listener, mainThreadHandler);
                     }
                     downloader.disconnect();
@@ -94,7 +95,7 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
             try {
                 future.cancel(true);
             } catch (Throwable e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
     }
@@ -114,7 +115,7 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                 return (HttpURLConnection) connection;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -151,20 +152,20 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
             }
             outputStream.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }

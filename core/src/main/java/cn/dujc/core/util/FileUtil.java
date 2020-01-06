@@ -1,5 +1,7 @@
 package cn.dujc.core.util;
 
+import android.support.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -12,8 +14,11 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.dujc.core.app.Core;
+
 public class FileUtil {
 
+    @NonNull
     public static byte[] toBytes(File file) {
         if (file != null && file.exists()) {
             FileInputStream inputStream = null;
@@ -28,23 +33,24 @@ public class FileUtil {
                 }
                 return outputStream.toByteArray();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } finally {
                 try {
                     inputStream.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
                 try {
                     outputStream.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }
         return new byte[0];
     }
 
+    @NonNull
     public static List<String> readLines(File file) {
         List<String> result = new ArrayList<>();
         if (!file.exists()) return result;
@@ -57,13 +63,13 @@ public class FileUtil {
             }
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    if (Core.DEBUG) e1.printStackTrace();
                 }
             }
         }
@@ -80,14 +86,14 @@ public class FileUtil {
             bw = new BufferedWriter(osw);
             bw.append(text);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (bw != null) {
                 try {
                     bw.close();
                     bw = null;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             if (osw != null) {
@@ -95,7 +101,7 @@ public class FileUtil {
                     osw.close();
                     osw = null;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             if (out != null) {
@@ -103,7 +109,7 @@ public class FileUtil {
                     out.close();
                     out = null;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }
@@ -120,7 +126,7 @@ public class FileUtil {
             randomFile.writeBytes(content);
             randomFile.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
