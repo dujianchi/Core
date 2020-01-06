@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     protected View mToolbar;
     protected View mRootView;
     protected Activity mActivity;
-    protected Fragment mCurrentFragment;//当前显示着的fragment
+    private Fragment mCurrentFragment;
 
     @Nullable
     @Override
@@ -159,7 +161,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     }
 
     @Override
-    public void onGranted(int requestCode, List<String> permissions) { }
+    public void onGranted(int requestCode, List<String> permissions) {
+    }
 
     @Override
     public void onDenied(int requestCode, List<String> permissions) {
@@ -178,6 +181,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Override
     public void rootViewSetup(View rootView) {
         IRootViewSetupHandler.setup(mActivity, this, rootView);
+    }
+
+    @Override
+    public View getRootView() {
+        return mRootView;
     }
 
     /**
@@ -314,20 +322,25 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         }
     }*/
 
-    protected void showFragment(int id, Fragment fragment) {
-        showFragment(id, fragment, null);
+    protected void showFragment(@IdRes int containerViewId, Fragment fragment) {
+        showFragment(containerViewId, fragment, null);
     }
 
-    protected void showFragment(int id, Fragment fragment, @Nullable String tag) {
+    protected void showFragment(@IdRes int containerViewId, Fragment fragment, @Nullable String tag) {
+        showFragmentInManager(getChildFragmentManager(), containerViewId, fragment, tag);
+    }
+
+    private void showFragmentInManager(FragmentManager manager, @IdRes int containerViewId, Fragment fragment, @Nullable String tag) {
+        if (manager == null) return;
         if (mCurrentFragment != null) {
-            getFragmentManager().beginTransaction().hide(mCurrentFragment).commit();
+            manager.beginTransaction().hide(mCurrentFragment).commit();
         }
         mCurrentFragment = fragment;
         if (fragment == null) return;
         if (!fragment.isAdded()) {
-            getFragmentManager().beginTransaction().add(id, fragment, tag).commit();
+            manager.beginTransaction().add(containerViewId, fragment, tag).commit();
         } else {
-            getFragmentManager().beginTransaction().show(fragment).commit();
+            manager.beginTransaction().show(fragment).commit();
         }
     }
 

@@ -11,6 +11,8 @@ import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
+import cn.dujc.core.app.Core;
+
 /**
  * @author du
  * date 2018/5/30 下午7:35
@@ -44,7 +46,7 @@ public class Installer {
             try {
                 context.startActivity(install);
             } catch (Throwable e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         } else {
             ToastUtil.showToast(context, "没有安装权限");

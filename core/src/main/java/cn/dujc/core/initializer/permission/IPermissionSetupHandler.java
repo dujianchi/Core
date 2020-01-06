@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 
 /**
@@ -46,7 +47,7 @@ public final class IPermissionSetupHandler {
             }
             sSetup = createByNewInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -62,7 +63,7 @@ public final class IPermissionSetupHandler {
                 if (invoke instanceof IPermissionSetup) return (IPermissionSetup) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -81,7 +82,7 @@ public final class IPermissionSetupHandler {
                     return (IPermissionSetup) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -97,9 +98,9 @@ public final class IPermissionSetupHandler {
             final Class<?> setupClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createSetupByClass((Class<? extends IPermissionSetup>) setupClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return sSetup;
     }

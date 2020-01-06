@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import cn.dujc.core.app.Core;
+
 public final class SerializableTransfer {
 
     private final File mFile;
@@ -36,17 +38,17 @@ public final class SerializableTransfer {
                 oos.flush();
                 oos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } finally {
                 if (oos != null) try {
                     oos.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
                 if (fos != null) try {
                     fos.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }
@@ -65,17 +67,17 @@ public final class SerializableTransfer {
                 result = ois.readObject();
                 ois.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             } finally {
                 if (ois != null) try {
                     ois.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
                 if (fis != null) try {
                     fis.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             return result;

@@ -22,6 +22,7 @@ import cn.dujc.core.initializer.toolbar.IToolbarHandler;
  */
 public class Core {
 
+    public static boolean DEBUG = false;
     private Core() {
     }
 

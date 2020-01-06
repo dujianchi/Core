@@ -26,8 +26,6 @@ public class ZxingFragmentActivity extends BaseActivity {
                 return false;
             }
         });
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fl_zxing_container, fragment)
-                .commit();
+        showFragment(R.id.fl_zxing_container, fragment);
     }
 }

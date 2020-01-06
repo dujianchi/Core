@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 /**
  * 解决键盘档住输入框
+ * 来源已不可考，或许是这个：https://blog.csdn.net/smileiam/article/details/69055963
  */
 public class SoftHideKeyBoardUtil {
 

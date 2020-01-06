@@ -652,4 +652,14 @@ public interface IWheelPicker {
      * @param tf 字体对象
      */
     void setTypeface(Typeface tf);
+
+    /**
+     * 显示前缀
+     */
+    void setPrefix(String prefix);
+
+    /**
+     * 显示后缀
+     */
+    void setSuffix(String suffix);
 }

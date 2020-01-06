@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import java.lang.reflect.Field;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.core.util.LogUtil;
 
@@ -59,7 +60,6 @@ public class BaseWebFragment extends BaseFragment {
         mUrl = extras().get(EXTRA_URL, "");
         mData = extras().get(EXTRA_DATA, "");
         mTitle = extras().get(EXTRA_TITLE, "");
-        mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
         init();
     }
 
@@ -113,7 +113,7 @@ public class BaseWebFragment extends BaseFragment {
                 mWebView.destroy();
                 mWebView = null;
             } catch (Throwable ex) {
-                ex.printStackTrace();
+                if (Core.DEBUG) ex.printStackTrace();
             }
             setConfigCallback(null);
         }
@@ -140,14 +140,12 @@ public class BaseWebFragment extends BaseFragment {
             field.setAccessible(true);
             field.set(configCallback, windowManager);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
     protected void init() {
-        if (!TextUtils.isEmpty(mTitle)) {
-            mActivity.setTitle(mTitle);
-        }
+        _onReceivedTitle(null, mTitle);
 
         mWebView = initWebView();
         ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
@@ -198,8 +196,8 @@ public class BaseWebFragment extends BaseFragment {
     }
 
     protected void _onReceivedTitle(WebView view, String title) {
-        if (TextUtils.isEmpty(mTitle)) {//传到当前fragment的title为空时，使用webview获得的title
-            mActivity.setTitle(title);
+        if (TextUtils.isEmpty(mTitle) && !TextUtils.isEmpty(title)) {//传到当前fragment的title为空时，使用webview获得的title
+            setTitle(title);
         }
     }
 

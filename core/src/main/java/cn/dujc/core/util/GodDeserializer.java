@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.dujc.core.app.Core;
+
 /**
  * 神级的gson反序列化处理类，会处理错误的json类型，取到类型错误也不报错，会继续取到剩余正确的值
  * 用法：Gson gson = new GsonBuilder().registerTypeAdapter(Bean2.class, new GodDeserializer<Bean>()).create()
@@ -40,14 +42,15 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         try {
             result = GSON.fromJson(json, typeOfT);
         } catch (Throwable e0) {
-            e0.printStackTrace();
+            if (Core.DEBUG) e0.printStackTrace();
             try {
                 result = (T) createByType(typeOfT);
                 if (result == null) return null;
-                Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+                Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {
+                }.getType());
                 copyFromMap(result, map);
             } catch (Throwable e1) {
-                e1.printStackTrace();
+                if (Core.DEBUG) e1.printStackTrace();
                 result = null;
             }
         }
@@ -91,7 +94,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                 final Field field = clazz.getDeclaredField(name);
                 setFieldValue(field, object, value);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
                 final Field[] fields = clazz.getDeclaredFields();
                 for (Field f : fields) {
                     final SerializedName serializedName = f.getAnnotation(SerializedName.class);
@@ -100,7 +103,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                     }
                 }
             } catch (Throwable e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
     }
@@ -372,7 +375,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -391,7 +394,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         try {
             result = Double.valueOf(valueStr);
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return result;
     }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Core;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.permission.IOddsPermissionOperator;
@@ -52,6 +53,8 @@ public interface IBaseUI {
     void initBasic(Bundle savedInstanceState);
 
     void rootViewSetup(View rootView);
+
+    View getRootView();
 
     public static interface WithToolbar extends IBaseUI {
         /**
@@ -413,9 +416,9 @@ public interface IBaseUI {
                     activity = Class.forName(component.getClassName());
                     requestCode = newRequestCode(activity);
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 } catch (ClassCastException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             return IStarterImpl.go(mContext, intent, requestCode, finishThen);
@@ -660,7 +663,7 @@ public interface IBaseUI {
                     try {
                         return (T) obj;
                     } catch (ClassCastException e) {
-                        e.printStackTrace();
+                        if (Core.DEBUG) e.printStackTrace();
                     }
                 }
             }
@@ -692,7 +695,7 @@ public interface IBaseUI {
                 try {
                     result = (T) new SerializableTransfer(data).read();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             return result;

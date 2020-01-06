@@ -8,6 +8,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import cn.dujc.core.app.Core;
 
 /**
  * Created by Du JC on 2015/12/14.
@@ -35,6 +38,7 @@ public class MediaUtil {
      *            {@link Environment#DIRECTORY_MOVIES}, {@link Environment#DIRECTORY_DOWNLOADS},
      *            {@link Environment#DIRECTORY_DCIM}, or {@link Environment#DIRECTORY_DOCUMENTS}. May not be null.
      */
+    @Nullable
     public static File getOutputDir(Context context, String type, String subDirName) {
         if (!Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
             return null;
@@ -65,10 +69,12 @@ public class MediaUtil {
      * @param subDirName
      * @return
      */
+    @Nullable
     public static File getOutputMediaDir(Context context, String subDirName) {
         return getOutputDir(context, Environment.DIRECTORY_PICTURES, subDirName);
     }
 
+    @Nullable
     public static File getOutputMediaFile(Context context, String subDir, int type) {
         File mediaStorageDir = getOutputMediaDir(context, subDir);
         if (mediaStorageDir == null) {
@@ -90,6 +96,7 @@ public class MediaUtil {
         return mediaFile;
     }
 
+    @Nullable
     public static Bitmap getVideoThumbnail(String filePath) {
         Bitmap bitmap = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
@@ -97,14 +104,14 @@ public class MediaUtil {
             retriever.setDataSource(filePath);
             bitmap = retriever.getFrameAtTime();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             try {
                 retriever.release();
             } catch (RuntimeException e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return bitmap;
@@ -140,7 +147,7 @@ public class MediaUtil {
                     break;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
             degree = 0;
         }
         return degree;
@@ -153,6 +160,7 @@ public class MediaUtil {
      * @param degrees 原始图片的角度
      * @return Bitmap 旋转后的图片
      */
+    @Nullable
     public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
         if (degrees == 0 || null == bitmap) {
             return bitmap;
@@ -190,6 +198,7 @@ public class MediaUtil {
      * @param fileName
      * @return path
      */
+    @Nullable
     public static String saveImgToGallery(Context context, Bitmap bitmap, String subDirName, String fileName) {
         File outFileDir = getOutputMediaDir(context, subDirName);
         if (outFileDir == null) {
@@ -207,15 +216,15 @@ public class MediaUtil {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
         }

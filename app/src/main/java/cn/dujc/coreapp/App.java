@@ -13,7 +13,11 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Core.init(this, new Class[]{ToolbarHelper.class, ToolbarHelper2.class}, ListSetupHelper.class, PermissionHelper.class);
+        Core.init(this, new Class[]{ToolbarHelper.class, ToolbarHelper2.class}
+                , ListSetupHelper.class
+                , PermissionHelper.class
+                , null
+        );
         //Core.init(this, ToolbarHelper.class, ListSetupHelper.class);
     }
 }

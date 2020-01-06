@@ -57,6 +57,7 @@ import cn.dujc.core.adapter.entity.IExpandable;
 import cn.dujc.core.adapter.loadmore.LoadMoreView;
 import cn.dujc.core.adapter.loadmore.SimpleLoadMoreView;
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
+import cn.dujc.core.app.Core;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -70,7 +71,8 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     /**
      * activity销毁时可以调用一下这个方法，然后可以在adapter内处理一些需要回收的事情
      */
-    public void onRecycled() {}
+    public void onRecycled() {
+    }
 
     //load more
     private boolean mNextLoadEnable = false;
@@ -461,14 +463,14 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      * @param layoutResId The layout resource id of each item.
      * @param data        A new list is created out of this one to avoid mutable list
      */
-    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<T> data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
+    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<? extends T> data) {
+        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
         if (layoutResId != 0) {
             this.mLayoutResId = layoutResId;
         }
     }
 
-    public BaseQuickAdapter(@Nullable List<T> data) {
+    public BaseQuickAdapter(@Nullable List<? extends T> data) {
         this(0, data);
     }
 
@@ -481,8 +483,8 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      *
      * @param data
      */
-    public void setNewData(@Nullable List<T> data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
+    public void setNewData(@Nullable List<? extends T> data) {
+        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
         resetLoadMore();
         mLastPosition = -1;
         notifyDataSetChanged();
@@ -969,13 +971,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return getOnItemLongClickListener().onItemLongClick(BaseQuickAdapter.this, v, position);
     }
 
-    private IMultiTypeDelegate<T> mMultiTypeDelegate;
+    private IMultiTypeDelegate mMultiTypeDelegate;
 
-    public void setMultiTypeDelegate(IMultiTypeDelegate<T> multiTypeDelegate) {
+    public void setMultiTypeDelegate(IMultiTypeDelegate multiTypeDelegate) {
         mMultiTypeDelegate = multiTypeDelegate;
     }
 
-    public IMultiTypeDelegate<T> getMultiTypeDelegate() {
+    public IMultiTypeDelegate getMultiTypeDelegate() {
         return mMultiTypeDelegate;
     }
 
@@ -1038,13 +1040,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
                 return (K) constructor.newInstance(view);
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }

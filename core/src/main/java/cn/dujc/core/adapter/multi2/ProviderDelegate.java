@@ -4,7 +4,7 @@ import java.util.List;
 
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
-public abstract class ProviderDelegate<T> implements IMultiTypeDelegate<T> {
+public abstract class ProviderDelegate implements IMultiTypeDelegate {
 
     /**
      * ProviderDelegate需要与{@link MultiTypeAdapter}配合使用，但{@link MultiTypeAdapter}
@@ -13,7 +13,7 @@ public abstract class ProviderDelegate<T> implements IMultiTypeDelegate<T> {
      */
     @Deprecated
     @Override
-    public int getDefItemViewType(List<T> data, int position) {
+    public int getDefItemViewType(List<?> data, int position) {
         return getProvider(data, position).layoutId();
     }
 
@@ -22,6 +22,6 @@ public abstract class ProviderDelegate<T> implements IMultiTypeDelegate<T> {
         return viewType;
     }
 
-    public abstract ViewProvider<T> getProvider(List<T> data, int position);
+    public abstract ViewProvider getProvider(List<?> data, int position);
 
 }

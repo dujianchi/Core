@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import cn.dujc.core.app.Core;
 import cn.dujc.core.app.Initializer;
 
 /**
@@ -47,7 +48,7 @@ public final class IRootViewSetupHandler {
             }
             sSetup = createByNewInstance(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
     }
 
@@ -63,7 +64,7 @@ public final class IRootViewSetupHandler {
                 if (invoke instanceof IRootViewSetup) return (IRootViewSetup) invoke;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return null;
     }
@@ -82,7 +83,7 @@ public final class IRootViewSetupHandler {
                     return (IRootViewSetup) instance;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
         return null;
@@ -98,9 +99,9 @@ public final class IRootViewSetupHandler {
             final Class<?> setupClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createSetupByClass((Class<? extends IRootViewSetup>) setupClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
         }
         return sSetup;
     }

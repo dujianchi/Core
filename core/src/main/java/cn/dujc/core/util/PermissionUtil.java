@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 
+import cn.dujc.core.app.Core;
+
 /**
  * 本类方法来自 https://blog.csdn.net/u012359453/article/details/87729018 ，稍作修改
  * 对所有危险权限分组做权限判断
@@ -163,7 +165,7 @@ public class PermissionUtil {
                 try {
                     outputStream.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Core.DEBUG) e.printStackTrace();
                 }
             }
             if (file != null) {

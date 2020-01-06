@@ -1,5 +1,6 @@
 package cn.dujc.coreapp.ui;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.core.util.StringUtil;
+import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
+import cn.dujc.widget.resizeable.ResizeableTextView;
 
 public class ListActivity extends BaseListActivity {
 
@@ -46,30 +49,30 @@ public class ListActivity extends BaseListActivity {
             mList.add(StringUtil.format("index %d", index + size));
         }
         notifyDataSetChanged(mList.size() >= 150);
+        ToastUtil.showToast(mActivity, "refreshed");
     }
 
     public static class Adapter extends MultiTypeAdapter<String> {
 
+        private final ViewProvider mRedProvider, mGreenProvider;
         public Adapter(@Nullable List<String> data) {
             super(data);
+            mRedProvider = new RedProvider();
+            mGreenProvider = new GreenProvider();
         }
 
         @Override
-        public ProviderDelegate<String> delegate() {
-            return new ProviderDelegate<String>() {
+        public ProviderDelegate delegate() {
+            return new ProviderDelegate() {
                 @Override
-                public ViewProvider<String> getProvider(List<String> data, int position) {
-                    ViewProvider<String> provider = mProviderArray.get(position);
-                    if (provider == null) {
-                        provider = position % 2 == 0 ? new RedProvider() : new GreenProvider();
-                    }
-                    return provider;
+                public ViewProvider getProvider(List<?> data, int position) {
+                    return position % 2 == 0 ? mRedProvider : mGreenProvider;
                 }
             };
         }
     }
 
-    public static class RedProvider implements ViewProvider<String> {
+    public static class RedProvider implements ViewProvider {
 
         @Override
         public int layoutId() {
@@ -77,12 +80,14 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
-            helper.setText(R.id.text, item);
+        public void convert(Context context, BaseViewHolder helper, Object item) {
+            ResizeableTextView textView = helper.getView(R.id.text);
+            //textView.updateScale(2F);
+            textView.setText(StringUtil.concat(item));
         }
     }
 
-    public static class GreenProvider implements ViewProvider<String> {
+    public static class GreenProvider implements ViewProvider {
 
         @Override
         public int layoutId() {
@@ -90,8 +95,10 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(BaseViewHolder helper, String item) {
-            helper.setText(R.id.text, item);
+        public void convert(Context context, BaseViewHolder helper, Object item) {
+            ResizeableTextView textView = helper.getView(R.id.text);
+            //textView.updateScale(4F);
+            textView.setText(StringUtil.concat(item));
         }
     }
 
