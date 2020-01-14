@@ -1,5 +1,8 @@
 package cn.dujc.core.util;
 
+import android.annotation.TargetApi;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -7,7 +10,9 @@ import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -16,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -32,12 +38,13 @@ public class MediaUtil {
 
     /**
      * 获取外置内存卡中公有的路径
+     *
      * @param type The type of storage directory to return. Should be one of
-     *            {@link Environment#DIRECTORY_MUSIC}, {@link Environment#DIRECTORY_PODCASTS},
-     *            {@link Environment#DIRECTORY_RINGTONES}, {@link Environment#DIRECTORY_ALARMS},
-     *            {@link Environment#DIRECTORY_NOTIFICATIONS}, {@link Environment#DIRECTORY_PICTURES},
-     *            {@link Environment#DIRECTORY_MOVIES}, {@link Environment#DIRECTORY_DOWNLOADS},
-     *            {@link Environment#DIRECTORY_DCIM}, or {@link Environment#DIRECTORY_DOCUMENTS}. May not be null.
+     *             {@link Environment#DIRECTORY_MUSIC}, {@link Environment#DIRECTORY_PODCASTS},
+     *             {@link Environment#DIRECTORY_RINGTONES}, {@link Environment#DIRECTORY_ALARMS},
+     *             {@link Environment#DIRECTORY_NOTIFICATIONS}, {@link Environment#DIRECTORY_PICTURES},
+     *             {@link Environment#DIRECTORY_MOVIES}, {@link Environment#DIRECTORY_DOWNLOADS},
+     *             {@link Environment#DIRECTORY_DCIM}, or {@link Environment#DIRECTORY_DOCUMENTS}. May not be null.
      */
     @Nullable
     public static File getOutputDir(Context context, String type, String subDirName) {
@@ -179,11 +186,12 @@ public class MediaUtil {
 
     /**
      * 将图片保存到SD卡中，并且更新缩略图
+     *
      * @param context
      * @param subDir
      * @param bitmap
      */
-    public static void saveOneStep(Context context, String subDir, Bitmap bitmap){
+    public static void saveOneStep(Context context, String subDir, Bitmap bitmap) {
         final File file = getOutputMediaFile(context, subDir, MEDIA_TYPE_IMAGE);
         if (file != null) {
             String path = saveImgToGallery(context, bitmap, subDir, file.getName());
@@ -211,6 +219,53 @@ public class MediaUtil {
 
         File jpg = new File(outFileDir + File.separator + fileName);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            saveBitmapToFile(bitmap, jpg);
+            refreshGallery(context, jpg);
+        } else {
+            saveBitmapToFileApi29(context, bitmap, jpg);
+        }
+        //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+        //mediaScan(context, path);//Android4.4以上无系统权限不能发送Intent.ACTION_MEDIA_MOUNTED广播，所以采用此方法更新图库
+        return jpg.getPath();
+    }
+
+    /**
+     * bitmap -> file
+     */
+    @TargetApi(Build.VERSION_CODES.Q)
+    private static void saveBitmapToFileApi29(Context context, Bitmap bitmap, File jpg) {
+        Context appContext = context.getApplicationContext();
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, jpg.getName());
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, jpg.getName());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+        ContentResolver contentResolver = appContext.getContentResolver();
+        Uri inserted = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (inserted == null) return;
+        OutputStream fos = null;
+        try {
+            fos = contentResolver.openOutputStream(inserted);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            if (fos != null) fos.flush();
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    if (Core.DEBUG) e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * bitmap -> file
+     */
+    private static void saveBitmapToFile(Bitmap bitmap, File jpg) {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(jpg.getPath());
@@ -229,11 +284,6 @@ public class MediaUtil {
                 }
             }
         }
-
-        refreshGallery(context, jpg);
-        //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-        //mediaScan(context, path);//Android4.4以上无系统权限不能发送Intent.ACTION_MEDIA_MOUNTED广播，所以采用此方法更新图库
-        return jpg.getPath();
     }
 
     private static class SingleMediaScanner implements MediaScannerConnection.MediaScannerConnectionClient {
@@ -243,7 +293,9 @@ public class MediaUtil {
 
         public SingleMediaScanner(Context context, File f) {
             mFile = f;
-            mMs = new MediaScannerConnection(context.getApplicationContext(), this);
+            if (mFile == null || !mFile.exists()) return;
+            Context appContext = context.getApplicationContext();
+            mMs = new MediaScannerConnection(appContext, this);
             mMs.connect();
         }
 

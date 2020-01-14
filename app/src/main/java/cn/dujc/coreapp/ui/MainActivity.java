@@ -327,7 +327,7 @@ public class MainActivity extends BaseListActivity {
     public void onGranted(int requestCode, List<String> permissions) {
         if (requestCode == requestCodeSdcard) {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.test);
-            String img = MediaUtil.saveImgToGallery(mActivity, bitmap, "bbb", "bbb.png");
+            String img = MediaUtil.saveImgToGallery(mActivity, bitmap, "bbb", "bbbcc.png");
             ToastUtil.showToast(mActivity, img);
         }
     }
