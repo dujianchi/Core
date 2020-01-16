@@ -207,7 +207,6 @@ public class MediaUtil {
      * @param fileName
      * @return path
      */
-    @Nullable
     public static String saveImgToGallery(Context context, Bitmap bitmap, String subDirName, String fileName) {
         File outFileDir = getOutputMediaDir(context, subDirName);
         if (outFileDir == null) {
@@ -240,7 +239,7 @@ public class MediaUtil {
         values.put(MediaStore.Images.Media.TITLE, jpg.getName());
         values.put(MediaStore.Images.Media.DISPLAY_NAME, jpg.getName());
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES /*+ File.separator + jpg.getParent()*/);
         ContentResolver contentResolver = appContext.getContentResolver();
         Uri inserted = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         if (inserted == null) return;

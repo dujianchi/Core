@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -261,6 +263,26 @@ public class ActivityStackUtil {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * 在lastSurvivalOfSpecies同类的实例中保留一个当前，其他删除；然后关闭除lastSurvivalOfSpecies以及classes数组以外的所有类
+     *
+     * @param lastSurvivalOfSpecies 同类的实例只保留这个
+     * @param classes               保留类别，如果保留的类别中包括lastSurvivalOfSpecies，则关闭其余的
+     */
+    @SafeVarargs
+    public synchronized final void keepOneSurvivalAndOther(Activity lastSurvivalOfSpecies, Class<? extends Activity>... classes) {
+        if (lastSurvivalOfSpecies == null) return;
+        finishSameButThis(lastSurvivalOfSpecies);
+        Set<Class<? extends Activity>> classList = new HashSet<>();
+        if (classes != null) {
+            List<Class<? extends Activity>> exclude = Arrays.asList(classes);
+            classList.addAll(exclude);
+        }
+        classList.add(lastSurvivalOfSpecies.getClass());
+        Class<? extends Activity>[] newClasses = new Class[classList.size()];
+        closeAllExcept(classList.toArray(newClasses));
     }
 
     /**
