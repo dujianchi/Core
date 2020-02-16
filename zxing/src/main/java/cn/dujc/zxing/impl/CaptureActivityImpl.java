@@ -1,8 +1,9 @@
 package cn.dujc.zxing.impl;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import cn.dujc.zxing.open.CaptureViewImpl;
 import cn.dujc.zxing.open.ICaptureResult;

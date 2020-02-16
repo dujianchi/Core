@@ -8,7 +8,7 @@ import java.util.List;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.adapter.multi2.MultiTypeAdapter;
+import cn.dujc.core.adapter.MultiTypeAdapter;
 import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.ui.impl.BaseListActivity;

@@ -6,10 +6,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;

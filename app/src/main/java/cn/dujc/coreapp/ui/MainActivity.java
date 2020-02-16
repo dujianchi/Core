@@ -6,7 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -326,7 +327,7 @@ public class MainActivity extends BaseListActivity {
     public void onGranted(int requestCode, List<String> permissions) {
         if (requestCode == requestCodeSdcard) {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.test);
-            String img = MediaUtil.saveImgToGallery(mActivity, bitmap, "bbb", "bbb.png");
+            String img = MediaUtil.saveImgToGallery(mActivity, bitmap, "bbb", "aabbbcc" + System.currentTimeMillis() + ".png");
             ToastUtil.showToast(mActivity, img);
         }
     }

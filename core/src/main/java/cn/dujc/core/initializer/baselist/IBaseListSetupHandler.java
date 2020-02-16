@@ -1,7 +1,8 @@
 package cn.dujc.core.initializer.baselist;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;

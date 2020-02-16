@@ -2,7 +2,8 @@ package cn.dujc.zxing.impl;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.zxing.open.ICaptureHandler;

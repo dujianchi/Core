@@ -20,6 +20,8 @@ import cn.dujc.coreapp.R;
 
 public class CrashActivity extends BaseActivity implements View.OnClickListener {
 
+    private TextView mTextView;
+
     @Override
     public int getViewId() {
         return 0;
@@ -28,8 +30,8 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
     @Nullable
     @Override
     public View getViewV() {
-        TextView textView = new TextView(mActivity);
-        textView.setText(new RichTextBuilder()
+        mTextView = new TextView(mActivity);
+        mTextView.setText(new RichTextBuilder()
                 .addTextWithDefault("12", "123")
                 .addTextPart(mActivity, R.color.colorAccent, '2')
                 .addTextPart("asdfasdf")
@@ -43,9 +45,9 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
                 .addPart("2 scale red ", new RelativeSizeSpan(2), new ForegroundColorSpan(Color.RED))
                 .ifNotNone("aaa").append("aaa").create()
                 .build());
-        textView.setGravity(Gravity.CENTER);
+        mTextView.setGravity(Gravity.CENTER);
         //textView.setOnClickListener(this);
-        return textView;
+        return mTextView;
     }
 
     @Override
@@ -62,6 +64,7 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
     public void onGranted(int requestCode, List<String> permissions) {
         String deviceId = DeviceUtil.getDeviceId(mActivity);
         LogUtil.d(deviceId);
+        mTextView.append(deviceId);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class BannerActivity extends BaseRefreshableActivity {
         duBanner.setImageLoader(new IDuBanner.ImageLoader() {
 
             @Override
-            public void loadImage(View parentView, ImageView imageView, String url) {
+            public void loadImage(View parentView, ImageView imageView, Object item) {
                 imageView.setImageResource(R.mipmap.splash);
             }
         });

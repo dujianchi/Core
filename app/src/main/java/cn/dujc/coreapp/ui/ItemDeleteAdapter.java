@@ -10,11 +10,12 @@ public class ItemDeleteAdapter extends BaseAdapter<String> {
 
     public ItemDeleteAdapter(List<String> list) {
         super(list);
-        mLayoutResId = R.layout.item_item_delete;
+        //mLayoutResId = R.layout.item_item_delete;
     }
 
     @Override
     protected void convert(BaseViewHolder helper, String item) {
 
     }
+
 }
