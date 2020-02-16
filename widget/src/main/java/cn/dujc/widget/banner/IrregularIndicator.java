@@ -2,6 +2,7 @@ package cn.dujc.widget.banner;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -23,9 +24,9 @@ import cn.dujc.widget.abstraction.IDuBannerIndicator;
 public class IrregularIndicator extends LinearLayout implements IDuBannerIndicator {
 
     private SparseArray<View> mChildren = new SparseArray<>();
-    private final Drawable mSelectedDrawable, mDefaultDrawable;
     private final int mShortEdge;
     private final int mLongEdge;
+    private Drawable mSelectedDrawable, mDefaultDrawable;
     private int mCurrent = -1;
 
     public IrregularIndicator(Context context) {
@@ -51,6 +52,30 @@ public class IrregularIndicator extends LinearLayout implements IDuBannerIndicat
     @NonNull
     @Override
     public ViewGroup getView() {
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setSelectedDrawable(Drawable selectedDrawable) {
+        mSelectedDrawable = selectedDrawable;
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setDefaultDrawable(Drawable defaultDrawable) {
+        mDefaultDrawable = defaultDrawable;
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setSelectedColor(int selectedColor) {
+        mSelectedDrawable = new ColorDrawable(selectedColor);
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setDefaultColor(int defaultColor) {
+        mDefaultDrawable = new ColorDrawable(defaultColor);
         return this;
     }
 

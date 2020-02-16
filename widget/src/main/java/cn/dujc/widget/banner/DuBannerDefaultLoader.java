@@ -12,7 +12,7 @@ import cn.dujc.widget.abstraction.IDuBanner;
 public class DuBannerDefaultLoader implements IDuBanner.ImageLoader {
 
     @Override
-    public void loadImage(View parentView, ImageView imageView, String url) {
+    public void loadImage(View parentView, ImageView imageView, Object item) {
         //ImageLoadHelper.loadImage(GlideApp.with(view), imageView, url, new RoundedOptions(60));
     }
 }
