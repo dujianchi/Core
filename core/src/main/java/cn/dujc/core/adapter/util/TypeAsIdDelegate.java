@@ -1,6 +1,6 @@
 package cn.dujc.core.adapter.util;
 
-import androidx.annotation.LayoutRes;
+import android.support.annotation.LayoutRes;
 
 import java.util.List;
 

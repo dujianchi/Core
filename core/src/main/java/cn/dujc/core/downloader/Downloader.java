@@ -2,9 +2,8 @@ package cn.dujc.core.downloader;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;

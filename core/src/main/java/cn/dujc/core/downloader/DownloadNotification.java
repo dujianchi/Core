@@ -6,8 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-
-import androidx.core.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 
 import cn.dujc.core.util.ToastUtil;
 

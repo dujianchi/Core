@@ -3,11 +3,10 @@ package cn.dujc.core.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.WindowManager;
-
-import androidx.annotation.Nullable;
 
 import cn.dujc.core.util.ContextUtil;
 

@@ -3,8 +3,6 @@ package cn.dujc.core.util;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
-
 import java.util.IllegalFormatException;
 import java.util.Random;
 

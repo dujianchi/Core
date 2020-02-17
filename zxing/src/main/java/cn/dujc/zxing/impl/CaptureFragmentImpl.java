@@ -1,9 +1,8 @@
 package cn.dujc.zxing.impl;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.zxing.open.CaptureViewImpl;

@@ -2,8 +2,7 @@ package cn.dujc.coreapp.ui;
 
 import android.Manifest;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.List;

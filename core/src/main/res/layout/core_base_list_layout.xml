@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/core_list_refresh_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@id/core_list_view_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

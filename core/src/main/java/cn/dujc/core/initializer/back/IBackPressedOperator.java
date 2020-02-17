@@ -2,8 +2,7 @@ package cn.dujc.core.initializer.back;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-
-import androidx.appcompat.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 
 import cn.dujc.core.R;
 import cn.dujc.core.util.ToastUtil;

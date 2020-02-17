@@ -1,9 +1,8 @@
 package cn.dujc.widget.tablayout;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
 
 public interface ITab<T> {
 

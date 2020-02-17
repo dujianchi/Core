@@ -3,6 +3,7 @@ package cn.dujc.core.ui.impl;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-
-import androidx.core.content.ContextCompat;
 
 import java.lang.reflect.Field;
 

@@ -23,8 +23,8 @@ android {
 
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly "androidx.appcompat:appcompat:$support_version"
-    compileOnly "androidx.legacy:legacy-support-v4:$support_version"
+    compileOnly "com.android.support:appcompat-v7:$support_version"
+    compileOnly "com.android.support:support-v4:$support_version"
 
     implementation project(':core')
     implementation 'com.google.zxing:core:3.3.0'

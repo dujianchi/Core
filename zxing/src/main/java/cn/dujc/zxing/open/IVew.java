@@ -1,10 +1,9 @@
 package cn.dujc.zxing.open;
 
 import android.app.Activity;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.view.View;
-
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 
 public interface IVew {
 

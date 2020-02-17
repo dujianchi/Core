@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.annotation.Nullable;
 
-import androidx.annotation.Nullable;
-
 /**
  * @author du
  * date 2018/5/11 上午11:27

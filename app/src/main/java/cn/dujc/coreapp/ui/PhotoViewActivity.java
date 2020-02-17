@@ -2,13 +2,9 @@ package cn.dujc.coreapp.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.viewpager.widget.PagerAdapter;
-
-import com.github.chrisbanes.photoview.OnViewTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +12,8 @@ import java.util.List;
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.ui.widget.ScalableViewPager;
+import cn.dujc.widget.photoview.OnViewTapListener;
+import cn.dujc.widget.photoview.PhotoView;
 
 public class PhotoViewActivity extends BaseActivity {
 

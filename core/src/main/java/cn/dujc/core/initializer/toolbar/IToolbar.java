@@ -1,10 +1,9 @@
 package cn.dujc.core.initializer.toolbar;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,10 +1,9 @@
 package cn.dujc.coreapp.ui;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import androidx.annotation.Nullable;
 
 import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.core.ui.base.SingleTaskActivity;

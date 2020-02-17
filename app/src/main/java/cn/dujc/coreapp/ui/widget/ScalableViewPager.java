@@ -1,10 +1,9 @@
 package cn.dujc.coreapp.ui.widget;
 
 import android.content.Context;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
-import androidx.viewpager.widget.ViewPager;
 
 /**
  * 为了解决PhotoView和viewpager触摸冲突
