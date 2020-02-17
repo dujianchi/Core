@@ -1,6 +1,6 @@
 package cn.dujc.widget.abstraction;
 
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public interface IDuBannerCore {
     /**
      * 设置view的工厂类
      */
-    public void setBannerAdapter(RecyclerView.Adapter<? extends RecyclerView.ViewHolder> bannerAdapter);
+    public void setBannerAdapter(PagerAdapter bannerAdapter);
 
     /**
      * 设置数据

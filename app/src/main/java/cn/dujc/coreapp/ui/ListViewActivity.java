@@ -24,7 +24,7 @@ public class ListViewActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mListView = findViewById(R.id.lv_list);
+        mListView = (ListView) findViewById(R.id.lv_list);
         List<String> list = Arrays.asList("aaa", "bbb", "ccc", "ddd");
         MyAdapter adapter = new MyAdapter(list);
         mListView.setAdapter(adapter);

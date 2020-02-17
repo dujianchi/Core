@@ -3,7 +3,7 @@ package cn.dujc.widget.banner;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.PagerAdapter;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,16 +45,7 @@ public class DuBanner extends DuBannerCore implements IDuBanner {
         }
     }
 
-    private static class BannerHolder extends RecyclerView.ViewHolder {
-        ImageView mImageView;
-
-        public BannerHolder(View itemView) {
-            super(itemView);
-            mImageView = (ImageView) itemView;
-        }
-    }
-
-    private static class BannerAdapter extends RecyclerView.Adapter<BannerHolder> {
+    private static class BannerAdapter extends PagerAdapter {
 
         private final DuBanner mBanner;
         private ImageLoader mImageLoader = new DuBannerDefaultLoader();
@@ -64,25 +55,46 @@ public class DuBanner extends DuBannerCore implements IDuBanner {
         }
 
         @Override
-        @NonNull
-        public BannerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final ImageView imageView = new ImageView(parent.getContext());
+        public int getCount() {
+            return mBanner.getItemCount();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            final int realPosition = mBanner.getRealPosition(position);
+            final ImageView imageView = new ImageView(container.getContext());
+
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            return new BannerHolder(imageView);
-        }
+            imageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mBanner.mOnBannerClickListener != null) {
+                        mBanner.mOnBannerClickListener.onBannerClicked(imageView, realPosition);
+                    }
+                }
+            });
 
-        @Override
-        public void onBindViewHolder(BannerHolder holder, int position) {
             if (mImageLoader != null) {
-                mImageLoader.loadImage(holder.itemView, holder.mImageView, mBanner.mList.get(mBanner.getRealPosition(position)));
+                mImageLoader.loadImage(container, imageView, mBanner.mList.get(realPosition));
             }
+
+            container.addView(imageView);
+
+            return imageView;
         }
 
         @Override
-        public int getItemCount() {
-            return mBanner.getItemCount();
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            if (object instanceof View) {
+                container.removeView((View) object);
+            }
         }
     }
 

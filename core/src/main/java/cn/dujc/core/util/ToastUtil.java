@@ -1,23 +1,13 @@
 package cn.dujc.core.util;
 
 import android.annotation.SuppressLint;
-import android.app.AppOpsManager;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.Gravity;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import cn.dujc.core.app.Core;
-import cn.dujc.core.ui.base.ToastXHandlerActivity;
 
 /**
  * 在目前的实现方式中实现自定义view的toast会有问题，以后再来改（2018年11月7日）
@@ -73,48 +63,11 @@ public class ToastUtil {
     }
 
     public static void showToast(Context context, CharSequence text, int gravity, int yOffset, int duration) {
-        if (isNotificationEnabled(context)) {
-            Toast toast = current(context, text);
-            if (toast != null) {
-                toast.setGravity(gravity, 0, yOffset);
-                toast.setDuration(duration);
-                toast.show();
-            }
-        } else {
-            if (context != null) {
-                try {
-                    ToastXHandlerActivity.start(context, text);
-                } catch (Exception e) {
-                    if (Core.DEBUG) e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * 检查通知栏权限有没有开启
-     * 参考SupportCompat包中的方法： NotificationManagerCompat.from(context).areNotificationsEnabled();
-     */
-    public static boolean isNotificationEnabled(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            return notificationManager != null && notificationManager.areNotificationsEnabled();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            ApplicationInfo appInfo = context.getApplicationInfo();
-            String pkg = context.getApplicationContext().getPackageName();
-            int uid = appInfo.uid;
-            try {
-                Class<?> appOpsClass = Class.forName(AppOpsManager.class.getName());
-                Method checkOpNoThrowMethod = appOpsClass.getMethod("checkOpNoThrow", Integer.TYPE, Integer.TYPE, String.class);
-                Field opPostNotificationValue = appOpsClass.getDeclaredField("OP_POST_NOTIFICATION");
-                int value = (Integer) opPostNotificationValue.get(Integer.class);
-                return (Integer) checkOpNoThrowMethod.invoke(appOps, value, uid, pkg) == 0;
-            } catch (NoSuchMethodException | NoSuchFieldException | InvocationTargetException | IllegalAccessException | RuntimeException | ClassNotFoundException ignored) {
-                return true;
-            }
-        } else {
-            return true;
+        Toast toast = current(context, text);
+        if (toast != null) {
+            toast.setGravity(gravity, 0, yOffset);
+            toast.setDuration(duration);
+            toast.show();
         }
     }
 

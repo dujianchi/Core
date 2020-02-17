@@ -1,7 +1,6 @@
 package cn.dujc.core.initializer.baselist;
 
 import android.content.Context;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 
 import cn.dujc.core.adapter.BaseQuickAdapter;
@@ -21,9 +20,6 @@ public interface IBaseListSetup {
 
         @Override
         public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
-            if (recyclerView != null) {
-                recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-            }
         }
 
         @Override

@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -94,11 +94,17 @@ public class IrregularIndicator extends LinearLayout implements IDuBannerIndicat
                     }
                     final LayoutParams params;
                     if (current == index) {
-                        ViewCompat.setBackground(indicator, mSelectedDrawable);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            indicator.setBackground(mSelectedDrawable);
+                        else
+                            indicator.setBackgroundDrawable(mSelectedDrawable);
                         params = new LayoutParams(mLongEdge, mShortEdge);
                         params.leftMargin = index == 0 ? 0 : mShortEdge;
                     } else {
-                        ViewCompat.setBackground(indicator, mDefaultDrawable);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            indicator.setBackground(mDefaultDrawable);
+                        else
+                            indicator.setBackgroundDrawable(mDefaultDrawable);
                         params = new LayoutParams(mShortEdge, mShortEdge);
                         params.leftMargin = index == 0 ? 0 : mShortEdge;
                     }

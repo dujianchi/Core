@@ -6,10 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -110,7 +110,10 @@ public class DefaultIndicator extends LinearLayout implements IDuBannerIndicator
                 if (mSelectedDrawable == null && mDefaultDrawable == null) {
                     indicator.setColor(isSelected ? mSelectedColor : mDefaultColor);
                 } else {
-                    ViewCompat.setBackground(indicator, isSelected ? mSelectedDrawable : mDefaultDrawable);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        indicator.setBackground(isSelected ? mSelectedDrawable : mDefaultDrawable);
+                    else
+                        indicator.setBackgroundDrawable(isSelected ? mSelectedDrawable : mDefaultDrawable);
                 }
                 addView(indicator, params);
             }

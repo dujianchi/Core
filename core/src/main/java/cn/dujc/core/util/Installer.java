@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
@@ -21,7 +20,8 @@ public class Installer {
 
     public static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
 
-    private Installer() { }
+    private Installer() {
+    }
 
     /**
      * 安装apk
@@ -36,13 +36,7 @@ public class Installer {
                 == PackageManager.PERMISSION_GRANTED) {
             Intent install = new Intent(Intent.ACTION_VIEW);
             install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//不会安装一半跳掉
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                Uri contentUri = FileProvider.getUriForFile(context, authorityIfLargeN, apk);
-                install.setDataAndType(contentUri, APK_MIME_TYPE);
-            } else {
-                install.setDataAndType(Uri.fromFile(apk), APK_MIME_TYPE);
-            }
+            install.setDataAndType(Uri.fromFile(apk), APK_MIME_TYPE);
             try {
                 context.startActivity(install);
             } catch (Throwable e) {

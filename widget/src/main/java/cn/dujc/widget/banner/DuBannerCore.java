@@ -8,15 +8,10 @@ import android.os.Looper;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -35,12 +30,13 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
     private static final int OFFSET_SCALE = 10000;//因为将RecyclerView设置了int.max为数据的长度，所以需要一个默认的偏移量倍数
     private static final int TIME_DEFAULT = 3500;//默认滚动时间
     private static Handler sHandler = new Handler(Looper.getMainLooper());
-    private PagerSnapHelper mSnapHelper;
-    private LinearLayoutManager mLayoutManager;
+    private final ViewPager.OnPageChangeListener mPageChangeListener;
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter<? extends RecyclerView.ViewHolder> mBannerAdapter;
-    private OnBannerItemClick mOnBannerItemClick;
+    protected OnBannerClickListener mOnBannerClickListener;
+    protected final List mList = new ArrayList();
+
+    private ViewPager mViewPager;
+    private PagerAdapter mBannerAdapter;
     private IDuBannerIndicator mIndicator;
     private int mCurrent, mActual;//当前position和实际position
     private int mTimeInterval = TIME_DEFAULT;
@@ -48,14 +44,12 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
     private float mHeightScale = 0f;//9/16
     private boolean mAutoScroll = true;
 
-    final List mList = new ArrayList();
-
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mRecyclerView != null) {
+            if (mViewPager != null) {
                 if (isShown()) {
-                    mRecyclerView.smoothScrollToPosition(++mActual);
+                    mViewPager.setCurrentItem(++mActual);
                 }
                 onStop();
                 onStart();
@@ -73,6 +67,28 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
 
     public DuBannerCore(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    onStart();
+                } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    onStop();
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mActual = position;
+                if (mActual <= 10 || mActual > Integer.MAX_VALUE - 10) {
+                    mActual = calcOffset() + mActual;
+                    mViewPager.setCurrentItem(mActual);
+                }
+                mCurrent = getRealPosition(mActual);
+
+                refreshIndicator();
+            }
+        };
         init(context, attrs);
     }
 
@@ -121,9 +137,9 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
         }
         if (indicatorMarginBetween == 0) indicatorMarginBetween = indicatorEdge;
 
-        mRecyclerView = new RecyclerView(context);
-        mRecyclerView.setFocusableInTouchMode(false);
-        addView(mRecyclerView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mViewPager = new ViewPager(context);
+        mViewPager.setFocusableInTouchMode(false);
+        addView(mViewPager, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
         mIndicator = new DefaultIndicator(context, drawableDefault, drawableSelected, colorDefault, colorSelected, indicatorMarginBetween/*, mIndicatorMarginLayout*/, indicatorEdge);
         LayoutParams indicatorParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -131,39 +147,8 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
         indicatorParams.bottomMargin = mIndicatorMarginLayout;
         addView(mIndicator.getView(), indicatorParams);
 
-        //mBannerAdapter = new BannerAdapter();
-
-        mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mSnapHelper = new PagerSnapHelper();
-        mSnapHelper.attachToRecyclerView(mRecyclerView);
-        //mRecyclerView.setAdapter(mBannerAdapter);
-
-        mRecyclerView.clearOnScrollListeners();
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    View snapView = mSnapHelper.findSnapView(mLayoutManager);
-                    int position = mRecyclerView.getChildAdapterPosition(snapView);
-                    if (position != RecyclerView.NO_POSITION) {
-                        mActual = position;
-                    }
-                    if (mActual <= 10 || mActual > Integer.MAX_VALUE - 10) {
-                        mActual = calcOffset() + mActual;
-                    }
-                    mRecyclerView.scrollToPosition(mActual);
-                    mCurrent = getRealPosition(mActual);
-
-                    refreshIndicator();
-                    onStart();
-                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    onStop();
-                }
-                //Log.d("-----------", "------------ actual = " + mActual + ", current = " + mCurrent);
-            }
-        });
+        mViewPager.removeOnPageChangeListener(mPageChangeListener);
+        mViewPager.addOnPageChangeListener(mPageChangeListener);
 
         onStart();
     }
@@ -245,10 +230,10 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
     }
 
     @Override
-    public void setBannerAdapter(RecyclerView.Adapter<? extends RecyclerView.ViewHolder> bannerAdapter) {
+    public void setBannerAdapter(PagerAdapter bannerAdapter) {
         mBannerAdapter = bannerAdapter;
         if (mBannerAdapter != null) {
-            mRecyclerView.setAdapter(mBannerAdapter);
+            mViewPager.setAdapter(mBannerAdapter);
         }
     }
 
@@ -265,16 +250,12 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
         mCurrent = getRealPosition(mActual);
         if (mBannerAdapter != null) mBannerAdapter.notifyDataSetChanged();
         refreshIndicator();
-        mRecyclerView.scrollToPosition(mActual);
+        mViewPager.setCurrentItem(mActual, false);
     }
 
     @Override
     public void setOnBannerClickListener(OnBannerClickListener bannerClickListener) {
-        if (mOnBannerItemClick != null) {
-            mRecyclerView.removeOnItemTouchListener(mOnBannerItemClick);
-        }
-        mOnBannerItemClick = new OnBannerItemClick(mRecyclerView, this, bannerClickListener);
-        mRecyclerView.addOnItemTouchListener(mOnBannerItemClick);
+        mOnBannerClickListener = bannerClickListener;
     }
 
     /**
@@ -339,33 +320,6 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
         if (mIndicator != null) {
             final int size = getRealItemCount();
             mIndicator.updateIndex(mCurrent, size);
-        }
-    }
-
-    static class OnBannerItemClick extends RecyclerView.SimpleOnItemTouchListener {
-        private GestureDetectorCompat mDetectorCompat;
-
-        public OnBannerItemClick(final RecyclerView recyclerView, final DuBannerCore adapter, final OnBannerClickListener clickListener) {
-            mDetectorCompat = new GestureDetectorCompat(recyclerView.getContext(), new GestureDetector.SimpleOnGestureListener() {
-
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    if (clickListener != null) {
-                        View itemView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                        if (itemView != null) {
-                            clickListener.onBannerClicked(itemView, adapter.getRealPosition(recyclerView.getChildAdapterPosition(itemView)));
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            });
-            mDetectorCompat.setIsLongpressEnabled(false);
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            return mDetectorCompat.onTouchEvent(e);
         }
     }
 

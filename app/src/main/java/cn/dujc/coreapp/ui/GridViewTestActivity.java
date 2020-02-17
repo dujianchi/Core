@@ -23,7 +23,7 @@ public class GridViewTestActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        DuGridView gridView = findViewById(R.id.dgv_grids);
+        DuGridView gridView = (DuGridView) findViewById(R.id.dgv_grids);
         /*gridView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, int index, View child) {
