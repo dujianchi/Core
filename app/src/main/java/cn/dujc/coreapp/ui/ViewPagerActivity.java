@@ -23,7 +23,7 @@ public class ViewPagerActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        final ViewPager viewPager = findViewById(R.id.viewPager);
         final IFragment[] fragments = {new IFragment(), new IFragment(), new IFragment()};
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override

@@ -1,11 +1,11 @@
-package cn.dujc.core.adapter.multi2;
+package cn.dujc.core.adapter;
 
 import android.support.annotation.Nullable;
 
 import java.util.List;
 
-import cn.dujc.core.adapter.BaseAdapter;
-import cn.dujc.core.adapter.BaseViewHolder;
+import cn.dujc.core.adapter.multi2.ProviderDelegate;
+import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
@@ -31,10 +31,15 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
     @Override
     protected void convert(BaseViewHolder helper, T item) {
         final IMultiTypeDelegate delegate = getMultiTypeDelegate();
+        if (delegate instanceof BaseQuickAdapter) {
+            BaseQuickAdapter adapter = (BaseQuickAdapter) delegate;
+            if (adapter.mContext == null) adapter.mContext = mContext;
+        }
         if (delegate instanceof ProviderDelegate) {
             ((ProviderDelegate) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
         }
     }
 
     public abstract ProviderDelegate delegate();
+
 }

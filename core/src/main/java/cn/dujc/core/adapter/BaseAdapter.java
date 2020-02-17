@@ -18,11 +18,15 @@ public abstract class BaseAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>
     }
 
     public BaseAdapter(@Nullable List<? extends T> data) {
-        super(data);
+        this(0, data);
     }
 
     public BaseAdapter(int layoutResId) {
-        super(layoutResId);
+        this(layoutResId, null);
+    }
+
+    public BaseAdapter() {
+        this(0, null);
     }
 
     @Override
@@ -36,4 +40,5 @@ public abstract class BaseAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>
             return ((IBaseUI.WithToolbar) mContext).starter();
         return null;
     }
+
 }

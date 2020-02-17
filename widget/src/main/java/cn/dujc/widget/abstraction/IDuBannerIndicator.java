@@ -1,5 +1,6 @@
 package cn.dujc.widget.abstraction;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
@@ -12,4 +13,12 @@ public interface IDuBannerIndicator {
     ViewGroup getView();
 
     void updateIndex(int current, int count);
+
+    IDuBannerIndicator setSelectedDrawable(Drawable selectedDrawable);
+
+    IDuBannerIndicator setDefaultDrawable(Drawable defaultDrawable);
+
+    IDuBannerIndicator setSelectedColor(int selectedColor);
+
+    IDuBannerIndicator setDefaultColor(int defaultColor);
 }

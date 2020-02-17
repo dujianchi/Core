@@ -2,6 +2,7 @@ package cn.dujc.core.adapter.multi2;
 
 import java.util.List;
 
+import cn.dujc.core.adapter.MultiTypeAdapter;
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 public abstract class ProviderDelegate implements IMultiTypeDelegate {

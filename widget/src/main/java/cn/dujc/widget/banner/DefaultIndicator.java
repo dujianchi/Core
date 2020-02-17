@@ -1,40 +1,54 @@
 package cn.dujc.widget.banner;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import cn.dujc.widget.R;
 import cn.dujc.widget.abstraction.IDuBannerIndicator;
 
 public class DefaultIndicator extends LinearLayout implements IDuBannerIndicator {
 
     private final SparseArray<CircleView> mIndicators = new SparseArray<>();
-    private Drawable mDrawableDefault, mDrawableSelected;
-    private int mColorDefault, mColorSelected;
+    private Drawable mDefaultDrawable, mSelectedDrawable;
+    private int mDefaultColor, mSelectedColor;
     private int mIndicatorMarginBetween = 0,/* mIndicatorMarginLayout = 10, */
             mIndicatorEdge = 10;
 
+    public DefaultIndicator(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        final Resources resources = context.getResources();
+        mIndicatorEdge = resources.getDimensionPixelOffset(R.dimen.widget_banner_irregular_indicator_long);
+        mIndicatorMarginBetween = resources.getDimensionPixelOffset(R.dimen.widget_banner_irregular_indicator_short);
+        mSelectedDrawable = ContextCompat.getDrawable(context, R.drawable.widget_banner_irregular_selected);
+        mDefaultDrawable = ContextCompat.getDrawable(context, R.drawable.widget_banner_irregular_default);
+    }
+
     public DefaultIndicator(Context context
-            , Drawable drawableDefault
-            , Drawable drawableSelected
-            , int colorDefault
-            , int colorSelected
+            , Drawable defaultDrawable
+            , Drawable selectedDrawable
+            , int defaultColor
+            , int selectedColor
             , int indicatorMarginBetween
                             //, int indicatorMarginLayout
             , int indicatorEdge) {
         super(context);
-        mDrawableDefault = drawableDefault;
-        mDrawableSelected = drawableSelected;
-        mColorDefault = colorDefault;
-        mColorSelected = colorSelected;
+        mDefaultDrawable = defaultDrawable;
+        mSelectedDrawable = selectedDrawable;
+        mDefaultColor = defaultColor;
+        mSelectedColor = selectedColor;
         mIndicatorMarginBetween = indicatorMarginBetween;
         //mIndicatorMarginLayout = indicatorMarginLayout;
         mIndicatorEdge = indicatorEdge;
@@ -49,6 +63,30 @@ public class DefaultIndicator extends LinearLayout implements IDuBannerIndicator
     @NonNull
     @Override
     public ViewGroup getView() {
+        return this;
+    }
+
+    @Override
+    public DefaultIndicator setSelectedDrawable(Drawable selectedDrawable) {
+        mSelectedDrawable = selectedDrawable;
+        return this;
+    }
+
+    @Override
+    public DefaultIndicator setDefaultDrawable(Drawable defaultDrawable) {
+        mDefaultDrawable = defaultDrawable;
+        return this;
+    }
+
+    @Override
+    public DefaultIndicator setSelectedColor(int selectedColor) {
+        mSelectedColor = selectedColor;
+        return this;
+    }
+
+    @Override
+    public DefaultIndicator setDefaultColor(int defaultColor) {
+        mDefaultColor = defaultColor;
         return this;
     }
 
@@ -69,13 +107,10 @@ public class DefaultIndicator extends LinearLayout implements IDuBannerIndicator
                     mIndicators.put(index, indicator);
                 }
                 final boolean isSelected = index == current;
-                if (mDrawableSelected == null && mDrawableDefault == null) {
-                    indicator.setColor(isSelected ? mColorSelected : mColorDefault);
+                if (mSelectedDrawable == null && mDefaultDrawable == null) {
+                    indicator.setColor(isSelected ? mSelectedColor : mDefaultColor);
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        indicator.setBackground(isSelected ? mDrawableSelected : mDrawableDefault);
-                    else
-                        indicator.setBackgroundDrawable(isSelected ? mDrawableSelected : mDrawableDefault);
+                    ViewCompat.setBackground(indicator, isSelected ? mSelectedDrawable : mDefaultDrawable);
                 }
                 addView(indicator, params);
             }

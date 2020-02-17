@@ -24,8 +24,8 @@ public class WheelPickerActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mWpPop0 = (WheelPicker) findViewById(R.id.wp_pop_0);
-        mWpPop1 = (WheelPicker) findViewById(R.id.wp_pop_1);
+        mWpPop0 = findViewById(R.id.wp_pop_0);
+        mWpPop1 = findViewById(R.id.wp_pop_1);
 
         mWpPop0.setData(generateData(11));
         mWpPop1.setData(generateData(1));

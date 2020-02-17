@@ -130,7 +130,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     private boolean mHeadAndEmptyEnable;
     private boolean mFootAndEmptyEnable;
 
-    protected static final String TAG = BaseQuickAdapter.class.getSimpleName();
     protected Context mContext;
     protected int mLayoutResId;
     protected LayoutInflater mLayoutInflater;
@@ -724,9 +723,10 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     }
 
     @Override
-    public K onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public K onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         K baseViewHolder = null;
-        this.mContext = parent.getContext();
+        if (this.mContext == null) this.mContext = parent.getContext();
         this.mLayoutInflater = LayoutInflater.from(mContext);
         switch (viewType) {
             case LOADING_VIEW:

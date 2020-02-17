@@ -5,10 +5,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.util.Size;
+import android.util.SizeF;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,6 +152,12 @@ public interface IBaseUI {
         IStarter with(String key, CharSequence param);
 
         IStarter with(String key, Parcelable param);
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        IStarter with(String key, Size param);
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        IStarter with(String key, SizeF param);
 
         IStarter with(String key, Parcelable[] param);
 
@@ -502,6 +512,20 @@ public interface IBaseUI {
         @Override
         public IStarter with(String key, Parcelable param) {
             mBundle.putParcelable(key, param);
+            return this;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public IStarter with(String key, Size param) {
+            mBundle.putSize(key, param);
+            return this;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public IStarter with(String key, SizeF param) {
+            mBundle.putSizeF(key, param);
             return this;
         }
 

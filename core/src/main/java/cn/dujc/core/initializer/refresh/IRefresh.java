@@ -77,7 +77,7 @@ public interface IRefresh {
     public static class ListImpl extends Impl {
         @Override
         public <T extends View> T initRefresh(View innerView) {
-            mSrlLoader = (SwipeRefreshLayout) innerView.findViewById(R.id.core_list_refresh_id);
+            mSrlLoader = innerView.findViewById(R.id.core_list_refresh_id);
             mSrlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

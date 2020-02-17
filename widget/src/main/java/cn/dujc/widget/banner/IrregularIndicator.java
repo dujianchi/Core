@@ -2,11 +2,12 @@ package cn.dujc.widget.banner;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -22,9 +23,9 @@ import cn.dujc.widget.abstraction.IDuBannerIndicator;
 public class IrregularIndicator extends LinearLayout implements IDuBannerIndicator {
 
     private SparseArray<View> mChildren = new SparseArray<>();
-    private final Drawable mSelectedDrawable, mDefaultDrawable;
     private final int mShortEdge;
     private final int mLongEdge;
+    private Drawable mSelectedDrawable, mDefaultDrawable;
     private int mCurrent = -1;
 
     public IrregularIndicator(Context context) {
@@ -54,6 +55,30 @@ public class IrregularIndicator extends LinearLayout implements IDuBannerIndicat
     }
 
     @Override
+    public IrregularIndicator setSelectedDrawable(Drawable selectedDrawable) {
+        mSelectedDrawable = selectedDrawable;
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setDefaultDrawable(Drawable defaultDrawable) {
+        mDefaultDrawable = defaultDrawable;
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setSelectedColor(int selectedColor) {
+        mSelectedDrawable = new ColorDrawable(selectedColor);
+        return this;
+    }
+
+    @Override
+    public IrregularIndicator setDefaultColor(int defaultColor) {
+        mDefaultDrawable = new ColorDrawable(defaultColor);
+        return this;
+    }
+
+    @Override
     public void updateIndex(int current, int count) {
         if (count <= 1) setVisibility(GONE);
         else {
@@ -69,17 +94,11 @@ public class IrregularIndicator extends LinearLayout implements IDuBannerIndicat
                     }
                     final LayoutParams params;
                     if (current == index) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                            indicator.setBackground(mSelectedDrawable);
-                        else
-                            indicator.setBackgroundDrawable(mSelectedDrawable);
+                        ViewCompat.setBackground(indicator, mSelectedDrawable);
                         params = new LayoutParams(mLongEdge, mShortEdge);
                         params.leftMargin = index == 0 ? 0 : mShortEdge;
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                            indicator.setBackground(mDefaultDrawable);
-                        else
-                            indicator.setBackgroundDrawable(mDefaultDrawable);
+                        ViewCompat.setBackground(indicator, mDefaultDrawable);
                         params = new LayoutParams(mShortEdge, mShortEdge);
                         params.leftMargin = index == 0 ? 0 : mShortEdge;
                     }
