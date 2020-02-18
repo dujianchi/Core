@@ -1,11 +1,16 @@
 package cn.dujc.core.util;
 
+import android.annotation.TargetApi;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -18,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import cn.dujc.core.app.Core;
 
@@ -59,6 +65,56 @@ public class BitmapUtil {
             return bitmap.getByteCount();
         }
         return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
+    }
+
+    /**
+     * 压缩图片到缓存目录
+     */
+    @Nullable
+    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, Bitmap.CompressFormat.JPEG);
+    }
+
+    /**
+     * 压缩图片到缓存目录
+     */
+    @Nullable
+    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb, Bitmap.CompressFormat format) {
+        if (context == null) return null;
+        File cacheFile = new File(context.getCacheDir(), System.currentTimeMillis() + (Bitmap.CompressFormat.PNG == format ? ".png" : Bitmap.CompressFormat.WEBP == format ? ".webp" : ".jpg"));
+        Bitmap bitmap = bitmapFromUri(context, uri);
+        bitmap = BitmapUtil.shrinkImage(bitmap, sizeInKb, true);
+        BitmapUtil.saveBitmapToFile(bitmap, cacheFile, format, 100, true);
+        return cacheFile;
+    }
+
+    /**
+     * 获取图片后缀
+     */
+    public static String extSuffix(InputStream input) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(input, null, options);
+            return options.outMimeType.replace("image/", ".");
+        } catch (Exception e) {
+            return ".jpg";
+        }
+    }
+
+    /**
+     * 从uri读取图片
+     */
+    @Nullable
+    public static Bitmap bitmapFromUri(Context context, Uri uri) {
+        if (context == null || uri == null) return null;
+        try {
+            ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+            return BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -158,15 +214,75 @@ public class BitmapUtil {
             LogUtil.e("decode bitmap error, course path is null");
             return null;
         }
+        FileInputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            return decodeSmallerFromInputStream(is, shortEdge, longEdge);
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    if (Core.DEBUG) e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 图片处理
+     * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
+     */
+    @Nullable
+    public static Bitmap decodeSmallerFromUri(Context context, Uri file, int shortEdge, int longEdge) {
+        LogUtil.d("---------------   path =     " + file);
+        if (file == null || context == null) {
+            LogUtil.e("decode bitmap error, course path is null");
+            return null;
+        }
+        InputStream is = null;
+        try {
+            ContentResolver resolver = context.getContentResolver();
+            is = resolver.openInputStream(file);
+            return decodeSmallerFromInputStream(is, shortEdge, longEdge);
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    if (Core.DEBUG) e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 图片处理
+     * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
+     */
+    @Nullable
+    public static Bitmap decodeSmallerFromInputStream(InputStream is, int shortEdge, int longEdge) {
+        if (is == null) {
+            LogUtil.e("decode bitmap error, course path is null");
+            return null;
+        }
         //------------- decode now --------------
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         //开始读入图片，此时把options.inJustDecodeBounds 设回true了
         newOpts.inJustDecodeBounds = true;
-        FileInputStream is = null;
         Bitmap bitmap = null;
         try {
-            is = new FileInputStream(file);
-            bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);
+            if (is instanceof FileInputStream) {
+                bitmap = BitmapFactory.decodeFileDescriptor(((FileInputStream) is).getFD(), null, newOpts);
+            } else {
+                bitmap = BitmapFactory.decodeStream(is, null, newOpts);
+            }
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         }
@@ -195,10 +311,19 @@ public class BitmapUtil {
             bitmap.recycle();
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         try {
-            bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
-            is.close();
+            if (is instanceof FileInputStream) {
+                bitmap = BitmapFactory.decodeFileDescriptor(((FileInputStream) is).getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
+            } else {
+                bitmap = BitmapFactory.decodeStream(is, null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
+            }
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                if (Core.DEBUG) e.printStackTrace();
+            }
         }
         newOpts = null;
         return bitmap;
@@ -217,6 +342,39 @@ public class BitmapUtil {
         int degree = 0;
         try {
             ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+            degree = 0;
+        }
+        return degree;
+    }
+
+    /**
+     * 读取图片属性：旋转的角度
+     *
+     * @param inputStream 图片
+     * @return degree旋转的角度
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public static int readPictureDegree(InputStream inputStream) {
+        if (inputStream == null) {
+            return 0;
+        }
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(inputStream);
             int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
