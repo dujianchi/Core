@@ -110,15 +110,24 @@ public class BitmapUtil {
     @Nullable
     public static Bitmap bitmapFromUri(Context context, Uri uri) {
         if (context == null || uri == null) return null;
+        InputStream stream = null;
         try {
             ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
             Bitmap bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
-            InputStream stream = readUri(context, uri);
+            stream = readUri(context, uri);
             int orientation = getOrientation(stream);
             bitmap = rotateBitmap(bitmap, orientation);
             return bitmap;
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    if (Core.DEBUG) e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -252,8 +261,8 @@ public class BitmapUtil {
         InputStream is = null;
         try {
             ContentResolver resolver = context.getContentResolver();
-            is = resolver.openInputStream(file);
-            return decodeSmallerFromInputStream(is, shortEdge, longEdge);
+            ParcelFileDescriptor pfd = resolver.openFileDescriptor(file, "r");
+            return decodeSmallerFromInputStream(new FileInputStream(pfd.getFileDescriptor()), shortEdge, longEdge);
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         } finally {
@@ -273,7 +282,7 @@ public class BitmapUtil {
      * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
     @Nullable
-    public static Bitmap decodeSmallerFromInputStream(InputStream is, int shortEdge, int longEdge) {
+    public static Bitmap decodeSmallerFromInputStream(FileInputStream is, int shortEdge, int longEdge) {
         if (is == null) {
             LogUtil.e("decode bitmap error, course path is null");
             return null;
@@ -284,11 +293,7 @@ public class BitmapUtil {
         newOpts.inJustDecodeBounds = true;
         Bitmap bitmap = null;
         try {
-            if (is instanceof FileInputStream) {
-                bitmap = BitmapFactory.decodeFileDescriptor(((FileInputStream) is).getFD(), null, newOpts);
-            } else {
-                bitmap = BitmapFactory.decodeStream(is, null, newOpts);
-            }
+            bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         }
@@ -317,11 +322,7 @@ public class BitmapUtil {
             bitmap.recycle();
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         try {
-            if (is instanceof FileInputStream) {
-                bitmap = BitmapFactory.decodeFileDescriptor(((FileInputStream) is).getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
-            } else {
-                bitmap = BitmapFactory.decodeStream(is, null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
-            }
+            bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         } finally {
@@ -344,8 +345,9 @@ public class BitmapUtil {
     @Nullable
     public static InputStream readUri(Context context, Uri uri) {
         try {
-            return context.getContentResolver().openInputStream(uri);
-        } catch (FileNotFoundException e) {
+            ParcelFileDescriptor pdf = context.getContentResolver().openFileDescriptor(uri, "r");
+            return new FileInputStream(pdf.getFileDescriptor());
+        } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         }
         return null;

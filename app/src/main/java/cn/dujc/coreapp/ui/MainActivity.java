@@ -73,6 +73,7 @@ public class MainActivity extends BaseListActivity {
             , "grid test"
             , "fields"
             , "fragment s"
+            , "bitmap"
             //, ""
     );
 
@@ -309,6 +310,10 @@ public class MainActivity extends BaseListActivity {
             break;
             case 30: {
                 starter().go(FragmentsActivity.class);
+            }
+            break;
+            case 31: {
+                starter().go(BitmapActivity.class);
             }
             break;
             //case 00:{}break;
