@@ -1,5 +1,9 @@
 package cn.dujc.core.util;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+
 import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
@@ -19,6 +23,43 @@ import cn.dujc.core.app.Core;
 public class FileUtil {
 
     @NonNull
+    public static byte[] toBytes(Context context, Uri file) {
+        if (file != null && context != null) {
+            FileInputStream inputStream = null;
+            ByteArrayOutputStream outputStream = null;
+            try {
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(file, "r");
+                inputStream = new FileInputStream(pfd.getFileDescriptor());
+                outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[512];
+                int length;
+                while ((length = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, length);
+                }
+                return outputStream.toByteArray();
+            } catch (Exception e) {
+                if (Core.DEBUG) e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                }
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return new byte[0];
+    }
+
+    @NonNull
     public static byte[] toBytes(File file) {
         if (file != null && file.exists()) {
             FileInputStream inputStream = null;
@@ -35,15 +76,19 @@ public class FileUtil {
             } catch (Exception e) {
                 if (Core.DEBUG) e.printStackTrace();
             } finally {
-                try {
-                    inputStream.close();
-                } catch (Exception e) {
-                    if (Core.DEBUG) e.printStackTrace();
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
                 }
-                try {
-                    outputStream.close();
-                } catch (Exception e) {
-                    if (Core.DEBUG) e.printStackTrace();
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
                 }
             }
         }

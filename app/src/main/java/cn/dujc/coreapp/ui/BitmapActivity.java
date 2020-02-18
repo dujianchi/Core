@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -95,7 +96,7 @@ public class BitmapActivity extends BaseActivity {
                     if (lists != null && lists.length > 0) {
                         List<File> result = new ArrayList<>(lists.length);
                         for (Uri uri : lists) {
-                            File cacheFile = BitmapUtil.createCompressedCacheFile(context, uri, 2048);
+                            File cacheFile = BitmapUtil.createCompressedCacheFile(context, uri, 2048, Bitmap.CompressFormat.JPEG, BuildConfig.APPLICATION_ID + ".file_provider");
                             if (cacheFile != null) result.add(cacheFile);
                         }
                         return result;
