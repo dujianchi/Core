@@ -1,27 +1,16 @@
 package cn.dujc.core.util;
 
-import android.annotation.TargetApi;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -130,61 +119,6 @@ public class MediaUtil {
     }
 
     /**
-     * 读取图片属性：旋转的角度
-     *
-     * @param path 图片绝对路径
-     * @return degree旋转的角度
-     */
-    public static int readPictureDegree(String path) {
-        if (TextUtils.isEmpty(path)) {
-            return 0;
-        }
-        int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (IOException e) {
-            if (Core.DEBUG) e.printStackTrace();
-            degree = 0;
-        }
-        return degree;
-    }
-
-    /**
-     * 旋转图片，使图片保持正确的方向。
-     *
-     * @param bitmap  原始图片
-     * @param degrees 原始图片的角度
-     * @return Bitmap 旋转后的图片
-     */
-    @Nullable
-    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
-        if (degrees == 0 || null == bitmap) {
-            return bitmap;
-        }
-        Matrix matrix = new Matrix();
-        matrix.setRotate(degrees);
-        Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        if (bmp != null) {
-            bitmap.recycle();
-        } else {
-            return bitmap;
-        }
-        return bmp;
-    }
-
-    /**
      * 将图片保存到SD卡中，并且更新缩略图
      *
      * @param context
@@ -219,70 +153,14 @@ public class MediaUtil {
         File jpg = new File(outFileDir + File.separator + fileName);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            saveBitmapToFile(bitmap, jpg);
+            BitmapUtil.saveBitmapToFile(bitmap, jpg);
             refreshGallery(context, jpg);
         } else {
-            saveBitmapToFileApi29(context, bitmap, jpg);
+            BitmapUtil.saveBitmapApi29(context, bitmap, jpg.getName());
         }
         //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
         //mediaScan(context, path);//Android4.4以上无系统权限不能发送Intent.ACTION_MEDIA_MOUNTED广播，所以采用此方法更新图库
         return jpg.getPath();
-    }
-
-    /**
-     * bitmap -> file
-     */
-    @TargetApi(Build.VERSION_CODES.Q)
-    private static void saveBitmapToFileApi29(Context context, Bitmap bitmap, File jpg) {
-        Context appContext = context.getApplicationContext();
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, jpg.getName());
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, jpg.getName());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES /*+ File.separator + jpg.getParent()*/);
-        ContentResolver contentResolver = appContext.getContentResolver();
-        Uri inserted = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        if (inserted == null) return;
-        OutputStream fos = null;
-        try {
-            fos = contentResolver.openOutputStream(inserted);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            if (fos != null) fos.flush();
-        } catch (Exception e) {
-            if (Core.DEBUG) e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    if (Core.DEBUG) e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * bitmap -> file
-     */
-    private static void saveBitmapToFile(Bitmap bitmap, File jpg) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(jpg.getPath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-        } catch (FileNotFoundException e) {
-            if (Core.DEBUG) e.printStackTrace();
-        } catch (IOException e) {
-            if (Core.DEBUG) e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    if (Core.DEBUG) e.printStackTrace();
-                }
-            }
-        }
     }
 
     private static class SingleMediaScanner implements MediaScannerConnection.MediaScannerConnectionClient {

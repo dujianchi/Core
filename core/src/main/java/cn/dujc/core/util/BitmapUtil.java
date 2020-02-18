@@ -2,6 +2,7 @@ package cn.dujc.core.util;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,20 +11,23 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import cn.dujc.core.app.Core;
 
@@ -35,7 +39,7 @@ public class BitmapUtil {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(compressFormat, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            bitmap.recycle();
+            if (!bitmap.isRecycled()) bitmap.recycle();
             return byteArray;
         }
         return new byte[0];
@@ -156,7 +160,7 @@ public class BitmapUtil {
             matrix.setScale(zoom, zoom);
             Bitmap result = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
 
-            if (recycle) src.recycle();//我自己加的，源图片好像已经没用了，可以回收
+            if (recycle && !src.isRecycled()) src.recycle();//我自己加的，源图片好像已经没用了，可以回收
 
             out.reset();
             matrix.reset();
@@ -193,20 +197,82 @@ public class BitmapUtil {
     public static String saveBitmapToFile(Bitmap bitmap, File file, Bitmap.CompressFormat format, int quality, boolean recycle) {
         if (file.exists())
             file.delete();
+        FileOutputStream fos = null;
         try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            if (bitmap != null)
-                bitmap.compress(format, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (FileNotFoundException e) {
-            if (Core.DEBUG) e.printStackTrace();
-        } catch (IOException e) {
+            fos = new FileOutputStream(file);
+        } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         }
-        if (recycle && bitmap != null)//此处不能回收bitmap，否则后面会不能用
-            bitmap.recycle();
+        saveBitmapToOutputStream(bitmap, fos, format, quality, recycle);
         return file.getPath();
+    }
+
+    /**
+     * 保存bitmap到指定路径
+     */
+    @Nullable
+    @TargetApi(Build.VERSION_CODES.N)
+    public static String saveBitmapToFile(Context context, Bitmap bitmap, String authority, File file, Bitmap.CompressFormat format, int quality, boolean recycle) {
+        if (context == null || bitmap == null || bitmap.isRecycled() || file == null) return null;
+        Context appContext = context.getApplicationContext();
+        ContentResolver contentResolver = appContext.getContentResolver();
+        Uri uri = FileProvider.getUriForFile(context, authority, file);
+        OutputStream fos = null;
+        try {
+            fos = contentResolver.openOutputStream(uri);
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        }
+        saveBitmapToOutputStream(bitmap, fos, format, quality, recycle);
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * 保存bitmap到指定路径
+     */
+    @TargetApi(Build.VERSION_CODES.Q)
+    public static void saveBitmapApi29(Context context, Bitmap bitmap, String name) {
+        if (context == null || bitmap == null || bitmap.isRecycled()) return;
+        Context appContext = context.getApplicationContext();
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, name);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, name);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES /*+ File.separator + jpg.getParent()*/);
+        ContentResolver contentResolver = appContext.getContentResolver();
+        Uri inserted = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (inserted == null) return;
+        OutputStream fos = null;
+        try {
+            fos = contentResolver.openOutputStream(inserted);
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        }
+        saveBitmapToOutputStream(bitmap, fos, Bitmap.CompressFormat.JPEG, 100, false);
+    }
+
+    /**
+     * 保存bitmap到outputStream
+     */
+    @Nullable
+    public static void saveBitmapToOutputStream(Bitmap bitmap, OutputStream file, Bitmap.CompressFormat format, int quality, boolean recycle) {
+        if (file == null || bitmap == null || bitmap.isRecycled()) return;
+        try {
+            bitmap.compress(format == null ? Bitmap.CompressFormat.JPEG : format, quality, file);
+            file.flush();
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (recycle && !bitmap.isRecycled())//此处不能回收bitmap，否则后面会不能用
+            bitmap.recycle();
     }
 
     /**
@@ -318,7 +384,7 @@ public class BitmapUtil {
                 newOpts.inSampleSize = (int) (edge * 1f / longEdge + 0.5f);
             }
         }
-        if (bitmap != null)
+        if (bitmap != null && !bitmap.isRecycled())
             bitmap.recycle();
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         try {
@@ -582,7 +648,7 @@ public class BitmapUtil {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        if (bmp != null) {
+        if (bmp != null && !bitmap.isRecycled()) {
             bitmap.recycle();
         } else {
             return bitmap;
