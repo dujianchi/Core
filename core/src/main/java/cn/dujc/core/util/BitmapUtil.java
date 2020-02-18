@@ -76,7 +76,7 @@ public class BitmapUtil {
      */
     @Nullable
     public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb) {
-        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, Bitmap.CompressFormat.JPEG);
+        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, Bitmap.CompressFormat.JPEG, null);
     }
 
     /**
@@ -84,13 +84,25 @@ public class BitmapUtil {
      */
     @Nullable
     public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb, Bitmap.CompressFormat format) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, format, null);
+    }
+
+    /**
+     * 压缩图片到缓存目录
+     */
+    @Nullable
+    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb, Bitmap.CompressFormat format, String authority) {
         if (context == null) return null;
         File cacheDir = context.getExternalCacheDir();
         if (cacheDir == null) cacheDir = context.getCacheDir();
         File cacheFile = new File(cacheDir, System.currentTimeMillis() + (Bitmap.CompressFormat.PNG == format ? ".png" : Bitmap.CompressFormat.WEBP == format ? ".webp" : ".jpg"));
         Bitmap bitmap = bitmapFromUri(context, uri);
         bitmap = BitmapUtil.shrinkImage(bitmap, sizeInKb, true);
-        BitmapUtil.saveBitmapToFile(bitmap, cacheFile, format, 100, true);
+        if (!TextUtils.isEmpty(authority) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            BitmapUtil.saveBitmapToFile(context, bitmap, authority, cacheFile, format, 100, true);
+        } else {
+            BitmapUtil.saveBitmapToFile(bitmap, cacheFile, format, 100, true);
+        }
         return cacheFile;
     }
 
