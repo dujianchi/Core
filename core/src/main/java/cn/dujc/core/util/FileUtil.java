@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,20 +23,38 @@ import cn.dujc.core.app.Core;
 
 public class FileUtil {
 
+    /**
+     * 读取文件
+     *
+     * @param uri 图片
+     * @return degree旋转的角度
+     */
+    @Nullable
+    public static FileInputStream readUri(Context context, Uri uri) {
+        if (context == null || uri == null) return null;
+        try {
+            ParcelFileDescriptor pdf = context.getContentResolver().openFileDescriptor(uri, "r");
+            return new FileInputStream(pdf.getFileDescriptor());
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        }
+        return null;
+    }
+
     @NonNull
     public static byte[] toBytes(Context context, Uri file) {
         if (file != null && context != null) {
             FileInputStream inputStream = null;
             ByteArrayOutputStream outputStream = null;
             try {
-                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(file, "r");
-                inputStream = new FileInputStream(pfd.getFileDescriptor());
+                inputStream = FileUtil.readUri(context, file);
                 outputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[512];
                 int length;
                 while ((length = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, length);
                 }
+                outputStream.flush();
                 return outputStream.toByteArray();
             } catch (Exception e) {
                 if (Core.DEBUG) e.printStackTrace();
@@ -72,6 +91,7 @@ public class FileUtil {
                 while ((length = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, length);
                 }
+                outputStream.flush();
                 return outputStream.toByteArray();
             } catch (Exception e) {
                 if (Core.DEBUG) e.printStackTrace();
@@ -179,11 +199,69 @@ public class FileUtil {
         if (file == null || !file.exists()) return;
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            if (files != null) for (final File child : files) {
+            if (files != null) for (File child : files) {
                 delete(child);
             }
         }
         file.delete();
+    }
+
+    public static long size(File file) {
+        if (file == null || !file.exists()) return 0;
+        long length = 0;
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    length += size(child);
+                }
+            }
+        }
+        length += file.length();
+        return length;
+    }
+
+    @Nullable
+    public static File copyToTemporalFile(Context context, Uri file) {
+        if (file != null && context != null) {
+            File cacheDir = context.getExternalCacheDir();
+            if (cacheDir == null) cacheDir = context.getCacheDir();
+            if (cacheDir == null) return null;
+            if (!cacheDir.exists()) cacheDir.mkdirs();
+            File tmpFile = new File(cacheDir, System.currentTimeMillis() + ".tmp");
+
+            FileInputStream inputStream = null;
+            FileOutputStream outputStream = null;
+            try {
+                inputStream = FileUtil.readUri(context, file);
+                outputStream = new FileOutputStream(tmpFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+                return tmpFile;
+            } catch (Exception e) {
+                if (Core.DEBUG) e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                }
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (Exception e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,6 +28,7 @@ import java.util.List;
 
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.core.util.BitmapUtil;
+import cn.dujc.core.util.FileUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.BuildConfig;
 import cn.dujc.coreapp.R;
@@ -58,6 +58,12 @@ public class BitmapActivity extends BaseActivity {
                 );
             }
         });
+
+        File cacheDir = getExternalCacheDir();
+        if (cacheDir == null) cacheDir = getCacheDir();
+        if (cacheDir != null) {
+            ToastUtil.showToast(mActivity, FileUtil.size(cacheDir) / 1024F / 1024F + " MB");
+        }
     }
 
     @Override
@@ -96,7 +102,7 @@ public class BitmapActivity extends BaseActivity {
                     if (lists != null && lists.length > 0) {
                         List<File> result = new ArrayList<>(lists.length);
                         for (Uri uri : lists) {
-                            File cacheFile = BitmapUtil.createCompressedCacheFile(context, uri, 2048, Bitmap.CompressFormat.JPEG, BuildConfig.APPLICATION_ID + ".file_provider");
+                            File cacheFile = BitmapUtil.createCompressedCacheFile(context, uri, 960, BuildConfig.APPLICATION_ID + ".file_provider");
                             if (cacheFile != null) result.add(cacheFile);
                         }
                         return result;

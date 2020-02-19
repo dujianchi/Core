@@ -72,36 +72,57 @@ public class BitmapUtil {
     }
 
     /**
-     * 压缩图片到缓存目录
+     * 压缩图片到缓存目录，依据最短边压缩，无法压缩到准确宽高，只能最接近，顺带压缩质量
      */
     @Nullable
-    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb) {
-        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, Bitmap.CompressFormat.JPEG, null);
+    public static File createCompressedCacheFile(Context context, Uri uri, int minEdge) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, Bitmap.CompressFormat.JPEG, null);
     }
 
     /**
-     * 压缩图片到缓存目录
+     * 压缩图片到缓存目录，依据最短边压缩，无法压缩到准确宽高，只能最接近，顺带压缩质量
      */
     @Nullable
-    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb, Bitmap.CompressFormat format) {
-        return BitmapUtil.createCompressedCacheFile(context, uri, sizeInKb, format, null);
+    public static File createCompressedCacheFile(Context context, Uri uri, int minEdge, Bitmap.CompressFormat format) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, format, null);
     }
 
     /**
-     * 压缩图片到缓存目录
+     * 压缩图片到缓存目录，依据最短边压缩，无法压缩到准确宽高，只能最接近，顺带压缩质量
      */
     @Nullable
-    public static File createCompressedCacheFile(Context context, Uri uri, int sizeInKb, Bitmap.CompressFormat format, String authority) {
+    public static File createCompressedCacheFile(Context context, Uri uri, int minEdge, String authority) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, Bitmap.CompressFormat.JPEG, authority);
+    }
+
+    /**
+     * 压缩图片到缓存目录，依据最短边压缩，无法压缩到准确宽高，只能最接近，顺带压缩质量
+     */
+    @Nullable
+    public static File createCompressedCacheFile(Context context, Uri uri, int minEdge, Bitmap.CompressFormat format, String authority) {
+        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, 100, format, null);
+    }
+
+    /**
+     * 压缩图片到缓存目录，依据最短边压缩，无法压缩到准确宽高，只能最接近，顺带压缩质量
+     *
+     * @param quality 质量大于100则为100，小于0则默认85
+     */
+    @Nullable
+    public static File createCompressedCacheFile(Context context, Uri uri, int minEdge, int quality, Bitmap.CompressFormat format, String authority) {
         if (context == null) return null;
+        if (quality <= 0) quality = 85;
+        else if (quality > 100) quality = 100;
         File cacheDir = context.getExternalCacheDir();
         if (cacheDir == null) cacheDir = context.getCacheDir();
         File cacheFile = new File(cacheDir, System.currentTimeMillis() + (Bitmap.CompressFormat.PNG == format ? ".png" : Bitmap.CompressFormat.WEBP == format ? ".webp" : ".jpg"));
-        Bitmap bitmap = bitmapFromUri(context, uri);
-        bitmap = BitmapUtil.shrinkImage(bitmap, sizeInKb, true);
+        Bitmap bitmap = BitmapUtil.decodeSmallerFromUri(context, uri, minEdge, 0);
+        int degree = BitmapUtil.readPictureDegree(context, uri);
+        bitmap = BitmapUtil.rotateBitmap(bitmap, degree);
         if (!TextUtils.isEmpty(authority) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            BitmapUtil.saveBitmapToFile(context, bitmap, authority, cacheFile, format, 100, true);
+            BitmapUtil.saveBitmapToFile(context, bitmap, authority, cacheFile, format, quality, true);
         } else {
-            BitmapUtil.saveBitmapToFile(bitmap, cacheFile, format, 100, true);
+            BitmapUtil.saveBitmapToFile(bitmap, cacheFile, format, quality, true);
         }
         return cacheFile;
     }
@@ -126,24 +147,14 @@ public class BitmapUtil {
     @Nullable
     public static Bitmap bitmapFromUri(Context context, Uri uri) {
         if (context == null || uri == null) return null;
-        InputStream stream = null;
         try {
             ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
             Bitmap bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
-            stream = readUri(context, uri);
-            int orientation = getOrientation(stream);
-            bitmap = rotateBitmap(bitmap, orientation);
+            int degree = BitmapUtil.readPictureDegree(context, uri);
+            bitmap = BitmapUtil.rotateBitmap(bitmap, degree);
             return bitmap;
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    if (Core.DEBUG) e.printStackTrace();
-                }
-            }
         }
         return null;
     }
@@ -163,8 +174,9 @@ public class BitmapUtil {
         final int byteForKb = sizeInKb * 1024;
         LogUtil.d("------   zoom before is " + sizeInByte);
         if (sizeInByte > byteForKb) {//若图片大小大于目的大小，则压缩大小97%，压缩质量85%
-            float zoom = (float) Math.sqrt(byteForKb * 1.0 / sizeInByte);
+            float zoom = (float) Math.sqrt(byteForKb * 1.0F / sizeInByte);
             if (zoom >= 0.97) zoom = 0.97F;
+            else if (zoom < 0.05) zoom = 0.05F;
             LogUtil.d("------   zoom level is " + zoom);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             src.compress(Bitmap.CompressFormat.JPEG, 85, out);
@@ -336,11 +348,10 @@ public class BitmapUtil {
             LogUtil.e("decode bitmap error, course path is null");
             return null;
         }
-        InputStream is = null;
+        FileInputStream is = null;
         try {
-            ContentResolver resolver = context.getContentResolver();
-            ParcelFileDescriptor pfd = resolver.openFileDescriptor(file, "r");
-            return decodeSmallerFromInputStream(new FileInputStream(pfd.getFileDescriptor()), shortEdge, longEdge);
+            is = FileUtil.readUri(context, file);
+            return decodeSmallerFromInputStream(is, shortEdge, longEdge);
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         } finally {
@@ -385,15 +396,22 @@ public class BitmapUtil {
         newOpts.inJustDecodeBounds = false;
 
         //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+        //int newWidth = 0, newHeight = 0;
         if (shortEdge > 0) {
             int edge = Math.min(newOpts.outWidth, newOpts.outHeight);
             if (edge > shortEdge) {
-                newOpts.inSampleSize = (int) (edge * 1f / shortEdge + 0.5f);
+                float scale = edge * 1f / shortEdge;
+                newOpts.inSampleSize = (int) (scale + 0.5f);
+                //newWidth = (int) (newOpts.outWidth * scale);
+                //newHeight = (int) (newOpts.outHeight * scale);
             }
         } else if (longEdge > 0) {
             int edge = Math.max(newOpts.outWidth, newOpts.outHeight);
             if (edge > longEdge) {
-                newOpts.inSampleSize = (int) (edge * 1f / longEdge + 0.5f);
+                float scale = edge * 1f / longEdge;
+                newOpts.inSampleSize = (int) (scale + 0.5f);
+                //newWidth = (int) (newOpts.outWidth * scale);
+                //newHeight = (int) (newOpts.outHeight * scale);
             }
         }
         if (bitmap != null && !bitmap.isRecycled())
@@ -401,6 +419,7 @@ public class BitmapUtil {
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         try {
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
+            //bitmap = getResizedBitmap(bitmap, newHeight, newWidth, true);
         } catch (Exception e) {
             if (Core.DEBUG) e.printStackTrace();
         } finally {
@@ -415,170 +434,48 @@ public class BitmapUtil {
     }
 
     /**
-     * 读取图片属性：旋转的角度
-     *
-     * @param uri 图片
-     * @return degree旋转的角度
+     * 缩放图片到指定大小
      */
     @Nullable
-    public static InputStream readUri(Context context, Uri uri) {
-        try {
-            ParcelFileDescriptor pdf = context.getContentResolver().openFileDescriptor(uri, "r");
-            return new FileInputStream(pdf.getFileDescriptor());
-        } catch (Exception e) {
-            if (Core.DEBUG) e.printStackTrace();
-        }
-        return null;
+    public static Bitmap getResizedBitmap(Bitmap image, int newHeight, int newWidth, boolean recycle) {
+        if (image == null || image.isRecycled()) return image;
+        if (newWidth == 0 && newHeight == newWidth) return image;
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(image, newWidth, newHeight, false);
+        if (recycle && !image.isRecycled()) image.recycle();
+        return resizedBitmap;
     }
-
-    // -------------------------- 来自Luban --------------------------
 
     /**
      * 读取图片属性：旋转的角度
      *
      * @return degree旋转的角度
      */
-    public static int getOrientation(InputStream is) {
-        return getOrientation(toByteArray(is));
-    }
-
-    private static byte[] toByteArray(InputStream is) {
-        if (is == null) {
-            return new byte[0];
-        }
-
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int read;
-        byte[] data = new byte[4096];
-
+    public static int readPictureDegree(Context context, Uri uri) {
+        if (context == null || uri == null) return 0;
+        int degree = 0;
+        InputStream is = null;
         try {
-            while ((read = is.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, read);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                is = FileUtil.readUri(context, uri);
+                degree = BitmapUtil.readPictureDegree(is);
+            } else {
+                File file = FileUtil.copyToTemporalFile(context, uri);
+                if (file == null) degree = 0;
+                else degree = BitmapUtil.readPictureDegree(file.getAbsolutePath());
             }
-        } catch (Exception ignored) {
-            return new byte[0];
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
         } finally {
-            try {
-                buffer.close();
-            } catch (IOException ignored) {
-            }
-        }
-
-        return buffer.toByteArray();
-    }
-
-    private static int getOrientation(byte[] jpeg) {
-        if (jpeg == null) {
-            return 0;
-        }
-
-        int offset = 0;
-        int length = 0;
-
-        // ISO/IEC 10918-1:1993(E)
-        while (offset + 3 < jpeg.length && (jpeg[offset++] & 0xFF) == 0xFF) {
-            int marker = jpeg[offset] & 0xFF;
-
-            // Check if the marker is a padding.
-            if (marker == 0xFF) {
-                continue;
-            }
-            offset++;
-
-            // Check if the marker is SOI or TEM.
-            if (marker == 0xD8 || marker == 0x01) {
-                continue;
-            }
-            // Check if the marker is EOI or SOS.
-            if (marker == 0xD9 || marker == 0xDA) {
-                break;
-            }
-
-            // Get the length and check if it is reasonable.
-            length = pack(jpeg, offset, 2, false);
-            if (length < 2 || offset + length > jpeg.length) {
-                LogUtil.e("Invalid length");
-                return 0;
-            }
-
-            // Break if the marker is EXIF in APP1.
-            if (marker == 0xE1 && length >= 8
-                    && pack(jpeg, offset + 2, 4, false) == 0x45786966
-                    && pack(jpeg, offset + 6, 2, false) == 0) {
-                offset += 8;
-                length -= 8;
-                break;
-            }
-
-            // Skip other markers.
-            offset += length;
-            length = 0;
-        }
-
-        // JEITA CP-3451 Exif Version 2.2
-        if (length > 8) {
-            // Identify the byte order.
-            int tag = pack(jpeg, offset, 4, false);
-            if (tag != 0x49492A00 && tag != 0x4D4D002A) {
-                LogUtil.e("Invalid byte order");
-                return 0;
-            }
-            boolean littleEndian = (tag == 0x49492A00);
-
-            // Get the offset and check if it is reasonable.
-            int count = pack(jpeg, offset + 4, 4, littleEndian) + 2;
-            if (count < 10 || count > length) {
-                LogUtil.e("Invalid offset");
-                return 0;
-            }
-            offset += count;
-            length -= count;
-
-            // Get the count and go through all the elements.
-            count = pack(jpeg, offset - 2, 2, littleEndian);
-            while (count-- > 0 && length >= 12) {
-                // Get the tag and check if it is orientation.
-                tag = pack(jpeg, offset, 2, littleEndian);
-                if (tag == 0x0112) {
-                    int orientation = pack(jpeg, offset + 8, 2, littleEndian);
-                    switch (orientation) {
-                        case 1:
-                            return 0;
-                        case 3:
-                            return 180;
-                        case 6:
-                            return 90;
-                        case 8:
-                            return 270;
-                    }
-                    LogUtil.e("Unsupported orientation");
-                    return 0;
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    if (Core.DEBUG) e.printStackTrace();
                 }
-                offset += 12;
-                length -= 12;
             }
         }
-
-        LogUtil.e("Orientation not found");
-        return 0;
+        return degree;
     }
-
-    private static int pack(byte[] bytes, int offset, int length, boolean littleEndian) {
-        int step = 1;
-        if (littleEndian) {
-            offset += length - 1;
-            step = -1;
-        }
-
-        int value = 0;
-        while (length-- > 0) {
-            value = (value << 8) | (bytes[offset] & 0xFF);
-            offset += step;
-        }
-        return value;
-    }
-    // -------------------------- 来自Luban --------------------------
 
     /**
      * 读取图片属性：旋转的角度
