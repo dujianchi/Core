@@ -12,7 +12,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
 
     //protected final SparseArray<ViewProvider> mProviderArray = new SparseArray<>();
 
-    public MultiTypeAdapter(@Nullable List<T> data) {
+    public MultiTypeAdapter(@Nullable List<? extends T> data) {
         super(data);
         setMultiTypeDelegate(delegate());
     }
@@ -25,7 +25,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
             //mProviderArray.put(position, provider);
             return provider.layoutId();
         }
-        return super.getDefItemViewType(position);
+        return super.getDefItemViewType(position);//这个不能变
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
             if (adapter.mContext == null) adapter.mContext = mContext;
         }
         if (delegate instanceof ProviderDelegate) {
-            ((ProviderDelegate) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, helper, item);
+            ((ProviderDelegate) delegate).getProvider(mData, helper.getAdapterPosition()).convert(mContext, this, helper, item);
         }
     }
 

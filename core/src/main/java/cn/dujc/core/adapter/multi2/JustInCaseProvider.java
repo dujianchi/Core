@@ -3,6 +3,7 @@ package cn.dujc.core.adapter.multi2;
 import android.content.Context;
 
 import cn.dujc.core.R;
+import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 
 /**
@@ -16,6 +17,6 @@ public class JustInCaseProvider implements ViewProvider {
     }
 
     @Override
-    public void convert(Context context, BaseViewHolder helper, Object item) { }
+    public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object data) { }
 
 }
