@@ -69,8 +69,8 @@ public class MultiTypeAdapterActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(Context context, BaseViewHolder helper, Object item) {
-            helper.setText(R.id.text, StringUtil.concat(item));
+        public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object data) {
+            helper.setText(R.id.text, StringUtil.concat(data));
         }
     }
 

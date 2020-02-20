@@ -56,6 +56,7 @@ public class ListActivity extends BaseListActivity {
     public static class Adapter extends MultiTypeAdapter<String> {
 
         private final ViewProvider mRedProvider, mGreenProvider;
+
         public Adapter(@Nullable List<String> data) {
             super(data);
             mRedProvider = new RedProvider();
@@ -81,7 +82,7 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(Context context, BaseViewHolder helper, Object item) {
+        public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object item) {
             ResizeableTextView textView = helper.getView(R.id.text);
             //textView.updateScale(2F);
             textView.setText(StringUtil.concat(item));
@@ -96,7 +97,7 @@ public class ListActivity extends BaseListActivity {
         }
 
         @Override
-        public void convert(Context context, BaseViewHolder helper, Object item) {
+        public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object item) {
             ResizeableTextView textView = helper.getView(R.id.text);
             //textView.updateScale(4F);
             textView.setText(StringUtil.concat(item));

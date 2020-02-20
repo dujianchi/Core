@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import cn.dujc.core.adapter.multi2.JustInCaseProvider;
 import cn.dujc.core.adapter.multi2.ProviderDelegate;
 import cn.dujc.core.adapter.multi2.ViewProvider;
 import cn.dujc.core.adapter.util.IMultiTypeDelegate;
@@ -22,6 +23,7 @@ public abstract class MultiTypeAdapter<T> extends BaseAdapter<T> {
         final IMultiTypeDelegate delegate = getMultiTypeDelegate();
         if (delegate instanceof ProviderDelegate) {
             ViewProvider provider = ((ProviderDelegate) delegate).getProvider(mData, position);
+            if (provider == null) provider = new JustInCaseProvider();
             //mProviderArray.put(position, provider);
             return provider.layoutId();
         }
