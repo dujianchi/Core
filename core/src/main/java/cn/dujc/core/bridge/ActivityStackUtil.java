@@ -31,7 +31,7 @@ public class ActivityStackUtil {
     public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = ACTIVITY | FRAGMENT;
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
-    private final Stack<Activity> mActivities = new Stack<Activity>();
+    private final Stack<Activity> mActivities = new Stack<Activity>();//栈，类型最好不要改变
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
@@ -142,6 +142,20 @@ public class ActivityStackUtil {
         if (!ActivityStackUtil.getInstance().getActivities().isEmpty()
                 && (activity = ActivityStackUtil.getInstance().getActivities().peek()) != null
                 && !activity.isFinishing()) return activity;
+        return null;
+    }
+
+    /**
+     * 通过类来获取栈中的activity
+     */
+    @Nullable
+    public synchronized Activity getActivity(Class<? extends Activity> clazz) {
+        if (clazz == null) return null;
+        for (Activity activity : mActivities) {
+            if (activity != null && activity.getClass().equals(clazz)) {
+                return activity;
+            }
+        }
         return null;
     }
 
