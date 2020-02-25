@@ -409,7 +409,7 @@ public class ActivityStackUtil {
         }
     }
 
-    private static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
+    private synchronized static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
         if (fragments != null && fragments.size() > 0) {
             for (Fragment fragment : fragments) {
                 onEvent(fragment, flag, value);
