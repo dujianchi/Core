@@ -32,6 +32,7 @@ public class ActivityStackUtil {
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();//栈，类型最好不要改变
+    private final Set<Class<? extends Activity>> mClassSet = new HashSet<>();//类型，用于判断是否存在某个类的activity
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
@@ -116,6 +117,30 @@ public class ActivityStackUtil {
     private synchronized void addActivity(Activity activity) {
         if (activity != null && !activity.isFinishing()) {
             mActivities.add(activity);
+            mClassSet.add(activity.getClass());
+        }
+    }
+
+    /**
+     * 从管理栈中移除指定activity。并不一定会关闭activity，只是移出管理栈
+     */
+    private synchronized void removeActivity(Activity activity) {
+        mActivities.remove(activity);
+        if (activity != null) mClassSet.remove(activity.getClass());
+        //removeFragments(activity);
+    }
+
+    /**
+     * 关闭Activity，如果是Iterator遍历的，把remove掉Iterator，否则从Stack中remove掉
+     */
+    private void finish(Activity activity, Iterator iterator) {
+        if (activity != null && !activity.isFinishing()) {
+            activity.finish();
+        }
+        if (iterator != null) {
+            iterator.remove();
+        } else {
+            removeActivity(activity);
         }
     }
 
@@ -196,20 +221,6 @@ public class ActivityStackUtil {
     }
 
     /**
-     * 关闭Activity，如果是Iterator遍历的，把remove掉Iterator，否则从Stack中remove掉
-     */
-    private void finish(Activity activity, Iterator iterator) {
-        if (activity != null && !activity.isFinishing()) {
-            activity.finish();
-        }
-        if (iterator != null) {
-            iterator.remove();
-        } else {
-            removeActivity(activity);
-        }
-    }
-
-    /**
      * 关闭指定activity
      */
     public synchronized void finishActivity(Activity activity) {
@@ -229,6 +240,21 @@ public class ActivityStackUtil {
                 if (activity.getClass().equals(clazz)) {
                     finish(activity, iterator);
                 }
+            }
+        }
+    }
+
+    /**
+     * 关闭activity，直到clazz为止。如果当前activity栈不存在对应从class，则不做任何操作
+     */
+    public synchronized void finishUntil(Class<? extends Activity> clazz) {
+        if (clazz == null) return;
+        if (!mClassSet.contains(clazz)) return;
+        final Iterator<Activity> iterator = mActivities.iterator();
+        while (iterator.hasNext()) {
+            Activity activity = iterator.next();
+            if (!activity.getClass().equals(clazz)) {
+                finish(activity, iterator);
             }
         }
     }
@@ -329,14 +355,6 @@ public class ActivityStackUtil {
                 iterator.remove();
             }
         }
-    }
-
-    /**
-     * 从管理栈中移除指定activity。并不一定会关闭activity，只是移出管理栈
-     */
-    private synchronized void removeActivity(Activity activity) {
-        mActivities.remove(activity);
-        //removeFragments(activity);
     }
 
     /**
