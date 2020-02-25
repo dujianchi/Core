@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ActivityStackUtil {
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();//栈，类型最好不要改变
-    private final Set<Class<? extends Activity>> mClassSet = new HashSet<>();//类型，用于判断是否存在某个类的activity
+    private final Set<Class<? extends Activity>> mClassSet = Collections.synchronizedSet(new HashSet<Class<? extends Activity>>());//类型，用于判断是否存在某个类的activity
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
