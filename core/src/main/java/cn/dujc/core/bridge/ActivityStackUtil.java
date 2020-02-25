@@ -250,7 +250,7 @@ public class ActivityStackUtil {
      */
     public synchronized void finishUntil(Class<? extends Activity> clazz) {
         if (clazz == null) return;
-        if (!mClassSet.contains(clazz)) return;
+        if (!getInstance().contains(clazz)) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
@@ -334,10 +334,11 @@ public class ActivityStackUtil {
      */
     public synchronized final boolean contains(Class<? extends Activity> clazz) {
         if (clazz == null) return false;
-        for (Activity activity : mActivities) {
+        /*for (Activity activity : mActivities) {
             if (activity != null && activity.getClass().equals(clazz)) return true;
         }
-        return false;
+        return false;*/
+        return mClassSet.contains(clazz);
     }
 
     /**
