@@ -187,14 +187,14 @@ public class ActivityStackUtil {
      * 通过类来获取栈中的activity
      */
     @Nullable
-    public synchronized Activity getActivity(Class<? extends Activity> clazz) {
+    public synchronized <T extends Activity> T getActivity(Class<T> clazz) {
         if (clazz == null) return null;
         synchronized (mActivities) {
             final Iterator<Activity> iterator = mActivities.iterator();
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
                 if (activity != null && activity.getClass().equals(clazz)) {
-                    return activity;
+                    return (T) activity;
                 }
             }
         }
