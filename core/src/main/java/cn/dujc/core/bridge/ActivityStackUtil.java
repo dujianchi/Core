@@ -411,7 +411,7 @@ public class ActivityStackUtil {
 
     private synchronized static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
         if (fragments != null && fragments.size() > 0) {
-            for (Fragment fragment : fragments) {
+            for (Fragment fragment : Collections.synchronizedList(fragments)) {
                 onEvent(fragment, flag, value);
                 if (fragment != null) {
                     sendFragmentEvent(flag, value, fragment.getChildFragmentManager().getFragments());
