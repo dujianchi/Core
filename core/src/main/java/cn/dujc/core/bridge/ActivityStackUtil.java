@@ -221,15 +221,14 @@ public class ActivityStackUtil {
     public synchronized <T extends Activity> T getActivity(Class<T> clazz) {
         if (clazz == null) return null;
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 if (activity != null && activity.getClass().equals(clazz)) {
                     return (T) activity;
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 if (activity != null && activity.getClass().equals(clazz)) {
                     return (T) activity;
                 }
@@ -295,20 +294,19 @@ public class ActivityStackUtil {
     public synchronized final void finishActivity(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 for (Class<? extends Activity> clazz : classes) {
                     if (activity.getClass().equals(clazz)) {
-                        finish(activity, iterator);
+                        finish(activity, mActivityIterator);
                     }
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 for (Class<? extends Activity> clazz : classes) {
                     if (activity.getClass().equals(clazz)) {
-                        finish(activity, iterator);
+                        finish(activity, mActivityIterator);
                     }
                 }
             }
@@ -322,17 +320,16 @@ public class ActivityStackUtil {
         if (clazz == null) return;
         if (!getInstance().contains(clazz)) return;
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 if (!activity.getClass().equals(clazz)) {
-                    finish(activity, iterator);
+                    finish(activity, mActivityIterator);
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 if (!activity.getClass().equals(clazz)) {
-                    finish(activity, iterator);
+                    finish(activity, mActivityIterator);
                 }
             }
         }
@@ -345,17 +342,16 @@ public class ActivityStackUtil {
         if (lastSurvivalOfSpecies == null) return;
         final Class<? extends Activity> exterminatedSpecies = lastSurvivalOfSpecies.getClass();
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
-                    finish(activity, iterator);
+                    finish(activity, mActivityIterator);
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
-                    finish(activity, iterator);
+                    finish(activity, mActivityIterator);
                 }
             }
         }
@@ -377,31 +373,30 @@ public class ActivityStackUtil {
     public synchronized final void closeAllExcept(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 boolean contain = false;
                 for (Class<? extends Activity> clazz : classes) {
                     contain = contain || activity.getClass().equals(clazz);
                 }
                 if (!contain) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                     activity.finish();
                 } else if (activity.isFinishing()) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 boolean contain = false;
                 for (Class<? extends Activity> clazz : classes) {
                     contain = contain || activity.getClass().equals(clazz);
                 }
                 if (!contain) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                     activity.finish();
                 } else if (activity.isFinishing()) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                 }
             }
         }
@@ -451,23 +446,22 @@ public class ActivityStackUtil {
      */
     public synchronized void closeAllExcept(Activity activity) {
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity next = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity next = mActivityIterator.next();
                 if (activity != next) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                     next.finish();
                 } else if (next.isFinishing()) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity previous = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity previous = mActivityIterator.previous();
                 if (activity != previous) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                     previous.finish();
                 } else if (previous.isFinishing()) {
-                    iterator.remove();
+                    mActivityIterator.remove();
                 }
             }
         }
@@ -482,9 +476,8 @@ public class ActivityStackUtil {
      */
     public synchronized void sendEvent(int flag, Object value, byte receiver) {
         synchronized (mActivityIterator) {
-            final ListIterator<Activity> iterator = mActivityIterator;
-            while (iterator.hasNext()) {
-                Activity activity = iterator.next();
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
                 if ((receiver & ACTIVITY) == ACTIVITY) {
                     onEvent(activity, flag, value);
                 }
@@ -493,8 +486,8 @@ public class ActivityStackUtil {
                     sendFragmentEvent(flag, value, fragments);
                 }
             }
-            while (iterator.hasPrevious()) {
-                Activity activity = iterator.previous();
+            while (mActivityIterator.hasPrevious()) {
+                Activity activity = mActivityIterator.previous();
                 if ((receiver & ACTIVITY) == ACTIVITY) {
                     onEvent(activity, flag, value);
                 }
