@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.Stack;
 
@@ -32,7 +33,8 @@ public class ActivityStackUtil {
     public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = ACTIVITY | FRAGMENT;
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
-    private final Stack<Activity> mActivities = new Stack<Activity>();//栈，类型最好不要改变
+    private final Stack<Activity> mActivityStack = new Stack<Activity>();//栈，类型最好不要改变
+    private final ListIterator<Activity> mActivityIterator = mActivityStack.listIterator();//栈，类型最好不要改变
     private final Set<Class<? extends Activity>> mClassSet = Collections.synchronizedSet(new HashSet<Class<? extends Activity>>());//类型，用于判断是否存在某个类的activity
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
@@ -117,8 +119,8 @@ public class ActivityStackUtil {
      */
     private synchronized void addActivity(Activity activity) {
         if (activity != null && !activity.isFinishing()) {
-            synchronized (mActivities) {
-                mActivities.add(activity);
+            synchronized (mActivityIterator) {
+                mActivityIterator.add(activity);
             }
             synchronized (mClassSet) {
                 mClassSet.add(activity.getClass());
@@ -130,8 +132,19 @@ public class ActivityStackUtil {
      * 从管理栈中移除指定activity。并不一定会关闭activity，只是移出管理栈
      */
     private synchronized void removeActivity(Activity activity) {
-        synchronized (mActivities) {
-            mActivities.remove(activity);
+        synchronized (mActivityIterator) {
+            while (mActivityIterator.hasNext()) {
+                if (mActivityIterator.next() == activity) {
+                    mActivityIterator.remove();
+                    break;
+                }
+            }
+            while (mActivityIterator.hasPrevious()) {
+                if (mActivityIterator.previous() == activity) {
+                    mActivityIterator.remove();
+                    break;
+                }
+            }
         }
         if (activity != null) {
             synchronized (mClassSet) {
@@ -157,17 +170,35 @@ public class ActivityStackUtil {
 
     /**
      * 获取activity栈
+     * 使用{@link #getActivityIterator()} 代替
+     *
+     * @deprecated 不建议直接操作栈
      */
+    @Deprecated
     public synchronized Stack<Activity> getActivities() {
-        return mActivities;
+        return mActivityStack;
+    }
+
+    /**
+     * 获取activity栈
+     */
+    public synchronized ListIterator<Activity> getActivityIterator() {
+        return mActivityIterator;
     }
 
     /**
      * 当前注册到管理栈的activity数量
      */
     public synchronized int foregroundCount() {
-        synchronized (mActivities) {
-            return mActivities.size();
+        synchronized (mActivityIterator) {
+            int count = 0;
+            while (mActivityIterator.hasNext()) {
+                count++;
+            }
+            while (mActivityIterator.hasPrevious()) {
+                count++;
+            }
+            return count;
         }
     }
 
@@ -189,10 +220,16 @@ public class ActivityStackUtil {
     @Nullable
     public synchronized <T extends Activity> T getActivity(Class<T> clazz) {
         if (clazz == null) return null;
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                if (activity != null && activity.getClass().equals(clazz)) {
+                    return (T) activity;
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 if (activity != null && activity.getClass().equals(clazz)) {
                     return (T) activity;
                 }
@@ -234,8 +271,13 @@ public class ActivityStackUtil {
      */
     @Deprecated
     public synchronized void clearActivities() {
-        synchronized (mActivities) {
-            mActivities.clear();
+        synchronized (mActivityIterator) {
+            while (mActivityIterator.hasNext()) {
+                mActivityIterator.remove();
+            }
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.remove();
+            }
         }
     }
 
@@ -252,10 +294,18 @@ public class ActivityStackUtil {
     @SafeVarargs
     public synchronized final void finishActivity(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                for (Class<? extends Activity> clazz : classes) {
+                    if (activity.getClass().equals(clazz)) {
+                        finish(activity, iterator);
+                    }
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 for (Class<? extends Activity> clazz : classes) {
                     if (activity.getClass().equals(clazz)) {
                         finish(activity, iterator);
@@ -271,10 +321,16 @@ public class ActivityStackUtil {
     public synchronized void finishUntil(Class<? extends Activity> clazz) {
         if (clazz == null) return;
         if (!getInstance().contains(clazz)) return;
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                if (!activity.getClass().equals(clazz)) {
+                    finish(activity, iterator);
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 if (!activity.getClass().equals(clazz)) {
                     finish(activity, iterator);
                 }
@@ -288,10 +344,16 @@ public class ActivityStackUtil {
     public synchronized final void finishSameButThis(Activity lastSurvivalOfSpecies) {
         if (lastSurvivalOfSpecies == null) return;
         final Class<? extends Activity> exterminatedSpecies = lastSurvivalOfSpecies.getClass();
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
+                    finish(activity, iterator);
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
                     finish(activity, iterator);
                 }
@@ -314,10 +376,23 @@ public class ActivityStackUtil {
     @SafeVarargs
     public synchronized final void closeAllExcept(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                boolean contain = false;
+                for (Class<? extends Activity> clazz : classes) {
+                    contain = contain || activity.getClass().equals(clazz);
+                }
+                if (!contain) {
+                    iterator.remove();
+                    activity.finish();
+                } else if (activity.isFinishing()) {
+                    iterator.remove();
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 boolean contain = false;
                 for (Class<? extends Activity> clazz : classes) {
                     contain = contain || activity.getClass().equals(clazz);
@@ -375,14 +450,23 @@ public class ActivityStackUtil {
      * @param activity activity.this
      */
     public synchronized void closeAllExcept(Activity activity) {
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity next = iterator.next();
                 if (activity != next) {
                     iterator.remove();
                     next.finish();
                 } else if (next.isFinishing()) {
+                    iterator.remove();
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity previous = iterator.previous();
+                if (activity != previous) {
+                    iterator.remove();
+                    previous.finish();
+                } else if (previous.isFinishing()) {
                     iterator.remove();
                 }
             }
@@ -397,10 +481,20 @@ public class ActivityStackUtil {
      * @param receiver 接受对象，0b10给Activity，0b01给Fragment
      */
     public synchronized void sendEvent(int flag, Object value, byte receiver) {
-        synchronized (mActivities) {
-            final Iterator<Activity> iterator = mActivities.iterator();
+        synchronized (mActivityIterator) {
+            final ListIterator<Activity> iterator = mActivityIterator;
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
+                if ((receiver & ACTIVITY) == ACTIVITY) {
+                    onEvent(activity, flag, value);
+                }
+                if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
+                    final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
+                    sendFragmentEvent(flag, value, fragments);
+                }
+            }
+            while (iterator.hasPrevious()) {
+                Activity activity = iterator.previous();
                 if ((receiver & ACTIVITY) == ACTIVITY) {
                     onEvent(activity, flag, value);
                 }
