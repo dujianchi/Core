@@ -63,6 +63,8 @@
         <activity android:name=".ui.GridViewTestActivity" />
         <activity android:name=".ui.FragmentsActivity" />
         <activity android:name=".ui.BitmapActivity" />
+        <activity android:name=".ui.EventActivity0" />
+        <activity android:name=".ui.EventActivity1" />
     </application>
 
 </manifest>

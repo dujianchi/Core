@@ -6,10 +6,12 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
+import cn.dujc.core.bridge.IEvent;
 import cn.dujc.core.ui.BaseFragment;
+import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
-public class FragmentChild extends BaseFragment {
+public class FragmentChild extends BaseFragment implements IEvent {
 
     public static FragmentChild newInstance(int index) {
         Bundle args = new Bundle();
@@ -36,5 +38,10 @@ public class FragmentChild extends BaseFragment {
                 showFragment(R.id.fl_container_child, mFragments[mInt++ % 2]);
             }
         });
+    }
+
+    @Override
+    public void onMyEvent(int flag, Object value) {
+        ToastUtil.showToast(mActivity, "fragment: " + value);
     }
 }

@@ -21,6 +21,8 @@ import java.util.Map;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
+import cn.dujc.core.bridge.ActivityStackUtil;
+import cn.dujc.core.bridge.IEvent;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.ui.impl.BaseListActivity;
@@ -40,7 +42,7 @@ import cn.dujc.coreapp.util.BeanUtils;
 import cn.dujc.widget.resizeable.ResizeableTextImpl;
 import cn.dujc.zxing.impl.ZxingActivity;
 
-public class MainActivity extends BaseListActivity {
+public class MainActivity extends BaseListActivity implements IEvent {
 
     private final List<String> mList = Arrays.asList("toast"
             , "webview"
@@ -74,6 +76,7 @@ public class MainActivity extends BaseListActivity {
             , "fields"
             , "fragment s"
             , "bitmap"
+            , "event"
             //, ""
     );
 
@@ -316,6 +319,12 @@ public class MainActivity extends BaseListActivity {
                 starter().go(BitmapActivity.class);
             }
             break;
+            case 32: {
+                starter()
+                        .with(EventActivity0.EXTRA_INDEX, 1)
+                        .go(EventActivity0.class);
+            }
+            break;
             //case 00:{}break;
         }
     }
@@ -337,4 +346,11 @@ public class MainActivity extends BaseListActivity {
         }
     }
 
+    @Override
+    public void onMyEvent(int flag, Object value) {
+        if (flag == 0) {
+            ActivityStackUtil.getInstance().closeAllExcept(this);
+            ToastUtil.showToast(mActivity, String.valueOf(value));
+        }
+    }
 }

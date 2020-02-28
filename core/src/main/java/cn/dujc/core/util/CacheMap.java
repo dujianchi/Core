@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,17 @@ public class CacheMap<K, V> implements Map<K, V> {
             }
         }
         return result;
+    }
+
+    public void removeValue(@Nullable Object value) {
+        Iterator<WeakReference<V>> iterator = mCacheContainer.values().iterator();
+        while (iterator.hasNext()) {
+            WeakReference<V> next = iterator.next();
+            if (value == next || value == next.get()) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     public static class SimpleEntry<K, V> implements Entry<K, V> {

@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.Stack;
 
 import cn.dujc.core.util.CacheMap;
 import cn.dujc.core.util.ContextUtil;
+import cn.dujc.core.util.LogUtil;
 
 /**
  * activity管理栈
@@ -35,7 +35,6 @@ public class ActivityStackUtil {
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivityStack = new Stack<Activity>();//栈，类型最好不要改变
     private final ListIterator<Activity> mActivityIterator = mActivityStack.listIterator();//栈，类型最好不要改变
-    private final Set<Class<? extends Activity>> mClassSet = Collections.synchronizedSet(new HashSet<Class<? extends Activity>>());//类型，用于判断是否存在某个类的activity
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
@@ -95,6 +94,7 @@ public class ActivityStackUtil {
      * @param value    参数
      */
     private synchronized static void onEvent(Object receiver, int flag, Object value) {
+        LogUtil.d("event -> " + receiver);
         if (receiver instanceof IEvent) {
             ((IEvent) receiver).onMyEvent(flag, value);
         }
@@ -122,9 +122,6 @@ public class ActivityStackUtil {
             synchronized (mActivityIterator) {
                 mActivityIterator.add(activity);
             }
-            synchronized (mClassSet) {
-                mClassSet.add(activity.getClass());
-            }
         }
     }
 
@@ -133,22 +130,24 @@ public class ActivityStackUtil {
      */
     private synchronized void removeActivity(Activity activity) {
         synchronized (mActivityIterator) {
-            while (mActivityIterator.hasNext()) {
-                if (mActivityIterator.next() == activity) {
-                    mActivityIterator.remove();
-                    break;
-                }
-            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasPrevious()) {
-                if (mActivityIterator.previous() == activity) {
+                mActivityIterator.previous();
+            }
+            while (mActivityIterator.hasNext()) {
+                Activity next = mActivityIterator.next();
+                if (next == activity) {
                     mActivityIterator.remove();
                     break;
+                } else if (shouldContinue == next) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = next;
                 }
-            }
-        }
-        if (activity != null) {
-            synchronized (mClassSet) {
-                mClassSet.remove(activity.getClass());
             }
         }
         //removeFragments(activity);
@@ -172,7 +171,7 @@ public class ActivityStackUtil {
      * 获取activity栈
      * 使用{@link #getActivityIterator()} 代替
      *
-     * @deprecated 不建议直接操作栈
+     * @deprecated 不建议直接操作栈。同时不建议去掉这个方法
      */
     @Deprecated
     public synchronized Stack<Activity> getActivities() {
@@ -191,14 +190,7 @@ public class ActivityStackUtil {
      */
     public synchronized int foregroundCount() {
         synchronized (mActivityIterator) {
-            int count = 0;
-            while (mActivityIterator.hasNext()) {
-                count++;
-            }
-            while (mActivityIterator.hasPrevious()) {
-                count++;
-            }
-            return count;
+            return mActivityStack.size();
         }
     }
 
@@ -207,11 +199,18 @@ public class ActivityStackUtil {
      */
     @Nullable
     public synchronized Activity topActivity() {
-        final Activity activity;
-        if (!ActivityStackUtil.getInstance().getActivities().isEmpty()
-                && (activity = ActivityStackUtil.getInstance().getActivities().peek()) != null
-                && !activity.isFinishing()) return activity;
-        return null;
+        synchronized (mActivityIterator) {
+            Activity activity = null;
+            while (mActivityIterator.hasPrevious()) {
+                activity = mActivityIterator.previous();
+            }
+            if (activity != null) return activity;
+            while (mActivityIterator.hasNext()) {
+                activity = mActivityIterator.next();
+                LogUtil.d("top1: " + activity);
+            }
+            return activity;
+        }
     }
 
     /**
@@ -221,16 +220,22 @@ public class ActivityStackUtil {
     public synchronized <T extends Activity> T getActivity(Class<T> clazz) {
         if (clazz == null) return null;
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 if (activity != null && activity.getClass().equals(clazz)) {
                     return (T) activity;
-                }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                if (activity != null && activity.getClass().equals(clazz)) {
-                    return (T) activity;
+                } else if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
                 }
             }
         }
@@ -294,19 +299,23 @@ public class ActivityStackUtil {
     public synchronized final void finishActivity(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 for (Class<? extends Activity> clazz : classes) {
                     if (activity.getClass().equals(clazz)) {
                         finish(activity, mActivityIterator);
-                    }
-                }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                for (Class<? extends Activity> clazz : classes) {
-                    if (activity.getClass().equals(clazz)) {
-                        finish(activity, mActivityIterator);
+                    } else if (shouldContinue == activity) {
+                        if (mActivityIterator.hasNext()) {
+                            mActivityIterator.next();
+                        } else {
+                            break;
+                        }
+                    } else {
+                        shouldContinue = activity;
                     }
                 }
             }
@@ -320,16 +329,22 @@ public class ActivityStackUtil {
         if (clazz == null) return;
         if (!getInstance().contains(clazz)) return;
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 if (!activity.getClass().equals(clazz)) {
                     finish(activity, mActivityIterator);
-                }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                if (!activity.getClass().equals(clazz)) {
-                    finish(activity, mActivityIterator);
+                } else if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
                 }
             }
         }
@@ -342,16 +357,22 @@ public class ActivityStackUtil {
         if (lastSurvivalOfSpecies == null) return;
         final Class<? extends Activity> exterminatedSpecies = lastSurvivalOfSpecies.getClass();
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
                     finish(activity, mActivityIterator);
-                }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
-                    finish(activity, mActivityIterator);
+                } else if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
                 }
             }
         }
@@ -373,6 +394,10 @@ public class ActivityStackUtil {
     public synchronized final void closeAllExcept(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 boolean contain = false;
@@ -384,19 +409,14 @@ public class ActivityStackUtil {
                     activity.finish();
                 } else if (activity.isFinishing()) {
                     mActivityIterator.remove();
-                }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                boolean contain = false;
-                for (Class<? extends Activity> clazz : classes) {
-                    contain = contain || activity.getClass().equals(clazz);
-                }
-                if (!contain) {
-                    mActivityIterator.remove();
-                    activity.finish();
-                } else if (activity.isFinishing()) {
-                    mActivityIterator.remove();
+                } else if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
                 }
             }
         }
@@ -430,13 +450,27 @@ public class ActivityStackUtil {
      */
     public synchronized final boolean contains(Class<? extends Activity> clazz) {
         if (clazz == null) return false;
-        /*for (Activity activity : mActivities) {
-            if (activity != null && activity.getClass().equals(clazz)) return true;
+        synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
+            while (mActivityIterator.hasNext()) {
+                Activity activity = mActivityIterator.next();
+                if (activity != null && activity.getClass().equals(clazz)) {
+                    return true;
+                } else if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
+                }
+            }
         }
-        return false;*/
-        synchronized (mClassSet) {
-            return mClassSet.contains(clazz);
-        }
+        return false;
     }
 
     /**
@@ -445,7 +479,12 @@ public class ActivityStackUtil {
      * @param activity activity.this
      */
     public synchronized void closeAllExcept(Activity activity) {
+        LogUtil.d("close -> " + activity);
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity next = mActivityIterator.next();
                 if (activity != next) {
@@ -453,16 +492,16 @@ public class ActivityStackUtil {
                     next.finish();
                 } else if (next.isFinishing()) {
                     mActivityIterator.remove();
+                } else if (shouldContinue == next) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = next;
                 }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity previous = mActivityIterator.previous();
-                if (activity != previous) {
-                    mActivityIterator.remove();
-                    previous.finish();
-                } else if (previous.isFinishing()) {
-                    mActivityIterator.remove();
-                }
+                LogUtil.d("close <- 0");
             }
         }
     }
@@ -476,6 +515,10 @@ public class ActivityStackUtil {
      */
     public synchronized void sendEvent(int flag, Object value, byte receiver) {
         synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) {
+                mActivityIterator.previous();
+            }
+            Activity shouldContinue = null;
             while (mActivityIterator.hasNext()) {
                 Activity activity = mActivityIterator.next();
                 if ((receiver & ACTIVITY) == ACTIVITY) {
@@ -485,15 +528,14 @@ public class ActivityStackUtil {
                     final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
                     sendFragmentEvent(flag, value, fragments);
                 }
-            }
-            while (mActivityIterator.hasPrevious()) {
-                Activity activity = mActivityIterator.previous();
-                if ((receiver & ACTIVITY) == ACTIVITY) {
-                    onEvent(activity, flag, value);
-                }
-                if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
-                    final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
-                    sendFragmentEvent(flag, value, fragments);
+                if (shouldContinue == activity) {
+                    if (mActivityIterator.hasNext()) {
+                        mActivityIterator.next();
+                    } else {
+                        break;
+                    }
+                } else {
+                    shouldContinue = activity;
                 }
             }
         }
