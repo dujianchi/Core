@@ -3,6 +3,7 @@ package cn.dujc.core.util;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.IllegalFormatException;
 import java.util.Random;
@@ -242,6 +243,38 @@ public class StringUtil {
     public static boolean isBlank(CharSequence text) {
         if (TextUtils.isEmpty(text)) return true;
         return text.toString().trim().isEmpty();
+    }
+
+    /**
+     * 将byte数组转换为16进制文本
+     */
+    @Nullable
+    public static String toHex(@Nullable byte[] bytes) {
+        if (bytes == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (byte aByte : bytes) {
+            String hex = Integer.toHexString(aByte & 0xFF);
+            if (hex.length() == 1) sb.append(0); // 每个字节由两个字符表示，位数不够，高位补0
+            sb.append(hex); // 每个字节由两个字符表示，位数不够，高位补0
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将16进制文本转换为byte数组
+     */
+    @Nullable
+    public static byte[] fromHex(@Nullable String hex) {
+        if (hex == null) return null;
+        if (hex.startsWith("0x") || hex.startsWith("0X")) hex = hex.substring(2);
+        int byteLen = hex.length() / 2; // 每两个字符描述一个字节
+        byte[] ret = new byte[byteLen];
+        for (int i = 0; i < byteLen; i++) {
+            int m = i << 1;
+            int intVal = Integer.parseInt(hex.substring(m, m + 2), 16);
+            ret[i] = (byte) intVal;
+        }
+        return ret;
     }
 
     private static Random getRandom() {

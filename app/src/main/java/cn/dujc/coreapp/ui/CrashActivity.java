@@ -17,6 +17,7 @@ import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.core.util.DeviceUtil;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.RichTextBuilder;
+import cn.dujc.core.util.StringUtil;
 import cn.dujc.coreapp.R;
 
 public class CrashActivity extends BaseActivity implements View.OnClickListener {
@@ -40,11 +41,13 @@ public class CrashActivity extends BaseActivity implements View.OnClickListener 
                 .batch()
                 .append(1).append("click").append(' ').append("to crash")
                 .create(mActivity, R.color.colorPrimary)
+                .styles().addStyleScale(3).addStyle(Color.MAGENTA).fillContent("666777x3")
                 .addTextPart('\n')
                 .addTextPartScale("2 scale", 2)
                 .addTextPart('\n')
                 .addPart("2 scale red ", new RelativeSizeSpan(2), new ForegroundColorSpan(Color.RED))
-                .ifNotNone("aaa").append("aaa").create()
+                .ifNotNone("aaa").append("aaa\n").create()
+                .addTextPart(new String(StringUtil.fromHex(StringUtil.toHex("abcd123!@# XYZ中文Java实现hex和bytes之间相互转换🙈🙅".getBytes()))))
                 .build());
         mTextView.setGravity(Gravity.CENTER);
         //textView.setOnClickListener(this);

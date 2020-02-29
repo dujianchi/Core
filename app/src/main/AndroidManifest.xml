@@ -43,7 +43,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.MainActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="ooops.cc" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.ListActivity" />
         <activity android:name=".ui.CrashActivity" />
         <activity android:name=".ui.BannerActivity" />

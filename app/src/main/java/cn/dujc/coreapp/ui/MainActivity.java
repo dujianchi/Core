@@ -42,7 +42,7 @@ import cn.dujc.coreapp.util.BeanUtils;
 import cn.dujc.widget.resizeable.ResizeableTextImpl;
 import cn.dujc.zxing.impl.ZxingActivity;
 
-public class MainActivity extends BaseListActivity implements IEvent {
+public class MainActivity extends BaseListActivity {
 
     private final List<String> mList = Arrays.asList("toast"
             , "webview"
@@ -346,11 +346,4 @@ public class MainActivity extends BaseListActivity implements IEvent {
         }
     }
 
-    @Override
-    public void onMyEvent(int flag, Object value) {
-        if (flag == 0) {
-            ActivityStackUtil.getInstance().closeAllExcept(this);
-            ToastUtil.showToast(mActivity, String.valueOf(value));
-        }
-    }
 }

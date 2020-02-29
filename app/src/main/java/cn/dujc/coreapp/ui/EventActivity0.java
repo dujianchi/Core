@@ -38,15 +38,15 @@ public class EventActivity0 extends BaseActivity implements IEvent {
 
     @Override
     public void onMyEvent(int flag, Object value) {
-        ToastUtil.showToast(mActivity, String.valueOf(value));
+        //ToastUtil.showToast(mActivity, String.valueOf(value));
         if (flag == 1) {
-            ActivityStackUtil.getInstance().finishUntil(EventActivity1.class);
+            ActivityStackUtil.getInstance().finishUntil(MainActivity.class);
         } else if (flag == 2) {
             ActivityStackUtil.getInstance().keepOneSurvivalAndOther(this, MainActivity.class);
-//        } else if (flag == 3) {
-//            ActivityStackUtil.getInstance().closeAllActivity();
-//        } else if (flag == 4) {
-//            ActivityStackUtil.getInstance().closeAllExcept(MainActivity.class);
+        } else if (flag == 3) {
+            ActivityStackUtil.getInstance().closeAllActivity();
+        } else if (flag == 4) {
+            ActivityStackUtil.getInstance().closeAllExcept(MainActivity.class);
         } else if (flag == 5) {
             ActivityStackUtil.getInstance().finishActivity(EventActivity1.class, MainActivity.class);
         } else if (flag == 6 && mIndex == 4) {
@@ -58,21 +58,21 @@ public class EventActivity0 extends BaseActivity implements IEvent {
                     + "\n"
                     + ActivityStackUtil.getInstance().contains(MainActivity.class)
             );
-        } else if (flag == 9) {
+        } else if (flag == 9 && mIndex == 5) {
             int i0 = ActivityStackUtil.getInstance().foregroundCount();
             ActivityStackUtil.getInstance().finishActivity(MainActivity.class);
             int i1 = ActivityStackUtil.getInstance().foregroundCount();
             ActivityStackUtil.getInstance().finishActivity(this);
             ToastUtil.showToast(mActivity, i0 + " -> " + i1 + " -> " + ActivityStackUtil.getInstance().foregroundCount());
         } else if (flag == 10) {
-            ToastUtil.showToast(mActivity
+            ToastUtil.showToast(ActivityStackUtil.getInstance().topActivity()
                     , "main: " + ActivityStackUtil.getInstance().getActivity(MainActivity.class)
                             + "\nnull: " + ActivityStackUtil.getInstance().getActivity(ListActivity.class)
             );
         } else if (flag == 11) {
             ToastUtil.showToast(mActivity, "top:" + ActivityStackUtil.getInstance().topActivity());
         } else if (flag == 12) {
-            ActivityStackUtil.getInstance().sendEvent(-1, "fragment", ActivityStackUtil.ALL);
+            ActivityStackUtil.getInstance().sendEvent(12, "fragment", ActivityStackUtil.FRAGMENT);
             //} else if (flag == 2) {
             //    ActivityStackUtil.getInstance();
         }

@@ -1,11 +1,17 @@
 package cn.dujc.coreapp.ui;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.bridge.IEvent;
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.core.util.ToastUtil;
@@ -22,6 +28,7 @@ public class FragmentChild extends BaseFragment implements IEvent {
     }
 
     private Fragment[] mFragments = new Fragment[]{FragmentGrandChild.newInstance(0), FragmentGrandChild.newInstance(1)};
+    private TextView mTvText;
     private int mInt = 0;
 
     @Override
@@ -31,6 +38,7 @@ public class FragmentChild extends BaseFragment implements IEvent {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
+        mTvText = findViewById(R.id.tv_text);
         findViewById(R.id.ll_layout).setBackgroundColor(extras().get("abc", 0) % 2 == 0 ? Color.RED : Color.BLUE);
         findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +50,17 @@ public class FragmentChild extends BaseFragment implements IEvent {
 
     @Override
     public void onMyEvent(int flag, Object value) {
-        ToastUtil.showToast(mActivity, "fragment: " + value);
+        Iterator<Activity> iterator = ActivityStackUtil.getInstance().getActivities().iterator();
+        StringBuilder stacks = new StringBuilder();
+        while (iterator.hasNext()) {
+            stacks.append(iterator.next().getClass().getSimpleName()).append("\n");
+        }
+        mTvText.setText(stacks);
+        if (flag == 12) {
+            ToastUtil.showToast(mActivity, "fragment: " + value);
+        } else if (flag == 0) {
+            starter()
+                    .go(MainActivity.class);
+        }
     }
 }

@@ -11,6 +11,11 @@
         android:layout_height="wrap_content"
         android:text="SWITCH" />
 
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <FrameLayout
         android:id="@+id/fl_container_child"
         android:layout_width="match_parent"
