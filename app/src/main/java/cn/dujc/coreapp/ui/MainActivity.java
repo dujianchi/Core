@@ -9,10 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,21 +17,17 @@ import java.util.Map;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.bridge.ActivityStackUtil;
-import cn.dujc.core.bridge.IEvent;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.ui.impl.BaseListActivity;
 import cn.dujc.core.ui.impl.BaseWebFragment;
 import cn.dujc.core.ui.impl.FragmentShellActivity;
-import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.MediaUtil;
 import cn.dujc.core.util.RomUtil;
 import cn.dujc.core.util.StringUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
-import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
 import cn.dujc.coreapp.ui.window.Popup;
 import cn.dujc.coreapp.util.BeanUtils;
@@ -150,30 +142,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 6: {
-                Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(Bean.class, new GodDeserializer<Bean>())
-                        .create();
-                /*Bean bean = new Bean();
-                bean.setAaa(111);
-                bean.setBbb(111.0F);
-                bean.setCcc("111");
-                bean.setDdd(true);
-                bean.setEee(0.0111);
-                Bean1<Bean> bean1 = new Bean1<>();
-                bean1.setData(bean);
-                System.out.println(gson.toJson(bean1));*/
-                Bean<Bean1> bean = gson.fromJson(Constants.JSON_STR, new TypeToken<Bean<Bean1>>() {
-                }.getType());
-                System.out.println(bean);
-                if (bean != null) {
-                    List<Bean1> data = bean.getData();
-                    System.out.println(data);
-                    if (data != null && !data.isEmpty()) {
-                        Bean1 bean1 = data.get(0);
-                        System.out.println(bean1);
-                        if (bean1 != null) System.out.println(bean1.getId());
-                    }
-                }
+                starter().go(GsonActivity.class);
             }
             break;
             case 7: {

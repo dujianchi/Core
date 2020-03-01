@@ -76,6 +76,7 @@
         <activity android:name=".ui.BitmapActivity" />
         <activity android:name=".ui.EventActivity0" />
         <activity android:name=".ui.EventActivity1" />
+        <activity android:name=".ui.GsonActivity" />
     </application>
 
 </manifest>
