@@ -17,6 +17,7 @@ import java.util.Map;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
+import cn.dujc.core.gallery.GalleryFragment;
 import cn.dujc.core.initializer.back.IBackPressedOperator;
 import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.ui.impl.BaseListActivity;
@@ -69,6 +70,7 @@ public class MainActivity extends BaseListActivity {
             , "fragment s"
             , "bitmap"
             , "event"
+            , "gallery"
             //, ""
     );
 
@@ -142,7 +144,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 6: {
-                starter().go(GsonActivity.class);
+                //starter().go(GsonActivity.class);
             }
             break;
             case 7: {
@@ -292,6 +294,10 @@ public class MainActivity extends BaseListActivity {
                 starter()
                         .with(EventActivity0.EXTRA_INDEX, 1)
                         .go(EventActivity0.class);
+            }
+            break;
+            case 33: {
+                starter().goFragment(GalleryFragment.class);
             }
             break;
             //case 00:{}break;

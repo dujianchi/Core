@@ -12,7 +12,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -146,10 +145,28 @@ public class BitmapUtil {
      */
     @Nullable
     public static Bitmap bitmapFromUri(Context context, Uri uri) {
-        if (context == null || uri == null) return null;
+        /*if (context == null || uri == null) return null;
         try {
             ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
             Bitmap bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
+            int degree = BitmapUtil.readPictureDegree(context, uri);
+            bitmap = BitmapUtil.rotateBitmap(bitmap, degree);
+            return bitmap;
+        } catch (Exception e) {
+            if (Core.DEBUG) e.printStackTrace();
+        }
+        return null;*/
+        return BitmapUtil.bitmapFromUri(context, uri, 0, 0);
+    }
+
+    /**
+     * 从uri读取图片
+     */
+    @Nullable
+    public static Bitmap bitmapFromUri(Context context, Uri uri, int shortEdge, int longEdge) {
+        if (context == null || uri == null) return null;
+        try {
+            Bitmap bitmap = decodeSmallerFromUri(context, uri, shortEdge, longEdge);
             int degree = BitmapUtil.readPictureDegree(context, uri);
             bitmap = BitmapUtil.rotateBitmap(bitmap, degree);
             return bitmap;

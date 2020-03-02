@@ -9,6 +9,8 @@ buildscript {
         compile_sdk_version = 29
 
         support_version = '1.0.0'
+//        glide_version = '4.11.0'
+//        ok_version = '4.1.0'
     }
 
     repositories {
