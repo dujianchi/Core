@@ -9,11 +9,11 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.bridge.IEvent;
 import cn.dujc.core.ui.BaseFragment;
+import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
@@ -50,11 +50,13 @@ public class FragmentChild extends BaseFragment implements IEvent {
 
     @Override
     public void onMyEvent(int flag, Object value) {
-        Iterator<Activity> iterator = ActivityStackUtil.getInstance().getActivities().iterator();
+        Iterator<Activity> iterator = ActivityStackUtil.getInstance().getActivityIterator();
+        LogUtil.d("----------- " + iterator);
         StringBuilder stacks = new StringBuilder();
         while (iterator.hasNext()) {
             stacks.append(iterator.next().getClass().getSimpleName()).append("\n");
         }
+        LogUtil.d("----------- " + stacks + "flag = " + flag);
         mTvText.setText(stacks);
         if (flag == 12) {
             ToastUtil.showToast(mActivity, "fragment: " + value);

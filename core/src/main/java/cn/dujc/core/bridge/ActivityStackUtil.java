@@ -34,8 +34,8 @@ public class ActivityStackUtil {
     public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = ACTIVITY | FRAGMENT;
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
-    private final Stack<Activity> mActivityStack = new Stack<Activity>();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
-    private final ListIterator<Activity> mActivityIterator = mActivityStack.listIterator();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
+    //private final Stack<Activity> mActivityStack = new Stack<Activity>();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
+    private final ListIterator<Activity> mActivityIterator = new Stack<Activity>().listIterator();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
 
@@ -171,20 +171,12 @@ public class ActivityStackUtil {
 
     /**
      * 获取activity栈
-     * 使用{@link #getActivityIterator()} 代替
-     *
-     * @deprecated 不建议直接操作栈。同时不建议去掉这个方法
-     */
-    @Deprecated
-    public synchronized Stack<Activity> getActivities() {
-        return mActivityStack;
-    }
-
-    /**
-     * 获取activity栈
      */
     public synchronized ListIterator<Activity> getActivityIterator() {
-        return mActivityIterator;
+        synchronized (mActivityIterator) {
+            while (mActivityIterator.hasPrevious()) mActivityIterator.previous();
+            return mActivityIterator;
+        }
     }
 
     /**
@@ -192,7 +184,12 @@ public class ActivityStackUtil {
      */
     public synchronized int foregroundCount() {
         synchronized (mActivityIterator) {
-            return getActivities().size();
+            int next = mActivityIterator.nextIndex();
+            while (mActivityIterator.hasNext()) {
+                mActivityIterator.next();
+                next = mActivityIterator.nextIndex();
+            }
+            return next;
         }
     }
 
@@ -202,24 +199,24 @@ public class ActivityStackUtil {
     @Nullable
     public synchronized Activity topActivity() {
         synchronized (mActivityIterator) {
-            /*Activity activity = null;
-            while (mActivityIterator.hasPrevious()) {
-                activity = mActivityIterator.previous();
-            }
-            if (activity != null) return activity;
+            Activity activity = null;
             while (mActivityIterator.hasNext()) {
                 activity = mActivityIterator.next();
+            }
+            if (activity != null) return activity;
+            if (mActivityIterator.hasPrevious()) {
+                activity = mActivityIterator.previous();
                 LogUtil.d("top1: " + activity);
             }
-            return activity;*/
-            final Stack<Activity> activities = ActivityStackUtil.getInstance().getActivities();
+            return activity;
+            /*final Stack<Activity> activities = ActivityStackUtil.getInstance().getActivities();
             while (!activities.isEmpty()) {
                 Activity activity;
                 if ((activity = activities.peek()) != null
                         && !activity.isFinishing()) return activity;
                 else activities.pop();
             }
-            return null;
+            return null;*/
         }
     }
 
@@ -318,14 +315,14 @@ public class ActivityStackUtil {
                 for (Class<? extends Activity> clazz : classes) {
                     if (activity.getClass().equals(clazz)) {
                         finish(activity, mActivityIterator);
-                    //} else if (shouldContinue == activity) {
-                    //    if (mActivityIterator.hasNext()) {
-                    //        mActivityIterator.next();
-                    //    } else {
-                    //        break;
-                    //    }
-                    //} else {
-                    //    shouldContinue = activity;
+                        //} else if (shouldContinue == activity) {
+                        //    if (mActivityIterator.hasNext()) {
+                        //        mActivityIterator.next();
+                        //    } else {
+                        //        break;
+                        //    }
+                        //} else {
+                        //    shouldContinue = activity;
                     }
                 }
             }
@@ -475,7 +472,7 @@ public class ActivityStackUtil {
     public synchronized final boolean contains(Class<? extends Activity> clazz) {
         if (clazz == null) return false;
         synchronized (mActivityIterator) {
-            /*while (mActivityIterator.hasPrevious()) {
+            while (mActivityIterator.hasPrevious()) {
                 mActivityIterator.previous();
             }
             Activity shouldContinue = null;
@@ -492,14 +489,14 @@ public class ActivityStackUtil {
                 } else {
                     shouldContinue = activity;
                 }
-            }*/
-            Iterator<Activity> iterator = getActivities().iterator();
+            }
+            /*Iterator<Activity> iterator = getActivities().iterator();
             while (iterator.hasNext()) {
                 Activity activity = iterator.next();
                 if (activity != null && activity.getClass().equals(clazz)) {
                     return true;
                 }
-            }
+            }*/
         }
         return false;
     }

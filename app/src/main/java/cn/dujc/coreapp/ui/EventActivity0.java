@@ -58,12 +58,12 @@ public class EventActivity0 extends BaseActivity implements IEvent {
                     + "\n"
                     + ActivityStackUtil.getInstance().contains(MainActivity.class)
             );
-        } else if (flag == 9 && mIndex == 5) {
+        } else if (flag == 9 && mIndex == 4) {
             int i0 = ActivityStackUtil.getInstance().foregroundCount();
             ActivityStackUtil.getInstance().finishActivity(MainActivity.class);
             int i1 = ActivityStackUtil.getInstance().foregroundCount();
             ActivityStackUtil.getInstance().finishActivity(this);
-            ToastUtil.showToast(mActivity, i0 + " -> " + i1 + " -> " + ActivityStackUtil.getInstance().foregroundCount());
+            ToastUtil.showToast(ActivityStackUtil.getInstance().topActivity(), i0 + " -> " + i1 + " -> " + ActivityStackUtil.getInstance().foregroundCount());
         } else if (flag == 10) {
             ToastUtil.showToast(ActivityStackUtil.getInstance().topActivity()
                     , "main: " + ActivityStackUtil.getInstance().getActivity(MainActivity.class)
