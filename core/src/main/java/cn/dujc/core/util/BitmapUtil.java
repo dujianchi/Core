@@ -99,7 +99,7 @@ public class BitmapUtil {
      */
     @Nullable
     public static File createCompressedCacheFile(Context context, Uri uri, int minEdge, Bitmap.CompressFormat format, String authority) {
-        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, 100, format, null);
+        return BitmapUtil.createCompressedCacheFile(context, uri, minEdge, 100, format, authority);
     }
 
     /**

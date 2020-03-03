@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.qmuiteam:qmui:1.4.0'
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
-    implementation 'com.github.dujianchi:Matisse:d0.5.3-beta4_2'
+    implementation 'cn.dujc:Matisse:d0.5.3-beta4_6'
 
     implementation "com.github.bumptech.glide:glide:4.9.0"
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"

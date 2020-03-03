@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -81,7 +80,7 @@ public class BitmapActivity extends BaseActivity {
                     if (result.isEmpty()) {
                         ToastUtil.showToast(mActivity, "empty");
                     } else {
-                        mIvReceive.setImageBitmap(BitmapFactory.decodeFile(result.get(0).getAbsolutePath()));
+                        mIvReceive.setImageBitmap(BitmapUtil.decodeSmallerFromFile(result.get(0), 100, 100));
                     }
                 }
             });
