@@ -144,7 +144,7 @@ public class MainActivity extends BaseListActivity {
             }
             break;
             case 6: {
-                //starter().go(GsonActivity.class);
+                starter().go(GsonActivity.class);
             }
             break;
             case 7: {
