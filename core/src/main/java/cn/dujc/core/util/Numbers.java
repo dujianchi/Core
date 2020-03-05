@@ -1,7 +1,5 @@
 package cn.dujc.core.util;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -23,14 +21,14 @@ public class Numbers {
      *
      * @return 默认值 0
      */
-    public static int stringToInt(String numberStr) {
-        return stringToInt(numberStr, 0);
+    public static int toInt(Object numberStr) {
+        return toInt(numberStr, 0);
     }
 
     /**
      * 字符串转int
      */
-    public static int stringToInt(String numberStr, int defaultValue) {
+    public static int toInt(Object numberStr, int defaultValue) {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).intValue();
         } catch (Exception e) {
@@ -42,14 +40,14 @@ public class Numbers {
     /**
      * 字符串转long
      */
-    public static long stringToLong(String numberStr) {
-        return stringToLong(numberStr, 0);
+    public static long toLong(Object numberStr) {
+        return toLong(numberStr, 0);
     }
 
     /**
      * 字符串转long
      */
-    public static long stringToLong(String numberStr, long defaultValue) {
+    public static long toLong(Object numberStr, long defaultValue) {
         try {
             return numberFromString(numberStr, defaultValue * 1.0).longValue();
         } catch (Exception e) {
@@ -63,14 +61,14 @@ public class Numbers {
      *
      * @return 默认值 0
      */
-    public static double stringToDouble(String numberStr) {
-        return stringToDouble(numberStr, 0);
+    public static double toDouble(Object numberStr) {
+        return toDouble(numberStr, 0);
     }
 
     /**
      * 字符串转double
      */
-    public static double stringToDouble(String numberStr, double defaultValue) {
+    public static double toDouble(Object numberStr, double defaultValue) {
         try {
             return numberFromString(numberStr, defaultValue).doubleValue();
         } catch (Exception e) {
@@ -84,14 +82,14 @@ public class Numbers {
      *
      * @return 默认值 0
      */
-    public static float stringToFloat(String numberStr) {
-        return stringToFloat(numberStr, 0);
+    public static float toFloat(Object numberStr) {
+        return toFloat(numberStr, 0);
     }
 
     /**
      * 字符串转float
      */
-    public static float stringToFloat(String numberStr, float defaultValue) {
+    public static float toFloat(Object numberStr, float defaultValue) {
         try {
             return numberFromString(numberStr, (double) defaultValue).floatValue();
         } catch (Exception e) {
@@ -106,7 +104,7 @@ public class Numbers {
      * @param multiplicand 被乘数
      * @param multiplier   乘数
      */
-    public static String stringMultiply(String multiplicand, String multiplier, int scale) {
+    public static String stringMultiply(Object multiplicand, Object multiplier, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal multiplicandB = numberFromString(multiplicand, null);
@@ -124,7 +122,7 @@ public class Numbers {
      * @param minuend    被减数
      * @param subtrahend 减数
      */
-    public static String stringSubtract(String minuend, String subtrahend, int scale) {
+    public static String stringSubtract(Object minuend, Object subtrahend, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal minuendB = numberFromString(minuend, null);
@@ -142,7 +140,7 @@ public class Numbers {
      * @param augend 被加数
      * @param addend 加数
      */
-    public static String stringAdd(String augend, String addend, int scale) {
+    public static String stringAdd(Object augend, Object addend, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal augendB = numberFromString(augend, null);
@@ -160,7 +158,7 @@ public class Numbers {
      * @param dividend 被除数
      * @param divisor  除数
      */
-    public static String stringDivide(String dividend, String divisor, int scale) {
+    public static String stringDivide(Object dividend, Object divisor, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal dividendB = numberFromString(dividend, null);
@@ -192,7 +190,7 @@ public class Numbers {
      * 格式化double格式
      */
     @Nullable
-    public static String formatDouble(String number, int scale) {
+    public static String formatDouble(Object number, int scale) {
         BigDecimal decimal = numberFromString(number, 0.0);
         return decimal != null ? decimal.setScale(scale, BigDecimal.ROUND_HALF_UP).toString() : null;
     }
@@ -201,11 +199,20 @@ public class Numbers {
      * 将字符串转为BigDecimal高精度浮点数
      */
     @Nullable
-    public static BigDecimal numberFromString(String valueStr, Double defaultIfError) {
+    public static BigDecimal numberFromString(Object valueStr, Double defaultIfError) {
         BigDecimal result = defaultIfError != null ? new BigDecimal(defaultIfError) : null;
-        if (TextUtils.isEmpty(valueStr)) return result;
+        return toNumber(valueStr, result);
+    }
+
+    /**
+     * 将字符串转为BigDecimal高精度浮点数
+     */
+    @Nullable
+    public static BigDecimal toNumber(Object valueStr, @Nullable BigDecimal defaultIfError) {
+        BigDecimal result = defaultIfError;
+        if (valueStr == null || "".equals(valueStr)) return result;
         try {
-            String number = valueStr;
+            String number = String.valueOf(valueStr);
             if (number.contains(",")) number = number.replace(",", "");
             if (number.contains(" ")) number = number.replace(" ", "");
             result = new BigDecimal(number);
