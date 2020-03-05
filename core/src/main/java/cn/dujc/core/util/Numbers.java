@@ -104,7 +104,7 @@ public class Numbers {
      * @param multiplicand 被乘数
      * @param multiplier   乘数
      */
-    public static String stringMultiply(Object multiplicand, Object multiplier, int scale) {
+    public static String multiply(Object multiplicand, Object multiplier, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal multiplicandB = numberFromString(multiplicand, null);
@@ -122,7 +122,7 @@ public class Numbers {
      * @param minuend    被减数
      * @param subtrahend 减数
      */
-    public static String stringSubtract(Object minuend, Object subtrahend, int scale) {
+    public static String subtract(Object minuend, Object subtrahend, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal minuendB = numberFromString(minuend, null);
@@ -140,7 +140,17 @@ public class Numbers {
      * @param augend 被加数
      * @param addend 加数
      */
-    public static String stringAdd(Object augend, Object addend, int scale) {
+    public static String add(Object augend, Object addend) {
+        return add(augend, addend, 2);
+    }
+
+    /**
+     * 两个数相加
+     *
+     * @param augend 被加数
+     * @param addend 加数
+     */
+    public static String add(Object augend, Object addend, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal augendB = numberFromString(augend, null);
@@ -158,7 +168,17 @@ public class Numbers {
      * @param dividend 被除数
      * @param divisor  除数
      */
-    public static String stringDivide(Object dividend, Object divisor, int scale) {
+    public static String divide(Object dividend, Object divisor) {
+        return divide(dividend, divisor, 2);
+    }
+
+    /**
+     * 两个数相除
+     *
+     * @param dividend 被除数
+     * @param divisor  除数
+     */
+    public static String divide(Object dividend, Object divisor, int scale) {
         if (scale < 0) scale = 0;
         try {
             final BigDecimal dividendB = numberFromString(dividend, null);
