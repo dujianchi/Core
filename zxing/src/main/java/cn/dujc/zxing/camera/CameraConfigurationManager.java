@@ -45,69 +45,6 @@ final class CameraConfigurationManager {
         this.context = context;
     }
 
-    /**
-     * Reads, one time, values from the camera that are needed by the app.
-     */
-    void initFromCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
-        previewFormat = parameters.getPreviewFormat();
-        previewFormatString = parameters.get("preview-format");
-        Log.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        screenResolution = new Point(display.getWidth(), display.getHeight());
-        Log.d(TAG, "Screen resolution: " + screenResolution);
-
-        Point screenResolutionForCamera = new Point();
-        screenResolutionForCamera.x = screenResolution.x;
-        screenResolutionForCamera.y = screenResolution.y;
-        // preview size is always something like 480*320, other 320*480
-        if (screenResolution.x < screenResolution.y) {
-            screenResolutionForCamera.x = screenResolution.y;
-            screenResolutionForCamera.y = screenResolution.x;
-        }
-
-        cameraResolution = getCameraResolution(parameters, screenResolutionForCamera);
-
-
-        //cameraResolution = getCameraResolution(parameters, screenResolution);
-        Log.d(TAG, "Camera resolution: " + screenResolution);
-    }
-
-    /**
-     * Sets the camera up to take preview images which are used for both preview and decoding.
-     * We detect the preview format here so that buildLuminanceSource() can build an appropriate
-     * LuminanceSource subclass. In the future we may want to force YUV420SP as it's the smallest,
-     * and the planar Y can be used for barcode scanning without a copy in some cases.
-     */
-    void setDesiredCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
-        Log.d(TAG, "Setting preview size: " + cameraResolution);
-        parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
-        setFlash(parameters);
-        setZoom(parameters);
-        //setSharpness(parameters);
-        //modify here
-        camera.setDisplayOrientation(90);
-        camera.setParameters(parameters);
-    }
-
-    Point getCameraResolution() {
-        return cameraResolution;
-    }
-
-    Point getScreenResolution() {
-        return screenResolution;
-    }
-
-    int getPreviewFormat() {
-        return previewFormat;
-    }
-
-    String getPreviewFormatString() {
-        return previewFormatString;
-    }
-
     private static Point getCameraResolution(Camera.Parameters parameters, Point screenResolution) {
 
         String previewSizeValueString = parameters.get("preview-size-values");
@@ -193,6 +130,73 @@ final class CameraConfigurationManager {
         return tenBestValue;
     }
 
+    public static int getDesiredSharpness() {
+        return DESIRED_SHARPNESS;
+    }
+
+    /**
+     * Reads, one time, values from the camera that are needed by the app.
+     */
+    void initFromCameraParameters(Camera camera) {
+        Camera.Parameters parameters = camera.getParameters();
+        previewFormat = parameters.getPreviewFormat();
+        previewFormatString = parameters.get("preview-format");
+        Log.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        screenResolution = new Point(display.getWidth(), display.getHeight());
+        Log.d(TAG, "Screen resolution: " + screenResolution);
+
+        Point screenResolutionForCamera = new Point();
+        screenResolutionForCamera.x = screenResolution.x;
+        screenResolutionForCamera.y = screenResolution.y;
+        // preview size is always something like 480*320, other 320*480
+        if (screenResolution.x < screenResolution.y) {
+            screenResolutionForCamera.x = screenResolution.y;
+            screenResolutionForCamera.y = screenResolution.x;
+        }
+
+        cameraResolution = getCameraResolution(parameters, screenResolutionForCamera);
+
+
+        //cameraResolution = getCameraResolution(parameters, screenResolution);
+        Log.d(TAG, "Camera resolution: " + screenResolution);
+    }
+
+    /**
+     * Sets the camera up to take preview images which are used for both preview and decoding.
+     * We detect the preview format here so that buildLuminanceSource() can build an appropriate
+     * LuminanceSource subclass. In the future we may want to force YUV420SP as it's the smallest,
+     * and the planar Y can be used for barcode scanning without a copy in some cases.
+     */
+    void setDesiredCameraParameters(Camera camera) {
+        Camera.Parameters parameters = camera.getParameters();
+        Log.d(TAG, "Setting preview size: " + cameraResolution);
+        parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
+        setFlash(parameters);
+        setZoom(parameters);
+        //setSharpness(parameters);
+        //modify here
+        camera.setDisplayOrientation(90);
+        camera.setParameters(parameters);
+    }
+
+    Point getCameraResolution() {
+        return cameraResolution;
+    }
+
+    Point getScreenResolution() {
+        return screenResolution;
+    }
+
+    int getPreviewFormat() {
+        return previewFormat;
+    }
+
+    String getPreviewFormatString() {
+        return previewFormatString;
+    }
+
     private void setFlash(Camera.Parameters parameters) {
         // FIXME: This is a hack to turn the flash off on the Samsung Galaxy.
         // And this is a hack-hack to work around a different value on the Behold II
@@ -270,10 +274,6 @@ final class CameraConfigurationManager {
         if (takingPictureZoomMaxString != null) {
             parameters.set("taking-picture-zoom", tenDesiredZoom);
         }
-    }
-
-    public static int getDesiredSharpness() {
-        return DESIRED_SHARPNESS;
     }
 
 }

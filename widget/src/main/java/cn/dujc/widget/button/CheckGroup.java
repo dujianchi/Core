@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Stack;
 
+import cn.dujc.core.util.ViewUtils;
+
 public class CheckGroup extends LinearLayout {
 
     private final Stack<Checkable> mCheckables = new Stack<>(), mCheckeds = new Stack<>();
@@ -58,7 +60,7 @@ public class CheckGroup extends LinearLayout {
         ) {
             for (Checkable checkable : mCheckables) {
                 if (checkable instanceof View) {
-                    if (isViewUnderEvent((View) checkable, ev)) {
+                    if (ViewUtils.isViewUnderEvent((View) checkable, ev)) {
                         if (checkable.isChecked()) {
                             mCheckeds.add(checkable);
                         } else {
@@ -137,16 +139,4 @@ public class CheckGroup extends LinearLayout {
         }
     }
 
-    private boolean isViewUnderEvent(View view, MotionEvent event) {
-        int[] xy = new int[2];
-        view.getLocationOnScreen(xy);
-        int width = view.getWidth();
-        int height = view.getHeight();
-        float x = event.getRawX();
-        float y = event.getRawY();
-        if (x < xy[0] || y < xy[1] || x > xy[0] + width || y > xy[1] + height) {
-            return false;
-        }
-        return true;
-    }
 }

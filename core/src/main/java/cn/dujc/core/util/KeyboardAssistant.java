@@ -17,26 +17,24 @@ import androidx.annotation.NonNull;
  */
 public class KeyboardAssistant implements View.OnLayoutChangeListener {
 
-    public static interface OnKeyboardShowingChangeListener {
-        public void onKeyboardShowing(int keyboardHeight);//显示中
+    private final Activity mActivity;
+    private final int mHeightPixels;
+    private final OnKeyboardShowingChangeListener mOnKeyboardShowingChangeListener;
+    private OnKeyboardOutTouchListener mOnKeyboardOutTouchListener;
+    private boolean mShowing = false;//键盘是否显示中
+    private boolean mTouchable = false;//Activity外部是否能点击
+    private View mRootView;
+    private int mDistanceDividend = 10;//点中的区域触发距离为屏幕的十分之一
 
-        public void onKeyboardHiding();//隐藏中
-
-        public void onKeyboardShowingGoHiding();//由显示到隐藏
+    public KeyboardAssistant(@NonNull Activity activity, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
+        this(activity, false, onKeyboardShowingChangeListener);
     }
 
-    public static interface OnKeyboardOutTouchListener {
-        public boolean handleOutTouchKeyboard();
-    }
-
-    public static class OnKeyboardShowingChangeListenerImpl
-            implements OnKeyboardShowingChangeListener {//用class而不用interface的原因是因为我可以不用非得实现3个方法，而是想要哪个实现哪个
-
-        public void onKeyboardShowing(int keyboardHeight) { }//显示中
-
-        public void onKeyboardHiding() { }//隐藏中
-
-        public void onKeyboardShowingGoHiding() { }//由显示到隐藏
+    public KeyboardAssistant(@NonNull Activity activity, boolean fix5497, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
+        mActivity = activity;
+        mOnKeyboardShowingChangeListener = onKeyboardShowingChangeListener;
+        mHeightPixels = mActivity.getResources().getDisplayMetrics().heightPixels;
+        if (fix5497) SoftHideKeyBoardUtil.assistActivity(activity);
     }
 
     public static boolean isSystemInputActive(Context context) {
@@ -62,28 +60,8 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
         }
     }
 
-    private final Activity mActivity;
-    private final int mHeightPixels;
-    private final OnKeyboardShowingChangeListener mOnKeyboardShowingChangeListener;
-    private OnKeyboardOutTouchListener mOnKeyboardOutTouchListener;
-    private boolean mShowing = false;//键盘是否显示中
-    private boolean mTouchable = false;//Activity外部是否能点击
-    private View mRootView;
-    private int mDistanceDividend = 10;//点中的区域触发距离为屏幕的十分之一
-
     public static KeyboardAssistant createDefault(@NonNull Activity activity) {
         return new KeyboardAssistant(activity, new OnKeyboardShowingChangeListenerImpl());
-    }
-
-    public KeyboardAssistant(@NonNull Activity activity, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
-        this(activity, false, onKeyboardShowingChangeListener);
-    }
-
-    public KeyboardAssistant(@NonNull Activity activity, boolean fix5497, OnKeyboardShowingChangeListener onKeyboardShowingChangeListener) {
-        mActivity = activity;
-        mOnKeyboardShowingChangeListener = onKeyboardShowingChangeListener;
-        mHeightPixels = mActivity.getResources().getDisplayMetrics().heightPixels;
-        if (fix5497) SoftHideKeyBoardUtil.assistActivity(activity);
     }
 
     /**
@@ -174,5 +152,30 @@ public class KeyboardAssistant implements View.OnLayoutChangeListener {
                 mOnKeyboardShowingChangeListener.onKeyboardHiding();
             }
         }
+    }
+
+    public static interface OnKeyboardShowingChangeListener {
+        public void onKeyboardShowing(int keyboardHeight);//显示中
+
+        public void onKeyboardHiding();//隐藏中
+
+        public void onKeyboardShowingGoHiding();//由显示到隐藏
+    }
+
+    public static interface OnKeyboardOutTouchListener {
+        public boolean handleOutTouchKeyboard();
+    }
+
+    public static class OnKeyboardShowingChangeListenerImpl
+            implements OnKeyboardShowingChangeListener {//用class而不用interface的原因是因为我可以不用非得实现3个方法，而是想要哪个实现哪个
+
+        public void onKeyboardShowing(int keyboardHeight) {
+        }//显示中
+
+        public void onKeyboardHiding() {
+        }//隐藏中
+
+        public void onKeyboardShowingGoHiding() {
+        }//由显示到隐藏
     }
 }

@@ -37,8 +37,8 @@ final class DecodeThread extends Thread {
 
     private final ICaptureView mICaptureView;
     private final Hashtable<DecodeHintType, Object> hints;
-    private Handler handler;
     private final CountDownLatch handlerInitLatch;
+    private Handler handler;
 
     DecodeThread(ICaptureView iCaptureView,
                  Vector<BarcodeFormat> decodeFormats,

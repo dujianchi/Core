@@ -114,8 +114,8 @@ public class DuGridView extends RelativeLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public BaseAdapter getAdapter() {
+        return mAdapter;
     }
 
     public void setAdapter(BaseAdapter adapter) {
@@ -124,10 +124,6 @@ public class DuGridView extends RelativeLayout {
             mAdapter.registerDataSetObserver(mDataSetObserver);
             mAdapter.notifyDataSetChanged();
         }
-    }
-
-    public BaseAdapter getAdapter() {
-        return mAdapter;
     }
 
     public int getGridRows() {
@@ -180,6 +176,10 @@ public class DuGridView extends RelativeLayout {
 
     public OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     void resetViews(int width) {

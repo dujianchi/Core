@@ -26,7 +26,7 @@ dependencies {
     compileOnly "androidx.appcompat:appcompat:$support_version"
     compileOnly "androidx.legacy:legacy-support-v4:$support_version"
 
-    implementation project(':core')
+    compileOnly project(':core')
     implementation 'com.google.zxing:core:3.3.0'
 }
 

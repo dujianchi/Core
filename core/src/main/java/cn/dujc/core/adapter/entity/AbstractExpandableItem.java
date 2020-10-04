@@ -27,12 +27,12 @@ public abstract class AbstractExpandableItem<T> implements IExpandable<T> {
         return mSubItems;
     }
 
-    public boolean hasSubItem() {
-        return mSubItems != null && mSubItems.size() > 0;
-    }
-
     public void setSubItems(List<T> list) {
         mSubItems = list;
+    }
+
+    public boolean hasSubItem() {
+        return mSubItems != null && mSubItems.size() > 0;
     }
 
     public T getSubItem(int position) {

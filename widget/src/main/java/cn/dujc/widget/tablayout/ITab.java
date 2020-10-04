@@ -13,7 +13,9 @@ public interface ITab<T> {
     public View getView(@NonNull ViewGroup parent);
 
     public void onTabUpdate(int position, T data);
+
     public void onTabSelected(int position);
+
     public void onTabUnselected(int position);
 
 }

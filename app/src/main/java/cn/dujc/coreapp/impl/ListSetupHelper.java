@@ -10,13 +10,16 @@ import cn.dujc.core.initializer.baselist.IBaseListSetup;
 public class ListSetupHelper implements IBaseListSetup {
 
     @Override
-    public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) { }
+    public void recyclerViewOtherSetup(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+    }
 
     @Override
-    public void recyclerViewSetupBeforeAdapter(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) { }
+    public void recyclerViewSetupBeforeAdapter(Context context, RecyclerView recyclerView, BaseQuickAdapter adapter) {
+    }
 
     @Override
-    public void recyclerViewSetupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) { }
+    public void recyclerViewSetupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
+    }
 
     @Override
     public boolean endGone() {

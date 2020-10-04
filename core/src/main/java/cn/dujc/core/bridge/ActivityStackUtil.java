@@ -32,14 +32,12 @@ public class ActivityStackUtil {
 
     //事件接受对象
     public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = ACTIVITY | FRAGMENT;
-
+    private static ActivityStackUtil sInstance = null;
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     //private final Stack<Activity> mActivityStack = new Stack<Activity>();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
     private final ListIterator<Activity> mActivityIterator = new Stack<Activity>().listIterator();//栈，类型最好不要改变。栈和对应的迭代器将配合使用
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
     private final CacheMap<Context, IEvent> mExtraEvents = new CacheMap<>();
-
-    private static ActivityStackUtil sInstance = null;
 
     private ActivityStackUtil() {
         mLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
@@ -98,6 +96,17 @@ public class ActivityStackUtil {
         LogUtil.d("event -> " + receiver);
         if (receiver instanceof IEvent) {
             ((IEvent) receiver).onMyEvent(flag, value);
+        }
+    }
+
+    private synchronized static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
+        if (fragments != null && fragments.size() > 0) {
+            for (Fragment fragment : fragments) {
+                onEvent(fragment, flag, value);
+                if (fragment != null) {
+                    sendFragmentEvent(flag, value, fragment.getChildFragmentManager().getFragments());
+                }
+            }
         }
     }
 
@@ -220,6 +229,32 @@ public class ActivityStackUtil {
         }
     }
 
+//    public void addFragment(Activity activity, Fragment fragment) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments == null) {
+//            fragments = new ArraySet<Fragment>();
+//            mActivityFragments.put(activity, fragments);
+//        }
+//        if (!fragments.contains(fragment)) {
+//            fragments.add(fragment);
+//        }
+//    }
+
+//    public void removeFragment(Activity activity, Fragment fragment) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments != null && fragments.contains(fragment)) {
+//            fragments.remove(fragment);
+//        }
+//    }
+
+//    public void removeFragments(Activity activity) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments != null) {
+//            fragments.clear();
+//            mActivityFragments.remove(activity);
+//        }
+//    }
+
     /**
      * 通过类来获取栈中的activity
      */
@@ -248,32 +283,6 @@ public class ActivityStackUtil {
         }
         return null;
     }
-
-//    public void addFragment(Activity activity, Fragment fragment) {
-//        Set<Fragment> fragments = mActivityFragments.get(activity);
-//        if (fragments == null) {
-//            fragments = new ArraySet<Fragment>();
-//            mActivityFragments.put(activity, fragments);
-//        }
-//        if (!fragments.contains(fragment)) {
-//            fragments.add(fragment);
-//        }
-//    }
-
-//    public void removeFragment(Activity activity, Fragment fragment) {
-//        Set<Fragment> fragments = mActivityFragments.get(activity);
-//        if (fragments != null && fragments.contains(fragment)) {
-//            fragments.remove(fragment);
-//        }
-//    }
-
-//    public void removeFragments(Activity activity) {
-//        Set<Fragment> fragments = mActivityFragments.get(activity);
-//        if (fragments != null) {
-//            fragments.clear();
-//            mActivityFragments.remove(activity);
-//        }
-//    }
 
     /**
      * 清除管理栈
@@ -607,17 +616,6 @@ public class ActivityStackUtil {
             for (final Context context : contexts) {
                 if (context == activity || ContextUtil.getActivity(context) == activity) {
                     mExtraEvents.remove(context);
-                }
-            }
-        }
-    }
-
-    private synchronized static void sendFragmentEvent(int flag, Object value, List<Fragment> fragments) {
-        if (fragments != null && fragments.size() > 0) {
-            for (Fragment fragment : fragments) {
-                onEvent(fragment, flag, value);
-                if (fragment != null) {
-                    sendFragmentEvent(flag, value, fragment.getChildFragmentManager().getFragments());
                 }
             }
         }

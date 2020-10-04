@@ -37,6 +37,33 @@ public class Downloader {
         mHandler = new Handler(Looper.getMainLooper());
     }
 
+    public static void removeDownloadQueue(String url, File destination) {
+        Downloader.DOWNLOAD_QUEUE.remove(Downloader.bindUrlAndFile(url, destination));
+    }
+
+    /**
+     * 判断是否可以下载
+     */
+    private static boolean canDownload(String url, File destination) {
+        return !TextUtils.isEmpty(url) && destination != null;
+    }
+
+    /**
+     * 连接url和文件路径，用于判断是否已经添加过任务
+     */
+    private static String bindUrlAndFile(@NonNull String url, @NonNull File destination) {
+        return url + destination.getAbsolutePath();
+    }
+
+    public static boolean useSSL(String url) {
+        return url != null && url.startsWith("https://");
+    }
+
+    public static Downloader createWithNotification(String url, File destination, DownloadNotification downloadNotification) {
+        Downloader downloader = new Downloader(url, destination, downloadNotification);
+        return downloader;
+    }
+
     public void download() {
         download(false);
     }
@@ -77,32 +104,5 @@ public class Downloader {
             mHttpClient = httpClient;
         }
         return this;
-    }
-
-    public static void removeDownloadQueue(String url, File destination) {
-        Downloader.DOWNLOAD_QUEUE.remove(Downloader.bindUrlAndFile(url, destination));
-    }
-
-    /**
-     * 判断是否可以下载
-     */
-    private static boolean canDownload(String url, File destination) {
-        return !TextUtils.isEmpty(url) && destination != null;
-    }
-
-    /**
-     * 连接url和文件路径，用于判断是否已经添加过任务
-     */
-    private static String bindUrlAndFile(@NonNull String url, @NonNull File destination) {
-        return url + destination.getAbsolutePath();
-    }
-
-    public static boolean useSSL(String url) {
-        return url != null && url.startsWith("https://");
-    }
-
-    public static Downloader createWithNotification(String url, File destination, DownloadNotification downloadNotification) {
-        Downloader downloader = new Downloader(url, destination, downloadNotification);
-        return downloader;
     }
 }

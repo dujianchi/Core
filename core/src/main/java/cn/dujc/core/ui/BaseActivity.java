@@ -45,16 +45,15 @@ import cn.dujc.core.util.ToastUtil;
  */
 public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.WithToolbar, IBaseUI.IPermissionKeeperCallback {
 
+    protected View mToolbar = null;
+    protected View mRootView = null;
+    protected Activity mActivity;
     private IStarter mStarter = null;
     private IParams mParams = null;
     private IPermissionKeeper mPermissionKeeper = null;
     private TitleCompat mTitleCompat = null;
     //返回操作
     private volatile IBackPressedOperator mBackPressOperator = null;
-
-    protected View mToolbar = null;
-    protected View mRootView = null;
-    protected Activity mActivity;
     private Fragment mCurrentFragment;
 
     @Override

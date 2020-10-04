@@ -40,12 +40,11 @@ import cn.dujc.core.ui.dialog.OnRootViewClick;
 public abstract class BaseDialogFragment extends DialogFragment implements IBaseUI {
 
     private static final int THEME = R.style.Theme_AppCompat_Light_Dialog;
-
+    protected View mRootView;
+    protected Activity mActivity;
     private boolean mLoaded = false;//是否已经载入
     private volatile boolean mIsShowing = false;//是否在显示中
     private boolean mCanceledOnTouchOutside = true;//是否在点击外部到时候隐藏
-    protected View mRootView;
-    protected Activity mActivity;
     private String mTagUUId = null;
 
     @Nullable
@@ -132,15 +131,15 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
     }
 
+    public boolean isCanceledOnTouchOutside() {
+        return mCanceledOnTouchOutside;
+    }
+
     /**
      * 是否在点击外部到时候隐藏
      */
     public void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
         mCanceledOnTouchOutside = canceledOnTouchOutside;
-    }
-
-    public boolean isCanceledOnTouchOutside() {
-        return mCanceledOnTouchOutside;
     }
 
     /**

@@ -70,21 +70,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends RecyclerView.Adapter<K> {
 
     /**
-     * activity销毁时可以调用一下这个方法，然后可以在adapter内处理一些需要回收的事情
-     */
-    public void onRecycled() {
-    }
-
-    //load more
-    private boolean mNextLoadEnable = false;
-    private boolean mLoadMoreEnable = false;
-    private boolean mLoading = false;
-    private LoadMoreView mLoadMoreView = new SimpleLoadMoreView();
-    private RequestLoadMoreListener mRequestLoadMoreListener;
-    private boolean mEnableLoadMoreEndClick = false;
-
-    //Animation
-    /**
      * Use with {@link #openLoadAnimation}
      */
     public static final int ALPHAIN = 0x00000001;
@@ -104,22 +89,32 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      * Use with {@link #openLoadAnimation}
      */
     public static final int SLIDEIN_RIGHT = 0x00000005;
+    public static final int HEADER_VIEW = 0x00000111;
+    public static final int LOADING_VIEW = 0x00000222;
+
+    //Animation
+    public static final int FOOTER_VIEW = 0x00000333;
+    public static final int EMPTY_VIEW = 0x00000555;
+    protected Context mContext;
+    protected int mLayoutResId;
+    protected LayoutInflater mLayoutInflater;
+    protected List<T> mData;
+    //load more
+    private boolean mNextLoadEnable = false;
+    private boolean mLoadMoreEnable = false;
+    private boolean mLoading = false;
+    private LoadMoreView mLoadMoreView = new SimpleLoadMoreView();
+    private RequestLoadMoreListener mRequestLoadMoreListener;
+    private boolean mEnableLoadMoreEndClick = false;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
     private OnItemChildClickListener mOnItemChildClickListener;
     private OnItemChildLongClickListener mOnItemChildLongClickListener;
-
-    @IntDef({ALPHAIN, SCALEIN, SLIDEIN_BOTTOM, SLIDEIN_LEFT, SLIDEIN_RIGHT})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationType {
-    }
-
     private boolean mFirstOnlyEnable = true;
     private boolean mOpenAnimationEnable = false;
     private Interpolator mInterpolator = new LinearInterpolator();
     private int mDuration = 300;
     private int mLastPosition = -1;
-
     private BaseAnimation mCustomAnimation;
     private BaseAnimation mSelectAnimation = new AlphaInAnimation();
     //header footer
@@ -130,17 +125,53 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     private boolean mIsUseEmpty = true;
     private boolean mHeadAndEmptyEnable;
     private boolean mFootAndEmptyEnable;
-
-    protected Context mContext;
-    protected int mLayoutResId;
-    protected LayoutInflater mLayoutInflater;
-    protected List<T> mData;
-    public static final int HEADER_VIEW = 0x00000111;
-    public static final int LOADING_VIEW = 0x00000222;
-    public static final int FOOTER_VIEW = 0x00000333;
-    public static final int EMPTY_VIEW = 0x00000555;
-
     private RecyclerView mRecyclerView;
+    /**
+     * up fetch start
+     */
+    private boolean mUpFetchEnable;
+    private boolean mUpFetching;
+    private UpFetchListener mUpFetchListener;
+    /**
+     * start up fetch position, default is 1.
+     */
+    private int mStartUpFetchPosition = 1;
+    /**
+     * if asFlow is true, footer/header will arrange like normal item view.
+     * only works when use {@link GridLayoutManager},and it will ignore span size.
+     */
+    private boolean headerViewAsFlow, footerViewAsFlow;
+    private SpanSizeLookup mSpanSizeLookup;
+    private IMultiTypeDelegate mMultiTypeDelegate;
+    private int mPreLoadNumber = 1;
+
+    /**
+     * Same as QuickAdapter#QuickAdapter(Context,int) but with
+     * some initialization data.
+     *
+     * @param layoutResId The layout resource id of each item.
+     * @param data        A new list is created out of this one to avoid mutable list
+     */
+    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<? extends T> data) {
+        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
+        if (layoutResId != 0) {
+            this.mLayoutResId = layoutResId;
+        }
+    }
+
+    public BaseQuickAdapter(@Nullable List<? extends T> data) {
+        this(0, data);
+    }
+
+    public BaseQuickAdapter(@LayoutRes int layoutResId) {
+        this(layoutResId, null);
+    }
+
+    /**
+     * activity销毁时可以调用一下这个方法，然后可以在adapter内处理一些需要回收的事情
+     */
+    public void onRecycled() {
+    }
 
     protected RecyclerView getRecyclerView() {
         return mRecyclerView;
@@ -253,25 +284,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return tmp;
     }
 
-    /**
-     * up fetch start
-     */
-    private boolean mUpFetchEnable;
-    private boolean mUpFetching;
-    private UpFetchListener mUpFetchListener;
-
-    public void setUpFetchEnable(boolean upFetch) {
-        this.mUpFetchEnable = upFetch;
-    }
-
     public boolean isUpFetchEnable() {
         return mUpFetchEnable;
     }
 
-    /**
-     * start up fetch position, default is 1.
-     */
-    private int mStartUpFetchPosition = 1;
+    public void setUpFetchEnable(boolean upFetch) {
+        this.mUpFetchEnable = upFetch;
+    }
 
     public void setStartUpFetchPosition(int startUpFetchPosition) {
         mStartUpFetchPosition = startUpFetchPosition;
@@ -296,10 +315,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
 
     public void setUpFetchListener(UpFetchListener upFetchListener) {
         mUpFetchListener = upFetchListener;
-    }
-
-    public interface UpFetchListener {
-        void onUpFetch();
     }
 
     /**
@@ -352,7 +367,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     public boolean isLoading() {
         return mLoading;
     }
-
 
     /**
      * Refresh end, no more data
@@ -454,28 +468,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      */
     public final void refreshNotifyItemChanged(int position) {
         notifyItemChanged(position + getHeaderLayoutCount());
-    }
-
-    /**
-     * Same as QuickAdapter#QuickAdapter(Context,int) but with
-     * some initialization data.
-     *
-     * @param layoutResId The layout resource id of each item.
-     * @param data        A new list is created out of this one to avoid mutable list
-     */
-    public BaseQuickAdapter(@LayoutRes int layoutResId, @Nullable List<? extends T> data) {
-        this.mData = data == null ? new ArrayList<T>() : (List<T>) data;
-        if (layoutResId != 0) {
-            this.mLayoutResId = layoutResId;
-        }
-    }
-
-    public BaseQuickAdapter(@Nullable List<? extends T> data) {
-        this(0, data);
-    }
-
-    public BaseQuickAdapter(@LayoutRes int layoutResId) {
-        this(layoutResId, null);
     }
 
     /**
@@ -856,32 +848,20 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
                 LOADING_VIEW;
     }
 
-    /**
-     * if asFlow is true, footer/header will arrange like normal item view.
-     * only works when use {@link GridLayoutManager},and it will ignore span size.
-     */
-    private boolean headerViewAsFlow, footerViewAsFlow;
-
-    public void setHeaderViewAsFlow(boolean headerViewAsFlow) {
-        this.headerViewAsFlow = headerViewAsFlow;
-    }
-
     public boolean isHeaderViewAsFlow() {
         return headerViewAsFlow;
     }
 
-    public void setFooterViewAsFlow(boolean footerViewAsFlow) {
-        this.footerViewAsFlow = footerViewAsFlow;
+    public void setHeaderViewAsFlow(boolean headerViewAsFlow) {
+        this.headerViewAsFlow = headerViewAsFlow;
     }
 
     public boolean isFooterViewAsFlow() {
         return footerViewAsFlow;
     }
 
-    private SpanSizeLookup mSpanSizeLookup;
-
-    public interface SpanSizeLookup {
-        int getSpanSize(GridLayoutManager gridLayoutManager, int position);
+    public void setFooterViewAsFlow(boolean footerViewAsFlow) {
+        this.footerViewAsFlow = footerViewAsFlow;
     }
 
     /**
@@ -972,14 +952,12 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return getOnItemLongClickListener().onItemLongClick(BaseQuickAdapter.this, v, position);
     }
 
-    private IMultiTypeDelegate mMultiTypeDelegate;
+    public IMultiTypeDelegate getMultiTypeDelegate() {
+        return mMultiTypeDelegate;
+    }
 
     public void setMultiTypeDelegate(IMultiTypeDelegate multiTypeDelegate) {
         mMultiTypeDelegate = multiTypeDelegate;
-    }
-
-    public IMultiTypeDelegate getMultiTypeDelegate() {
-        return mMultiTypeDelegate;
     }
 
     protected K onCreateDefViewHolder(ViewGroup parent, int viewType) {
@@ -1327,43 +1305,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     }
 
     /**
-     * bind recyclerView {@link #bindToRecyclerView(RecyclerView)} before use!
-     *
-     * @see #bindToRecyclerView(RecyclerView)
-     */
-    public void setEmptyView(int layoutResId) {
-        checkNotNull();
-        setEmptyView(layoutResId, getRecyclerView());
-    }
-
-    public void setEmptyView(View emptyView) {
-        boolean insert = false;
-        if (mEmptyLayout == null) {
-            mEmptyLayout = new FrameLayout(emptyView.getContext().getApplicationContext());
-            final LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            final ViewGroup.LayoutParams lp = emptyView.getLayoutParams();
-            if (lp != null) {
-                layoutParams.width = lp.width;
-                layoutParams.height = lp.height;
-            }
-            mEmptyLayout.setLayoutParams(layoutParams);
-            insert = true;
-        }
-        mEmptyLayout.removeAllViews();
-        mEmptyLayout.addView(emptyView);
-        mIsUseEmpty = true;
-        if (insert) {
-            if (getEmptyViewCount() == 1) {
-                int position = 0;
-                if (mHeadAndEmptyEnable && getHeaderLayoutCount() != 0) {
-                    position++;
-                }
-                notifyItemInserted(position);
-            }
-        }
-    }
-
-    /**
      * Call before {@link RecyclerView#setAdapter(RecyclerView.Adapter)}
      *
      * @param isHeadAndEmpty false will not show headView if the data is empty true will show emptyView and headView
@@ -1404,7 +1345,42 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return mEmptyLayout;
     }
 
-    private int mPreLoadNumber = 1;
+    /**
+     * bind recyclerView {@link #bindToRecyclerView(RecyclerView)} before use!
+     *
+     * @see #bindToRecyclerView(RecyclerView)
+     */
+    public void setEmptyView(int layoutResId) {
+        checkNotNull();
+        setEmptyView(layoutResId, getRecyclerView());
+    }
+
+    public void setEmptyView(View emptyView) {
+        boolean insert = false;
+        if (mEmptyLayout == null) {
+            mEmptyLayout = new FrameLayout(emptyView.getContext().getApplicationContext());
+            final LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            final ViewGroup.LayoutParams lp = emptyView.getLayoutParams();
+            if (lp != null) {
+                layoutParams.width = lp.width;
+                layoutParams.height = lp.height;
+            }
+            mEmptyLayout.setLayoutParams(layoutParams);
+            insert = true;
+        }
+        mEmptyLayout.removeAllViews();
+        mEmptyLayout.addView(emptyView);
+        mIsUseEmpty = true;
+        if (insert) {
+            if (getEmptyViewCount() == 1) {
+                int position = 0;
+                if (mHeadAndEmptyEnable && getHeaderLayoutCount() != 0) {
+                    position++;
+                }
+                notifyItemInserted(position);
+            }
+        }
+    }
 
     public void setPreLoadNumber(int preLoadNumber) {
         if (preLoadNumber > 1) {
@@ -1437,7 +1413,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
             }
         }
     }
-
 
     /**
      * add animation when you want to show time
@@ -1482,14 +1457,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     protected View getItemView(@LayoutRes int layoutResId, ViewGroup parent) {
         return mLayoutInflater.inflate(layoutResId, parent, false);
     }
-
-
-    public interface RequestLoadMoreListener {
-
-        void onLoadMoreRequested();
-
-    }
-
 
     /**
      * Set the view animation type.
@@ -1884,6 +1851,100 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     }
 
     /**
+     * @return The callback to be invoked with an item in this RecyclerView has
+     * been long clicked and held, or null id no callback as been set.
+     */
+    public final OnItemLongClickListener getOnItemLongClickListener() {
+        return mOnItemLongClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when an item in this RecyclerView has
+     * been long clicked and held
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        mOnItemLongClickListener = listener;
+    }
+
+    /**
+     * @return The callback to be invoked with an item in this RecyclerView has
+     * been clicked and held, or null id no callback as been set.
+     */
+    public final OnItemClickListener getOnItemClickListener() {
+        return mOnItemClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when an item in this RecyclerView has
+     * been clicked.
+     *
+     * @param listener The callback that will be invoked.
+     */
+    public void setOnItemClickListener(@Nullable OnItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
+    /**
+     * @return The callback to be invoked with an itemchild in this RecyclerView has
+     * been clicked, or null id no callback has been set.
+     */
+    @Nullable
+    public final OnItemChildClickListener getOnItemChildClickListener() {
+        return mOnItemChildClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when an itemchild in View has
+     * been  clicked
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnItemChildClickListener(OnItemChildClickListener listener) {
+        mOnItemChildClickListener = listener;
+    }
+
+    /**
+     * @return The callback to be invoked with an itemChild in this RecyclerView has
+     * been long clicked, or null id no callback has been set.
+     */
+    @Nullable
+    public final OnItemChildLongClickListener getOnItemChildLongClickListener() {
+        return mOnItemChildLongClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when an itemchild  in this View has
+     * been long clicked and held
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnItemChildLongClickListener(OnItemChildLongClickListener listener) {
+        mOnItemChildLongClickListener = listener;
+    }
+
+    @IntDef({ALPHAIN, SCALEIN, SLIDEIN_BOTTOM, SLIDEIN_LEFT, SLIDEIN_RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AnimationType {
+    }
+
+    public interface UpFetchListener {
+        void onUpFetch();
+    }
+
+    public interface SpanSizeLookup {
+        int getSpanSize(GridLayoutManager gridLayoutManager, int position);
+    }
+
+    public interface RequestLoadMoreListener {
+
+        void onLoadMoreRequested();
+
+    }
+
+
+    /**
      * Interface definition for a callback to be invoked when an itemchild in this
      * view has been clicked
      */
@@ -1897,7 +1958,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
          */
         void onItemChildClick(BaseQuickAdapter adapter, View view, int position);
     }
-
 
     /**
      * Interface definition for a callback to be invoked when an childView in this
@@ -1932,7 +1992,6 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position);
     }
 
-
     /**
      * Interface definition for a callback to be invoked when an item in this
      * RecyclerView itemView has been clicked.
@@ -1949,80 +2008,5 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
          * @param position The position of the view in the adapter.
          */
         void onItemClick(BaseQuickAdapter adapter, View view, int position);
-    }
-
-    /**
-     * Register a callback to be invoked when an item in this RecyclerView has
-     * been clicked.
-     *
-     * @param listener The callback that will be invoked.
-     */
-    public void setOnItemClickListener(@Nullable OnItemClickListener listener) {
-        mOnItemClickListener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when an itemchild in View has
-     * been  clicked
-     *
-     * @param listener The callback that will run
-     */
-    public void setOnItemChildClickListener(OnItemChildClickListener listener) {
-        mOnItemChildClickListener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when an item in this RecyclerView has
-     * been long clicked and held
-     *
-     * @param listener The callback that will run
-     */
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-        mOnItemLongClickListener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when an itemchild  in this View has
-     * been long clicked and held
-     *
-     * @param listener The callback that will run
-     */
-    public void setOnItemChildLongClickListener(OnItemChildLongClickListener listener) {
-        mOnItemChildLongClickListener = listener;
-    }
-
-
-    /**
-     * @return The callback to be invoked with an item in this RecyclerView has
-     * been long clicked and held, or null id no callback as been set.
-     */
-    public final OnItemLongClickListener getOnItemLongClickListener() {
-        return mOnItemLongClickListener;
-    }
-
-    /**
-     * @return The callback to be invoked with an item in this RecyclerView has
-     * been clicked and held, or null id no callback as been set.
-     */
-    public final OnItemClickListener getOnItemClickListener() {
-        return mOnItemClickListener;
-    }
-
-    /**
-     * @return The callback to be invoked with an itemchild in this RecyclerView has
-     * been clicked, or null id no callback has been set.
-     */
-    @Nullable
-    public final OnItemChildClickListener getOnItemChildClickListener() {
-        return mOnItemChildClickListener;
-    }
-
-    /**
-     * @return The callback to be invoked with an itemChild in this RecyclerView has
-     * been long clicked, or null id no callback has been set.
-     */
-    @Nullable
-    public final OnItemChildLongClickListener getOnItemChildLongClickListener() {
-        return mOnItemChildLongClickListener;
     }
 }

@@ -27,9 +27,9 @@ import com.google.zxing.Result;
 
 import java.util.Vector;
 
-import cn.dujc.zxing.open.ICaptureView;
 import cn.dujc.zxing.R;
 import cn.dujc.zxing.camera.CameraManager;
+import cn.dujc.zxing.open.ICaptureView;
 import cn.dujc.zxing.view.ViewfinderResultPointCallback;
 
 /**
@@ -42,12 +42,6 @@ public final class CaptureActivityHandler extends Handler {
     private final ICaptureView mICaptureView;
     private final DecodeThread decodeThread;
     private State state;
-
-    private enum State {
-        PREVIEW,
-        SUCCESS,
-        DONE
-    }
 
     public CaptureActivityHandler(ICaptureView iCaptureView, Vector<BarcodeFormat> decodeFormats,
                                   String characterSet) {
@@ -127,6 +121,12 @@ public final class CaptureActivityHandler extends Handler {
             CameraManager.get().requestAutoFocus(this, R.id.widget_zxing_auto_focus);
             mICaptureView.drawViewfinder();
         }
+    }
+
+    private enum State {
+        PREVIEW,
+        SUCCESS,
+        DONE
     }
 
 }

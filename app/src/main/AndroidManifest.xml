@@ -33,7 +33,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        
+
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/Splash">
@@ -51,8 +51,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
-                    android:host="ooops.cc" />
+                    android:host="ooops.cc"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.ListActivity" />

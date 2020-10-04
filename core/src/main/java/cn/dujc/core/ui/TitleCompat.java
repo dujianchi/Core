@@ -33,6 +33,10 @@ import cn.dujc.core.app.Core;
 public class TitleCompat {
 
     public static final int DEFAULT_TINT_COLOR = Color.TRANSPARENT;
+    private int mStatusBarHeight = 0;
+    private View mStatusBarPlaceholder;
+    private Activity mActivity;
+    private Map<View, Integer> mTopViews = new ArrayMap<View, Integer>();//存放padding或margin顶部的View，防止重复新增
 
     public static int getStatusBarHeight(Resources res) {
         int result = 0;
@@ -69,10 +73,51 @@ public class TitleCompat {
                 .setFakeStatusBarColor(DEFAULT_TINT_COLOR);
     }
 
-    private int mStatusBarHeight = 0;
-    private View mStatusBarPlaceholder;
-    private Activity mActivity;
-    private Map<View, Integer> mTopViews = new ArrayMap<View, Integer>();//存放padding或margin顶部的View，防止重复新增
+    /**
+     * 原生状态栏深浅颜色API
+     */
+    private static boolean AndroidSetStatusBarLightMode(Activity activity, boolean dark) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final View decorView = activity.getWindow().getDecorView();
+            if (dark) {
+                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 需要MIUIV6以上
+     *
+     * @param activity
+     * @param dark     是否把状态栏文字及图标颜色设置为深色
+     * @return boolean 成功执行返回true *
+     */
+    private static boolean MIUISetStatusBarLightMode(Activity activity, boolean dark) {
+        boolean result = false;
+        Window window = activity.getWindow();
+        if (window != null) {
+            Class clazz = window.getClass();
+            try {
+                int darkModeFlag = 0;
+                Class layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
+                Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
+                darkModeFlag = field.getInt(layoutParams);
+                Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
+                if (dark) {
+                    extraFlagField.invoke(window, darkModeFlag, darkModeFlag);//状态栏透明且黑色字体
+                } else {
+                    extraFlagField.invoke(window, 0, darkModeFlag);//清除黑色字体
+                }
+                result = true;
+            } catch (Exception e) {
+            }
+        }
+        return result;
+    }
 
     /**
      * 设计为每个activity都有不同的title，即需要每个activity皆有不同的titleCompat
@@ -320,51 +365,6 @@ public class TitleCompat {
         FlymeStatusbarColorUtils.setStatusBarDarkIcon(mActivity, dark);
         MIUISetStatusBarLightMode(mActivity, dark);
         AndroidSetStatusBarLightMode(mActivity, dark);
-    }
-
-    /**
-     * 原生状态栏深浅颜色API
-     */
-    private static boolean AndroidSetStatusBarLightMode(Activity activity, boolean dark) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final View decorView = activity.getWindow().getDecorView();
-            if (dark) {
-                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            } else {
-                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 需要MIUIV6以上
-     *
-     * @param activity
-     * @param dark     是否把状态栏文字及图标颜色设置为深色
-     * @return boolean 成功执行返回true *
-     */
-    private static boolean MIUISetStatusBarLightMode(Activity activity, boolean dark) {
-        boolean result = false;
-        Window window = activity.getWindow();
-        if (window != null) {
-            Class clazz = window.getClass();
-            try {
-                int darkModeFlag = 0;
-                Class layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
-                Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
-                darkModeFlag = field.getInt(layoutParams);
-                Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
-                if (dark) {
-                    extraFlagField.invoke(window, darkModeFlag, darkModeFlag);//状态栏透明且黑色字体
-                } else {
-                    extraFlagField.invoke(window, 0, darkModeFlag);//清除黑色字体
-                }
-                result = true;
-            } catch (Exception e) { }
-        }
-        return result;
     }
 
     /**

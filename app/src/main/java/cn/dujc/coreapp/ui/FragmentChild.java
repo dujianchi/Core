@@ -19,6 +19,10 @@ import cn.dujc.coreapp.R;
 
 public class FragmentChild extends BaseFragment implements IEvent {
 
+    private Fragment[] mFragments = new Fragment[]{FragmentGrandChild.newInstance(0), FragmentGrandChild.newInstance(1)};
+    private TextView mTvText;
+    private int mInt = 0;
+
     public static FragmentChild newInstance(int index) {
         Bundle args = new Bundle();
         args.putInt("abc", index);
@@ -26,10 +30,6 @@ public class FragmentChild extends BaseFragment implements IEvent {
         fragment.setArguments(args);
         return fragment;
     }
-
-    private Fragment[] mFragments = new Fragment[]{FragmentGrandChild.newInstance(0), FragmentGrandChild.newInstance(1)};
-    private TextView mTvText;
-    private int mInt = 0;
 
     @Override
     public int getViewId() {

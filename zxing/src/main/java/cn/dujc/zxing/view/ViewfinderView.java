@@ -49,12 +49,6 @@ public final class ViewfinderView extends View {
      */
     private static final long ANIMATION_DELAY = 10L;
     private static final int OPAQUE = 0xFF;
-
-    /**
-     * 四个绿色边角对应的长度
-     */
-    private int ScreenRate;
-
     /**
      * 四个绿色边角对应的宽度
      */
@@ -63,21 +57,14 @@ public final class ViewfinderView extends View {
      * 扫描框中的中间线的宽度
      */
     private static final int MIDDLE_LINE_WIDTH = 3;
-
     /**
      * 扫描框中的中间线的与扫描框左右的间隙
      */
     private static final int MIDDLE_LINE_PADDING = 5;
-
     /**
      * 中间那条线每次刷新移动的距离
      */
     private static final int SPEEN_DISTANCE = 5;
-
-    /**
-     * 手机的屏幕密度
-     */
-    private static float density;
     /**
      * 字体大小
      */
@@ -86,26 +73,29 @@ public final class ViewfinderView extends View {
      * 字体距离扫描框下面的距离
      */
     private static final int TEXT_PADDING_TOP = 30;
-
+    /**
+     * 手机的屏幕密度
+     */
+    private static float density;
+    private final int maskColor;
+    private final int resultColor;
+    private final int resultPointColor;
+    boolean isFirst;
+    /**
+     * 四个绿色边角对应的长度
+     */
+    private int ScreenRate;
     /**
      * 画笔对象的引用
      */
     private Paint paint;
-
     /**
      * 中间滑动线的最顶端位置
      */
     private int slideTop;
-
     private Bitmap resultBitmap;
-    private final int maskColor;
-    private final int resultColor;
-
-    private final int resultPointColor;
     private Collection<ResultPoint> possibleResultPoints;
     private Collection<ResultPoint> lastPossibleResultPoints;
-
-    boolean isFirst;
 
     public ViewfinderView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);

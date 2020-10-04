@@ -56,7 +56,7 @@ public class WebFragment extends BaseWebFragment {
         });
     }*/
 
-    private void go(final String url){
+    private void go(final String url) {
         String globalUrl = url.substring(SCHEME.length());//裁切协议头后面的字符串，当作完整url使用
         try {
             String s = URLDecoder.decode(globalUrl, "utf8");//尝试url解码，防止url被编码
@@ -64,7 +64,8 @@ public class WebFragment extends BaseWebFragment {
         } catch (Exception e) {//解码失败则不赋值，认为第一次截取的url已经是完整url
             e.printStackTrace();
         }
-        if (!globalUrl.startsWith("http")) globalUrl = "http://" + globalUrl;//如果截取的url不以http开头，主动为链接添加http://
+        if (!globalUrl.startsWith("http"))
+            globalUrl = "http://" + globalUrl;//如果截取的url不以http开头，主动为链接添加http://
         Uri uri = Uri.parse(globalUrl);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

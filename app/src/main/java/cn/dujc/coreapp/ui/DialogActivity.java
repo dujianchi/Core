@@ -10,6 +10,8 @@ import cn.dujc.coreapp.R;
 
 public class DialogActivity extends BaseActivity {
 
+    private MyDialog mDialog;
+
     @Override
     public int getViewId() {
         return R.layout.activity_dialog;
@@ -19,8 +21,6 @@ public class DialogActivity extends BaseActivity {
     public void initBasic(Bundle savedInstanceState) {
 
     }
-
-    private MyDialog mDialog;
 
     public void showDialog(View v) {
         if (mDialog == null) mDialog = new MyDialog(mActivity);

@@ -37,16 +37,15 @@ import cn.dujc.core.util.ToastUtil;
  */
 public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolbar, IBaseUI.IPermissionKeeperCallback {
 
+    private final AtomicBoolean mLoaded = new AtomicBoolean(false);//是否已经载入
+    protected View mToolbar;
+    protected View mRootView;
+    protected Activity mActivity;
     private IStarter mStarter = null;
     private IParams mParams = null;
     private IPermissionKeeper mPermissionKeeper = null;
     private TitleCompat mTitleCompat = null;
     private WeakReference<Bundle> mSavedInstanceState = null;
-    private final AtomicBoolean mLoaded = new AtomicBoolean(false);//是否已经载入
-
-    protected View mToolbar;
-    protected View mRootView;
-    protected Activity mActivity;
     private Fragment mCurrentFragment;
 
     @Nullable

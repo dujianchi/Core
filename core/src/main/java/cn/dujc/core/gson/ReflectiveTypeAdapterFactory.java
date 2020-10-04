@@ -61,15 +61,17 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         this.jsonAdapterFactory = jsonAdapterFactory;
     }
 
-    public boolean excludeField(Field f, boolean serialize) {
-        return excludeField(f, serialize, excluder);
-    }
-
     static boolean excludeField(Field f, boolean serialize, Excluder excluder) {
         return !excluder.excludeClass(f.getType(), serialize) && !excluder.excludeField(f, serialize);
     }
 
-    /** first element holds the default name */
+    public boolean excludeField(Field f, boolean serialize) {
+        return excludeField(f, serialize, excluder);
+    }
+
+    /**
+     * first element holds the default name
+     */
     private List<String> getFieldNames(Field f) {
         SerializedName annotation = f.getAnnotation(SerializedName.class);
         if (annotation == null) {
@@ -91,7 +93,8 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         return fieldNames;
     }
 
-    @Override public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
         Class<? super T> raw = type.getRawType();
 
         if (!Object.class.isAssignableFrom(raw)) {
@@ -118,22 +121,28 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 
         final TypeAdapter<?> typeAdapter = mapped;
         return new ReflectiveTypeAdapterFactory.BoundField(name, serialize, deserialize) {
-            @SuppressWarnings({"unchecked", "rawtypes"}) // the type adapter and field type always agree
-            @Override void write(JsonWriter writer, Object value)
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            // the type adapter and field type always agree
+            @Override
+            void write(JsonWriter writer, Object value)
                     throws IOException, IllegalAccessException {
                 Object fieldValue = field.get(value);
                 TypeAdapter t = jsonAdapterPresent ? typeAdapter
                         : new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());
                 t.write(writer, fieldValue);
             }
-            @Override void read(JsonReader reader, Object value)
+
+            @Override
+            void read(JsonReader reader, Object value)
                     throws IOException, IllegalAccessException {
                 Object fieldValue = typeAdapter.read(reader);
                 if (fieldValue != null || !isPrimitive) {
                     field.set(value, fieldValue);
                 }
             }
-            @Override public boolean writeField(Object value) throws IOException, IllegalAccessException {
+
+            @Override
+            public boolean writeField(Object value) throws IOException, IllegalAccessException {
                 if (!serialized) return false;
                 Object fieldValue = field.get(value);
                 return fieldValue != value; // avoid recursion for example for Throwable.cause
@@ -189,8 +198,11 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
             this.serialized = serialized;
             this.deserialized = deserialized;
         }
+
         abstract boolean writeField(Object value) throws IOException, IllegalAccessException;
+
         abstract void write(JsonWriter writer, Object value) throws IOException, IllegalAccessException;
+
         abstract void read(JsonReader reader, Object value) throws IOException, IllegalAccessException;
     }
 
@@ -203,7 +215,8 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
             this.boundFields = boundFields;
         }
 
-        @Override public T read(JsonReader in) throws IOException {
+        @Override
+        public T read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
                 return null;
@@ -223,15 +236,15 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
                     }
                 }
                 in.endObject();
-            } catch (IllegalStateException e) {
+            } catch (IllegalStateException | IllegalAccessException e) {
                 in.skipValue();
-            } catch (IllegalAccessException e) {
-                in.skipValue();
+                return null;
             }
             return instance;
         }
 
-        @Override public void write(JsonWriter out, T value) throws IOException {
+        @Override
+        public void write(JsonWriter out, T value) throws IOException {
             if (value == null) {
                 out.nullValue();
                 return;

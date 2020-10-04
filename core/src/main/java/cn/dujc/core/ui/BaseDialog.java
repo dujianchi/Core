@@ -39,12 +39,6 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
     }
 
     @Override
-    public void setCancelable(boolean flag) {
-        super.setCancelable(flag);
-        mCancelable_ = flag;
-    }
-
-    @Override
     public View getViewV() {
         return null;
     }
@@ -66,6 +60,12 @@ public abstract class BaseDialog extends Dialog implements IBaseUI {
 
     public boolean isCancelable() {
         return mCancelable_;
+    }
+
+    @Override
+    public void setCancelable(boolean flag) {
+        super.setCancelable(flag);
+        mCancelable_ = flag;
     }
 
     public void _onCreateView() {

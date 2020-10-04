@@ -52,7 +52,7 @@ public interface IBackPressedOperator {
 
         @Override
         public void showBackConfirm(final Activity activity) {
-            if (mDialog == null){
+            if (mDialog == null) {
                 mDialog = new AlertDialog.Builder(activity)
                         .setTitle(R.string.core_back_confirm_title)
                         .setMessage(R.string.core_back_confirm_message)

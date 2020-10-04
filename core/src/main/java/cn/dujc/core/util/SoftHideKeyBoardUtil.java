@@ -15,17 +15,12 @@ import android.widget.FrameLayout;
  */
 public class SoftHideKeyBoardUtil {
 
-    public static void assistActivity(Activity activity) {
-        new SoftHideKeyBoardUtil(activity);
-    }
-
     private View mChildOfContent;
     private int mUsableHeightPrevious;
     private FrameLayout.LayoutParams mFrameLayoutParams;
     //为适应华为小米等手机键盘上方出现黑条或不适配
     private int mContentHeight = 0;//获取setContentView本来view的高度
     private int mStatusBarHeight;//状态栏高度
-
     private SoftHideKeyBoardUtil(Activity activity) {
         mStatusBarHeight = getStatusBarHeight(activity);
         //1､找到Activity的最外层布局控件，它其实是一个DecorView,它所用的控件就是FrameLayout
@@ -46,6 +41,25 @@ public class SoftHideKeyBoardUtil {
         });
         //6､获取到Activity的xml布局的放置参数
         mFrameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+    }
+
+    public static void assistActivity(Activity activity) {
+        new SoftHideKeyBoardUtil(activity);
+    }
+
+    /**
+     * 获取statusBar高度
+     *
+     * @return statusBar高度
+     */
+    private static int getStatusBarHeight(Context context) {
+        Resources res = context.getResources();
+        int result = 0;
+        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId != 0) {
+            result = res.getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     // 获取界面可用高度，如果软键盘弹起后，Activity的xml布局可用高度需要减去键盘高度
@@ -80,19 +94,5 @@ public class SoftHideKeyBoardUtil {
         mChildOfContent.getWindowVisibleDisplayFrame(r);
         // 全屏模式下：直接返回r.bottom，r.top其实是状态栏的高度
         return (r.bottom - r.top);
-    }
-
-    /**
-     * 获取statusBar高度
-     * @return statusBar高度
-     */
-    private static int getStatusBarHeight(Context context) {
-        Resources res = context.getResources();
-        int result = 0;
-        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId != 0) {
-            result = res.getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 }

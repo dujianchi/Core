@@ -14,28 +14,28 @@ import java.security.MessageDigest;
  * for partial cache key signatures.
  */
 public interface Key {
-  String STRING_CHARSET_NAME = "UTF-8";
-  Charset CHARSET = Charset.forName(STRING_CHARSET_NAME);
+    String STRING_CHARSET_NAME = "UTF-8";
+    Charset CHARSET = Charset.forName(STRING_CHARSET_NAME);
 
-  /**
-   * Adds all uniquely identifying information to the given digest.
-   *
-   * <p> Note - Using {@link java.security.MessageDigest#reset()} inside of this method will result
-   * in undefined behavior. </p>
-   */
-  void updateDiskCacheKey(@NonNull MessageDigest messageDigest);
+    /**
+     * Adds all uniquely identifying information to the given digest.
+     *
+     * <p> Note - Using {@link java.security.MessageDigest#reset()} inside of this method will result
+     * in undefined behavior. </p>
+     */
+    void updateDiskCacheKey(@NonNull MessageDigest messageDigest);
 
-  /**
-   * For caching to work correctly, implementations <em>must</em> implement this method and
-   * {@link #hashCode()}.
-   */
-  @Override
-  boolean equals(Object o);
+    /**
+     * For caching to work correctly, implementations <em>must</em> implement this method and
+     * {@link #hashCode()}.
+     */
+    @Override
+    boolean equals(Object o);
 
-  /**
-   * For caching to work correctly, implementations <em>must</em> implement this method and
-   * {@link #equals(Object)}.
-   */
-  @Override
-  int hashCode();
+    /**
+     * For caching to work correctly, implementations <em>must</em> implement this method and
+     * {@link #equals(Object)}.
+     */
+    @Override
+    int hashCode();
 }

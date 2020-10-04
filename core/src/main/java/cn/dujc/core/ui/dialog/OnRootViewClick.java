@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import cn.dujc.core.util.ViewUtils;
+
 public class OnRootViewClick implements View.OnTouchListener {
 
     private final IDialog mDialog;
@@ -43,13 +45,7 @@ public class OnRootViewClick implements View.OnTouchListener {
                 if (mDialog != null) {
                     boolean dismissible = mDialog._dismissible();
                     if (dismissible) {
-                        int[] xy = new int[2];
-                        mInsideView.getLocationOnScreen(xy);
-                        int width = mInsideView.getWidth();
-                        int height = mInsideView.getHeight();
-                        float x = event.getRawX();
-                        float y = event.getRawY();
-                        if (x < xy[0] || y < xy[1] || x > xy[0] + width || y > xy[1] + height) {
+                        if (ViewUtils.isViewUnderEvent(mInsideView, event)) {
                             mDialog._dismiss();
                             return true;
                         }

@@ -19,9 +19,9 @@ import cn.dujc.core.util.ContextUtil;
  */
 public class StatusBarPlaceholder extends View {
 
+    private final int mStatusBarHeight;
     private boolean mOpen = true;
     private boolean mOverrideSystemOpen = false;
-    private final int mStatusBarHeight;
 
     public StatusBarPlaceholder(Context context) {
         this(context, null, 0);

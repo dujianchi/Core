@@ -37,60 +37,6 @@ public class BitmapActivity extends BaseActivity {
     private Button mBtnGet;
     private ImageView mIvReceive;
 
-    @Override
-    public int getViewId() {
-        return R.layout.activity_bitmap;
-    }
-
-    @Override
-    public void initBasic(Bundle savedInstanceState) {
-        mBtnGet = findViewById(R.id.btn_get);
-        mIvReceive = findViewById(R.id.iv_receive);
-
-        mBtnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                permissionKeeper().requestPermissionsNormal(321
-                        , Manifest.permission.CAMERA
-                        , Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        , Manifest.permission.READ_EXTERNAL_STORAGE
-                );
-            }
-        });
-
-        File cacheDir = getExternalCacheDir();
-        if (cacheDir == null) cacheDir = getCacheDir();
-        if (cacheDir != null) {
-            ToastUtil.showToast(mActivity, FileUtil.size(cacheDir) / 1024F / 1024F + " MB");
-        }
-    }
-
-    @Override
-    public void onGranted(int requestCode, List<String> permissions) {
-        pickImage(mActivity, 1, true, 123);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-            getResult(mActivity, data, new OnCompressedCallback() {
-                @Override
-                public void onCompressed(List<File> result) {
-                    if (result.isEmpty()) {
-                        ToastUtil.showToast(mActivity, "empty");
-                    } else {
-                        mIvReceive.setImageBitmap(BitmapUtil.decodeSmallerFromFile(result.get(0), 100, 100));
-                    }
-                }
-            });
-        }
-    }
-
-    public static interface OnCompressedCallback {
-        void onCompressed(List<File> result);
-    }
-
     public static void getResult(final Context context, Intent data, @NonNull final OnCompressedCallback callback) {
         List<Uri> paths = Matisse.obtainResult(data);
         if (paths != null) {
@@ -144,5 +90,59 @@ public class BitmapActivity extends BaseActivity {
                 .thumbnailScale(0.85f)
                 .imageEngine(new GlideEngine())
                 .forResult(requestCode);
+    }
+
+    @Override
+    public int getViewId() {
+        return R.layout.activity_bitmap;
+    }
+
+    @Override
+    public void initBasic(Bundle savedInstanceState) {
+        mBtnGet = findViewById(R.id.btn_get);
+        mIvReceive = findViewById(R.id.iv_receive);
+
+        mBtnGet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                permissionKeeper().requestPermissionsNormal(321
+                        , Manifest.permission.CAMERA
+                        , Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        , Manifest.permission.READ_EXTERNAL_STORAGE
+                );
+            }
+        });
+
+        File cacheDir = getExternalCacheDir();
+        if (cacheDir == null) cacheDir = getCacheDir();
+        if (cacheDir != null) {
+            ToastUtil.showToast(mActivity, FileUtil.size(cacheDir) / 1024F / 1024F + " MB");
+        }
+    }
+
+    @Override
+    public void onGranted(int requestCode, List<String> permissions) {
+        pickImage(mActivity, 1, true, 123);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            getResult(mActivity, data, new OnCompressedCallback() {
+                @Override
+                public void onCompressed(List<File> result) {
+                    if (result.isEmpty()) {
+                        ToastUtil.showToast(mActivity, "empty");
+                    } else {
+                        mIvReceive.setImageBitmap(BitmapUtil.decodeSmallerFromFile(result.get(0), 100, 100));
+                    }
+                }
+            });
+        }
+    }
+
+    public static interface OnCompressedCallback {
+        void onCompressed(List<File> result);
     }
 }

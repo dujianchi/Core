@@ -9,13 +9,6 @@ import java.util.List;
 public interface IDuBannerCore {
 
     /**
-     * 轮播图
-     */
-    public interface OnBannerClickListener {
-        void onBannerClicked(View view, int position);
-    }
-
-    /**
      * 替换指示器布局；用于显示一个在banner外部的指示器
      */
     public void replaceIndicatorLayout(IDuBannerIndicator indicator);
@@ -86,4 +79,11 @@ public interface IDuBannerCore {
      * 获取数据数量，如果要显示无限循环的数量则处理这个方法
      */
     int getItemCount();
+
+    /**
+     * 轮播图
+     */
+    public interface OnBannerClickListener {
+        void onBannerClicked(View view, int position);
+    }
 }

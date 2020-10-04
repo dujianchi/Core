@@ -12,38 +12,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * LinkMovementMethod.getInstance()的替换，可以解决LinkMovementMethod没有截断的bug
+ *
  * @author du
  * date 2018/7/27 上午10:03
  */
 public class LinkMovementMethodReplacement implements View.OnTouchListener {
 
-    public interface ITextView {
-        TextView textView();
-    }
-
-    public static class TextViewImpl implements ITextView {
-        private final TextView mTextView;
-
-        public TextViewImpl(TextView textView) {
-            mTextView = textView;
-        }
-
-        @Override
-        public TextView textView() {
-            return mTextView;
-        }
-    }
-
-    public static LinkMovementMethodReplacement assistTextView(TextView textView) {
-        return assistTextView(new TextViewImpl(textView));
-    }
-
-    public static LinkMovementMethodReplacement assistTextView(ITextView textView) {
-        return new LinkMovementMethodReplacement(textView);
-    }
-
     private final static long LONG_CLICK_INTERNAL = 2500;
-
     private final ITextView mTextView;
     private final AtomicBoolean mLongClicked = new AtomicBoolean(false);
     private final Handler mLongClickHandler = new Handler();
@@ -62,6 +37,14 @@ public class LinkMovementMethodReplacement implements View.OnTouchListener {
         if (text != null) {
             text.setOnTouchListener(this);
         }
+    }
+
+    public static LinkMovementMethodReplacement assistTextView(TextView textView) {
+        return assistTextView(new TextViewImpl(textView));
+    }
+
+    public static LinkMovementMethodReplacement assistTextView(ITextView textView) {
+        return new LinkMovementMethodReplacement(textView);
     }
 
     private void resetLongClick() {
@@ -110,5 +93,22 @@ public class LinkMovementMethodReplacement implements View.OnTouchListener {
             }
         }
         return true;
+    }
+
+    public interface ITextView {
+        TextView textView();
+    }
+
+    public static class TextViewImpl implements ITextView {
+        private final TextView mTextView;
+
+        public TextViewImpl(TextView textView) {
+            mTextView = textView;
+        }
+
+        @Override
+        public TextView textView() {
+            return mTextView;
+        }
     }
 }

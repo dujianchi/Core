@@ -53,20 +53,20 @@ public class CountDownTimerActivity extends BaseActivity {
             mFuture = future;
         }
 
-        public void setInternal(long internal) {
-            mInternal = internal;
-        }
-
-        public void setFuture(long future) {
-            mFuture = future;
-        }
-
         public long getInternal() {
             return mInternal;
         }
 
+        public void setInternal(long internal) {
+            mInternal = internal;
+        }
+
         public long getFuture() {
             return mFuture;
+        }
+
+        public void setFuture(long future) {
+            mFuture = future;
         }
 
         public void start() {

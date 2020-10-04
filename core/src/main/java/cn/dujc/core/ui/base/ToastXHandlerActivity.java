@@ -22,13 +22,6 @@ import cn.dujc.core.ui.TitleCompat;
 public class ToastXHandlerActivity extends BaseActivity {
 
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
-
-    public static void start(Context context, CharSequence text) {
-        Intent starter = new Intent(context, ToastXHandlerActivity.class);
-        starter.putExtra(Intent.EXTRA_TEXT, text);
-        context.startActivity(starter);
-    }
-
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -37,6 +30,12 @@ public class ToastXHandlerActivity extends BaseActivity {
     };
     private Dialog mDialog;
     private TextView mTextView;
+
+    public static void start(Context context, CharSequence text) {
+        Intent starter = new Intent(context, ToastXHandlerActivity.class);
+        starter.putExtra(Intent.EXTRA_TEXT, text);
+        context.startActivity(starter);
+    }
 
     @Override
     public int getViewId() {

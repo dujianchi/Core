@@ -18,12 +18,10 @@ import java.util.List;
 public class TabLayout<T> extends HorizontalScrollView {
 
     private final List<T> mData = new ArrayList<>();
-    private final ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-        @Override
-        public void onPageSelected(int position) {
-            updatePosition(position, false);
-        }
-    };
+    private final TabFactory<T> mTabFactory = new TabFactory<T>();
+    private final LinearLayout mInnerLayout;
+    private ViewPager mViewPager;
+    private ITabWidthCalculator mTabWidthCalculator = new ITabWidthCalculator.FixedImpl();
     private final OnLayoutChangeListener mLayoutChangeListener = new OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -31,16 +29,13 @@ public class TabLayout<T> extends HorizontalScrollView {
             refreshChildWidth();
         }
     };
-
-    public interface OnTabClickListener {
-        void onClick(View v, int index);
-    }
-
-    private final TabFactory<T> mTabFactory = new TabFactory<T>();
-    private final LinearLayout mInnerLayout;
-    private ViewPager mViewPager;
-    private ITabWidthCalculator mTabWidthCalculator = new ITabWidthCalculator.FixedImpl();
     private OnTabClickListener mOnTabClickListener;
+    private final ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            updatePosition(position, false);
+        }
+    };
 
     public TabLayout(@NonNull Context context) {
         this(context, null, 0);
@@ -180,6 +175,10 @@ public class TabLayout<T> extends HorizontalScrollView {
     public void setDataAndViewPage(List<T> data, ViewPager viewPager) {
         setData(data);
         setViewPager(viewPager);
+    }
+
+    public interface OnTabClickListener {
+        void onClick(View v, int index);
     }
 
 }

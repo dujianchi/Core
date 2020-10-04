@@ -27,7 +27,8 @@ import cn.dujc.core.util.LogUtil;
  */
 public class ZxingUtils {
 
-    private ZxingUtils() { }
+    private ZxingUtils() {
+    }
 
     /**
      * 字符串生成二维码
@@ -104,10 +105,6 @@ public class ZxingUtils {
         }
     }
 
-    public interface DecodeCallback {
-        void onDecodeCallback(Result result);
-    }
-
     public static void decodeBitmap(final Bitmap bitmap, final DecodeCallback callback) {
         new AsyncTask<Bitmap, Void, Result>() {
             @Override
@@ -120,5 +117,9 @@ public class ZxingUtils {
                 callback.onDecodeCallback(result);
             }
         }.execute(bitmap);
+    }
+
+    public interface DecodeCallback {
+        void onDecodeCallback(Result result);
     }
 }

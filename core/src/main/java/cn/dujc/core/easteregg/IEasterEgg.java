@@ -12,6 +12,13 @@ public interface IEasterEgg {
     public static final int SLIDE_LIMIT_DP = 15;
     public static final byte TAP = 0b1, PRESS = 0b10, SLIDE = 0b100, LONG = 0b1000;
 
+    public boolean canOpen();
+
+    public void open();
+
+    @Trigger
+    public int[] trigger();
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({TAP//点击
             , PRESS//按住；超过3秒算长按，超过5秒算按住
@@ -20,11 +27,4 @@ public interface IEasterEgg {
     })
     @interface Trigger {
     }
-
-    public boolean canOpen();
-
-    public void open();
-
-    @Trigger
-    public int[] trigger();
 }

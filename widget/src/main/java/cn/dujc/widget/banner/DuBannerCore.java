@@ -36,9 +36,9 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
     private static final int OFFSET_SCALE = 10000;//因为将RecyclerView设置了int.max为数据的长度，所以需要一个默认的偏移量倍数
     private static final int TIME_DEFAULT = 3500;//默认滚动时间
     private static Handler sHandler = new Handler(Looper.getMainLooper());
+    final List mList = new ArrayList();
     private PagerSnapHelper mSnapHelper;
     private LinearLayoutManager mLayoutManager;
-
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter<? extends RecyclerView.ViewHolder> mBannerAdapter;
     private OnBannerItemClick mOnBannerItemClick;
@@ -48,9 +48,6 @@ public class DuBannerCore extends FrameLayout implements IDuBannerCore {
     private int mIndicatorMarginLayout = 10;
     private float mHeightScale = 0f;//9/16
     private boolean mAutoScroll = true;
-
-    final List mList = new ArrayList();
-
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {

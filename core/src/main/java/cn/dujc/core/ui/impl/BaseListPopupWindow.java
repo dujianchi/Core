@@ -14,31 +14,6 @@ import cn.dujc.core.ui.BasePopupWindow;
 
 public abstract class BaseListPopupWindow extends BasePopupWindow implements IBaseList.UI {
 
-    private static class ListImpl extends AbsImpl {
-        private final BaseListPopupWindow mUi;
-        View mRootView;
-
-        public ListImpl(BaseListPopupWindow ui) {
-            super(ui);
-            mUi = ui;
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mUi.findViewById(id);
-        }
-
-        @Override
-        public Context context() {
-            return mUi.mContext;
-        }
-
-        @Override
-        public View getRootView() {
-            return mRootView;
-        }
-    }
-
     private final IBaseList mBaseList;
 
     public BaseListPopupWindow(Context context) {
@@ -165,6 +140,31 @@ public abstract class BaseListPopupWindow extends BasePopupWindow implements IBa
     @Override
     public void setOnRefreshListener(IRefreshListener onRefreshListener) {
         mBaseList.setOnRefreshListener(onRefreshListener);
+    }
+
+    private static class ListImpl extends AbsImpl {
+        private final BaseListPopupWindow mUi;
+        View mRootView;
+
+        public ListImpl(BaseListPopupWindow ui) {
+            super(ui);
+            mUi = ui;
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return mUi.findViewById(id);
+        }
+
+        @Override
+        public Context context() {
+            return mUi.mContext;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
+        }
     }
 
 }

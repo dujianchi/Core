@@ -62,7 +62,7 @@ public class BroadcastActivity extends BaseActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ((BroadcastActivity)context).mTvText.setText("afadsfsdfsdf");
+            ((BroadcastActivity) context).mTvText.setText("afadsfsdfsdf");
         }
     }
 }

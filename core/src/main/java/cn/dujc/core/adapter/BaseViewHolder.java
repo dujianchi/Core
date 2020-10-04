@@ -54,23 +54,14 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      * Views indexed with their IDs
      */
     private final SparseArray<View> views;
-
-    public Set<Integer> getNestViews() {
-        return nestViews;
-    }
-
     private final HashSet<Integer> nestViews;
-
     private final LinkedHashSet<Integer> childClickViewIds;
-
     private final LinkedHashSet<Integer> itemChildLongClickViewIds;
-    private BaseQuickAdapter adapter;
-
     /**
      * Package private field to retain the associated user object and detect a change
      */
     Object associatedObject;
-
+    private BaseQuickAdapter adapter;
 
     public BaseViewHolder(final View view) {
         super(view);
@@ -78,6 +69,10 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         this.childClickViewIds = new LinkedHashSet<>();
         this.itemChildLongClickViewIds = new LinkedHashSet<>();
         this.nestViews = new HashSet<>();
+    }
+
+    public Set<Integer> getNestViews() {
+        return nestViews;
     }
 
     private int getClickPosition() {

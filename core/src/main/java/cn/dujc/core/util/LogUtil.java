@@ -30,16 +30,16 @@ import android.util.Log;
 public class LogUtil {
 
     public static String customTagPrefix = "";
-
-    private LogUtil() {
-    }
-
     public static boolean allowD = true;
     public static boolean allowE = true;
     public static boolean allowI = true;
     public static boolean allowV = true;
     public static boolean allowW = true;
     public static boolean allowWtf = true;
+    public static CustomLogger customLogger;
+
+    private LogUtil() {
+    }
 
     private static String generateTag(StackTraceElement caller) {
         String tag = "%s.%s(L:%d)";
@@ -48,38 +48,6 @@ public class LogUtil {
         tag = String.format(tag, callerClazzName, caller.getMethodName(), caller.getLineNumber());
         tag = TextUtils.isEmpty(customTagPrefix) ? tag : customTagPrefix + ":" + tag;
         return tag;
-    }
-
-    public static CustomLogger customLogger;
-
-    public interface CustomLogger {
-        void d(String tag, String content);
-
-        void d(String tag, String content, Throwable tr);
-
-        void e(String tag, String content);
-
-        void e(String tag, String content, Throwable tr);
-
-        void i(String tag, String content);
-
-        void i(String tag, String content, Throwable tr);
-
-        void v(String tag, String content);
-
-        void v(String tag, String content, Throwable tr);
-
-        void w(String tag, String content);
-
-        void w(String tag, String content, Throwable tr);
-
-        void w(String tag, Throwable tr);
-
-        void wtf(String tag, String content);
-
-        void wtf(String tag, String content, Throwable tr);
-
-        void wtf(String tag, Throwable tr);
     }
 
     public static void d(String content) {
@@ -308,7 +276,6 @@ public class LogUtil {
         }
     }
 
-
     public static void wtf(String content) {
         if (!allowWtf) {
             return;
@@ -417,5 +384,35 @@ public class LogUtil {
         allowV = allow;
         allowW = allow;
         allowWtf = allow;
+    }
+
+    public interface CustomLogger {
+        void d(String tag, String content);
+
+        void d(String tag, String content, Throwable tr);
+
+        void e(String tag, String content);
+
+        void e(String tag, String content, Throwable tr);
+
+        void i(String tag, String content);
+
+        void i(String tag, String content, Throwable tr);
+
+        void v(String tag, String content);
+
+        void v(String tag, String content, Throwable tr);
+
+        void w(String tag, String content);
+
+        void w(String tag, String content, Throwable tr);
+
+        void w(String tag, Throwable tr);
+
+        void wtf(String tag, String content);
+
+        void wtf(String tag, String content, Throwable tr);
+
+        void wtf(String tag, Throwable tr);
     }
 }

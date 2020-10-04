@@ -17,32 +17,6 @@ import cn.dujc.core.ui.BaseActivity;
  */
 public abstract class BaseListActivity extends BaseActivity implements IBaseList.UI {
 
-    private static class ActivityImpl extends AbsImpl {
-
-        private final BaseListActivity mActivity;
-        View mRootView;
-
-        ActivityImpl(BaseListActivity activity) {
-            super(activity);
-            mActivity = activity;
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mActivity.findViewById(id);
-        }
-
-        @Override
-        public Context context() {
-            return mActivity;
-        }
-
-        @Override
-        public View getRootView() {
-            return mRootView;
-        }
-    }
-
     private IBaseList mBaseList;
 
     @Override
@@ -170,6 +144,32 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
     @Override
     public void setOnRefreshListener(IRefreshListener onRefreshListener) {
         mBaseList.setOnRefreshListener(onRefreshListener);
+    }
+
+    private static class ActivityImpl extends AbsImpl {
+
+        private final BaseListActivity mActivity;
+        View mRootView;
+
+        ActivityImpl(BaseListActivity activity) {
+            super(activity);
+            mActivity = activity;
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return mActivity.findViewById(id);
+        }
+
+        @Override
+        public Context context() {
+            return mActivity;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
+        }
     }
 
 }

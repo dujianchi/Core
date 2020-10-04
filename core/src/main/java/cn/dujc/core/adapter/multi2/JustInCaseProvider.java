@@ -17,6 +17,7 @@ public class JustInCaseProvider implements ViewProvider {
     }
 
     @Override
-    public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object data) { }
+    public void convert(Context context, BaseQuickAdapter adapter, BaseViewHolder helper, Object data) {
+    }
 
 }

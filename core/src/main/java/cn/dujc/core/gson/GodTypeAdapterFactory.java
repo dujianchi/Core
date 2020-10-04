@@ -105,7 +105,8 @@ public class GodTypeAdapterFactory {
                 try {
                     return in.nextDouble();
                 } catch (Exception e) {
-                    return 0.0;
+                    in.skipValue();
+                    return null;
                 }
             }
 
@@ -136,7 +137,8 @@ public class GodTypeAdapterFactory {
                 try {
                     return (float) in.nextDouble();
                 } catch (Exception e) {
-                    return 0F;
+                    in.skipValue();
+                    return null;
                 }
             }
 
@@ -212,7 +214,8 @@ public class GodTypeAdapterFactory {
                 try {
                     return in.nextLong();
                 } catch (Exception e) {
-                    return 0L;
+                    in.skipValue();
+                    return null;
                 }
             }
 

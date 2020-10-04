@@ -26,5 +26,6 @@ public class CaptureFragmentImpl extends CaptureViewImpl {
     }
 
     @Override
-    public void onCustomResult() { }
+    public void onCustomResult() {
+    }
 }

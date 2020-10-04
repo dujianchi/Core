@@ -28,6 +28,6 @@ public class Popup extends BasePopupWindow {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        ((ImageView)mRootView).setImageResource(R.mipmap.ic_star_red);
+        ((ImageView) mRootView).setImageResource(R.mipmap.ic_star_red);
     }
 }

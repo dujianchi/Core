@@ -6,7 +6,7 @@ import java.util.List;
 public class Bean<T> implements Serializable {
     private static final long serialVersionUID = 1154192701543147592L;
 
-    private String code;
+    private int code;
     private String msg;
     private List<T> data;
 
@@ -14,11 +14,15 @@ public class Bean<T> implements Serializable {
         return data;
     }
 
-    public String getCode() {
+    public void setData(List<T> data) {
+        this.data = data;
+    }
+
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -28,9 +32,5 @@ public class Bean<T> implements Serializable {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public void setData(List<T> data) {
-        this.data = data;
     }
 }

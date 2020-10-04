@@ -8,6 +8,12 @@ import android.widget.TextView;
 public class ResizeableTextImpl<T extends TextView> implements ResizeableText<T> {
 
     private static final String KEY_SCALE = "KEY_SCALE";
+    private final T mTextView;
+    private float mScale = 1.0F;
+
+    public ResizeableTextImpl(T textView) {
+        mTextView = textView;
+    }
 
     public static void setGlobalScale(Context context, float scale) {
         if (context != null && scale > 0) {
@@ -20,14 +26,6 @@ public class ResizeableTextImpl<T extends TextView> implements ResizeableText<T>
     private static SharedPreferences getPreferences(Context context) {
         return context.getSharedPreferences(ResizeableTextImpl.class.getName(), Context.MODE_PRIVATE);
     }
-
-    private final T mTextView;
-
-    public ResizeableTextImpl(T textView) {
-        mTextView = textView;
-    }
-
-    private float mScale = 1.0F;
 
     @Override
     public T getTextView() {

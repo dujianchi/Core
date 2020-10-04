@@ -28,12 +28,11 @@ import java.util.regex.Pattern;
 
 final class DecodeFormatManager {
 
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     static final Vector<BarcodeFormat> PRODUCT_FORMATS;
     static final Vector<BarcodeFormat> ONE_D_FORMATS;
     static final Vector<BarcodeFormat> QR_CODE_FORMATS;
     static final Vector<BarcodeFormat> DATA_MATRIX_FORMATS;
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
     static {
         PRODUCT_FORMATS = new Vector<BarcodeFormat>(5);

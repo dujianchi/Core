@@ -16,6 +16,18 @@ public class ItemDelete extends HorizontalScrollView {
 
     private static final Set<WeakReference<ItemDelete>> CACHED = new HashSet<>();
 
+    public ItemDelete(Context context) {
+        this(context, null, 0);
+    }
+
+    public ItemDelete(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ItemDelete(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
     public static void removeFromCache(ItemDelete view) {
         final Iterator<WeakReference<ItemDelete>> iterator = CACHED.iterator();
         while (iterator.hasNext()) {
@@ -45,18 +57,6 @@ public class ItemDelete extends HorizontalScrollView {
                 }
             }
         }
-    }
-
-    public ItemDelete(Context context) {
-        this(context, null, 0);
-    }
-
-    public ItemDelete(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public ItemDelete(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
     @Override

@@ -42,6 +42,7 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
         try {
             return delegate.read(in);
         } catch (Exception e) {
+            in.skipValue();
             return null;
         }
     }

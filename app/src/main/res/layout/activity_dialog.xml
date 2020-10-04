@@ -5,9 +5,9 @@
 
     <Button
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="show dialog"
         android:onClick="showDialog"
-        android:layout_height="wrap_content" />
+        android:text="show dialog" />
 
 </FrameLayout>

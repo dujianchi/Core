@@ -29,6 +29,15 @@ import cn.dujc.core.util.LogUtil;
  */
 public class BaseWebFragment extends BaseFragment {
 
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String EXTRA_DATA = "EXTRA_DATA";
+    protected WebView mWebView;
+    private ProgressBar mProgressBar;
+    private String mUrl;
+    private String mData;
+    private String mTitle;
+
     public static BaseWebFragment newInstance(String title, String url) {
         return newInstance(title, url, null);
     }
@@ -42,16 +51,6 @@ public class BaseWebFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String EXTRA_URL = "EXTRA_URL";
-    public static final String EXTRA_DATA = "EXTRA_DATA";
-
-    protected WebView mWebView;
-    private ProgressBar mProgressBar;
-    private String mUrl;
-    private String mData;
-    private String mTitle;
 
     @Override
     public void initBasic(Bundle savedInstanceState) {

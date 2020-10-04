@@ -945,11 +945,6 @@ public class WheelPicker extends View implements IWheelPicker, Runnable {
     }
 
     @Override
-    public int getItemCount() {
-        return mData == null ? 0 : mData.size();
-    }
-
-    @Override
     public void setData(List data) {
         //if (null == data)
         //    throw new NullPointerException("WheelPicker's data can not be null!");
@@ -969,6 +964,11 @@ public class WheelPicker extends View implements IWheelPicker, Runnable {
         invalidate();
 
         setSelectedItemPosition(mSelectedItemPosition, false);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData == null ? 0 : mData.size();
     }
 
     @Override

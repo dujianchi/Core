@@ -18,7 +18,8 @@ public abstract class BaseAdapterL<T> extends BaseAdapter {
 
     private List<T> mList;
 
-    public BaseAdapterL() { }
+    public BaseAdapterL() {
+    }
 
     public BaseAdapterL(List<? extends T> list) {
         mList = list == null ? new ArrayList<T>() : (List<T>) list;

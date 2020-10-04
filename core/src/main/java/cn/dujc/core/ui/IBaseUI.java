@@ -235,9 +235,9 @@ public interface IBaseUI {
 
         void setSettingsDialog(IPermissionSettingsDialog settingsDialog);
 
-        void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
-
         IOddsPermissionOperator getOddsPermissionOperator();
+
+        void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
     }
 
     public static interface IPermissionSettingsDialog {
@@ -742,6 +742,56 @@ public interface IBaseUI {
             mSettingsDialog = new IPermissionSettingsDialogImpl();
         }
 
+        private static boolean hasPermission(Context context, String... permissions) {
+            boolean has = permissions != null && permissions.length > 0;
+            if (has) {
+                for (String permission : permissions) {
+                    has = has && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+                    //has = has && PermissionChecker.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            return has;
+        }
+
+        private static void handleGrantedOrDenied(Context context, IPermissionKeeperCallback callback, String[] permissions, int[] grantResults, int requestCode) {
+            if (context == null || callback == null || permissions == null) return;
+
+            final List<String> granted = new ArrayList<>();
+            final List<String> denied = new ArrayList<>();
+
+            if (grantResults == null) {
+                for (String perm : permissions) {
+                    if (hasPermission(context, perm)) {
+                        granted.add(perm);
+                    } else {
+                        denied.add(perm);
+                    }
+                }
+            } else {
+                for (int index = 0, length = permissions.length; index < length; index++) {
+                    String perm = permissions[index];
+                    if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
+                        granted.add(perm);
+                    } else {
+                        denied.add(perm);
+                    }
+                }
+            }
+
+            /*if (!granted.isEmpty()) {
+                callback.onGranted(requestCode, granted);
+            }
+
+            if (!denied.isEmpty()) {
+                callback.onDenied(requestCode, denied);
+            }*/
+            if (denied.isEmpty() && !granted.isEmpty()) {
+                callback.onGranted(requestCode, granted);
+            } else {
+                callback.onDenied(requestCode, denied);
+            }
+        }
+
         @Override
         public void requestPermissionsNormal(int requestCode, String... permission) {
             requestPermissions(requestCode
@@ -822,63 +872,13 @@ public interface IBaseUI {
         }
 
         @Override
-        public void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator) {
-            mPermissionOperator = permissionOperator;
-        }
-
-        @Override
         public IOddsPermissionOperator getOddsPermissionOperator() {
             return mPermissionOperator;
         }
 
-        private static boolean hasPermission(Context context, String... permissions) {
-            boolean has = permissions != null && permissions.length > 0;
-            if (has) {
-                for (String permission : permissions) {
-                    has = has && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
-                    //has = has && PermissionChecker.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
-                }
-            }
-            return has;
-        }
-
-        private static void handleGrantedOrDenied(Context context, IPermissionKeeperCallback callback, String[] permissions, int[] grantResults, int requestCode) {
-            if (context == null || callback == null || permissions == null) return;
-
-            final List<String> granted = new ArrayList<>();
-            final List<String> denied = new ArrayList<>();
-
-            if (grantResults == null) {
-                for (String perm : permissions) {
-                    if (hasPermission(context, perm)) {
-                        granted.add(perm);
-                    } else {
-                        denied.add(perm);
-                    }
-                }
-            } else {
-                for (int index = 0, length = permissions.length; index < length; index++) {
-                    String perm = permissions[index];
-                    if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
-                        granted.add(perm);
-                    } else {
-                        denied.add(perm);
-                    }
-                }
-            }
-
-            /*if (!granted.isEmpty()) {
-                callback.onGranted(requestCode, granted);
-            }
-
-            if (!denied.isEmpty()) {
-                callback.onDenied(requestCode, denied);
-            }*/
-            if (denied.isEmpty() && !granted.isEmpty()) {
-                callback.onGranted(requestCode, granted);
-            } else {
-                callback.onDenied(requestCode, denied);
-            }
+        @Override
+        public void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator) {
+            mPermissionOperator = permissionOperator;
         }
 
     }

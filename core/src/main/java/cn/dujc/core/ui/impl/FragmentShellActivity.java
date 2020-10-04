@@ -16,8 +16,14 @@ import cn.dujc.core.ui.BaseActivity;
 
 public class FragmentShellActivity extends BaseActivity {
 
-    private static final String KEY_FRAGMENT_CLASS = "KEY_FRAGMENT_CLASS";
     public static final String EXTRA_FULL_SCREEN = "EXTRA_FULL_SCREEN", EXTRA_TOOLBAR_STYLE = "EXTRA_TOOLBAR_STYLE", EXTRA_STATUS_BAR_COLOR = "EXTRA_STATUS_BAR_COLOR", EXTRA_STATUS_DARK_MODE = "EXTRA_STATUS_DARK_MODE", EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String KEY_FRAGMENT_CLASS = "KEY_FRAGMENT_CLASS";
+    private boolean mFullScreen = false;
+    private Boolean mDarkMode = null;
+    @IToolbar.Style
+    private int mStyle = IToolbar.LINEAR;
+    private Integer mStatusColor = null;
+    private String mTitle;
 
     public static int start(IStarter starter, Class<? extends Fragment> fragment) {
         if (fragment != null) {
@@ -33,13 +39,6 @@ public class FragmentShellActivity extends BaseActivity {
         intent.putExtras(bundle);
         return intent;
     }
-
-    private boolean mFullScreen = false;
-    private Boolean mDarkMode = null;
-    @IToolbar.Style
-    private int mStyle = IToolbar.LINEAR;
-    private Integer mStatusColor = null;
-    private String mTitle;
 
     @Override
     public int getViewId() {

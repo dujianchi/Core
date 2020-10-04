@@ -120,7 +120,8 @@ public final class IBaseListSetupHandler {
 
     public static void setupBeforeLayoutManager(Context context, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
         IBaseListSetup setup = getSetup(context);
-        if (setup != null) setup.recyclerViewSetupBeforeLayoutManager(context, recyclerView, layoutManager);
+        if (setup != null)
+            setup.recyclerViewSetupBeforeLayoutManager(context, recyclerView, layoutManager);
     }
 
 

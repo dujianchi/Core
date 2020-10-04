@@ -34,5 +34,6 @@ public abstract class SingleTask<P, R> {
 
     public abstract R onBackground(P... params);
 
-    public void done(R result) { }
+    public void done(R result) {
+    }
 }

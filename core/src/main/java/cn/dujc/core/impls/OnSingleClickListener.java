@@ -22,7 +22,7 @@ public abstract class OnSingleClickListener implements View.OnClickListener {
         if (timeL == null || timeL < current - interval) {
             onSingleClick(v);
             clickTimes.put(id, current);
-        }else if (updateTime){
+        } else if (updateTime) {
             clickTimes.put(id, current);
         }
     }
@@ -33,6 +33,7 @@ public abstract class OnSingleClickListener implements View.OnClickListener {
 
     /**
      * 设置单击的间隔时间，在此间隔内的点击都会被忽略
+     *
      * @param interval 间隔时间，单位毫秒，1秒=1000
      */
     public void setInterval(int interval) {
@@ -45,6 +46,7 @@ public abstract class OnSingleClickListener implements View.OnClickListener {
 
     /**
      * 设置是否每次点击都更新时间，即点击后不管触不触发单击事件，事件都会往后延长一个间隔时间
+     *
      * @param updateTime 是否在不触发的时候也更新时间
      */
     public void setUpdateTime(boolean updateTime) {

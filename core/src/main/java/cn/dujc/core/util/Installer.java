@@ -22,7 +22,8 @@ public class Installer {
 
     public static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
 
-    private Installer() { }
+    private Installer() {
+    }
 
     /**
      * 安装apk

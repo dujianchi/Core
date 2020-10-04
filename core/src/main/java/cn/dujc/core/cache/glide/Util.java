@@ -32,14 +32,14 @@ public final class Util {
 
     @NonNull
     public static String sha256BytesToHex(@NonNull byte[] bytes) {
-        synchronized(SHA_256_CHARS) {
+        synchronized (SHA_256_CHARS) {
             return bytesToHex(bytes, SHA_256_CHARS);
         }
     }
 
     @NonNull
     private static String bytesToHex(@NonNull byte[] bytes, @NonNull char[] hexChars) {
-        for(int j = 0; j < bytes.length; ++j) {
+        for (int j = 0; j < bytes.length; ++j) {
             int v = bytes[j] & 255;
             hexChars[j * 2] = HEX_CHAR_ARRAY[v >>> 4];
             hexChars[j * 2 + 1] = HEX_CHAR_ARRAY[v & 15];
@@ -48,7 +48,9 @@ public final class Util {
         return new String(hexChars);
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static int getSize(@NonNull Bitmap bitmap) {
         return getBitmapByteSize(bitmap);
@@ -80,20 +82,20 @@ public final class Util {
         }
 
         byte bytesPerPixel;
-        switch(config) {
-        case ALPHA_8:
-            bytesPerPixel = 1;
-            break;
-        case RGB_565:
-        case ARGB_4444:
-            bytesPerPixel = 2;
-            break;
-        case RGBA_F16:
-            bytesPerPixel = 8;
-            break;
-        case ARGB_8888:
-        default:
-            bytesPerPixel = 4;
+        switch (config) {
+            case ALPHA_8:
+                bytesPerPixel = 1;
+                break;
+            case RGB_565:
+            case ARGB_4444:
+                bytesPerPixel = 2;
+                break;
+            case RGBA_F16:
+                bytesPerPixel = 8;
+                break;
+            case ARGB_8888:
+            default:
+                bytesPerPixel = 4;
         }
 
         return bytesPerPixel;
@@ -137,7 +139,7 @@ public final class Util {
         List<T> result = new ArrayList(other.size());
         Iterator<T> var2 = other.iterator();
 
-        while(var2.hasNext()) {
+        while (var2.hasNext()) {
             T item = var2.next();
             if (item != null) {
                 result.add(item);
@@ -155,7 +157,7 @@ public final class Util {
         if (a == null) {
             return b == null;
         } else {
-            return a instanceof Model ? ((Model)a).isEquivalentTo(b) : a.equals(b);
+            return a instanceof Model ? ((Model) a).isEquivalentTo(b) : a.equals(b);
         }
     }
 

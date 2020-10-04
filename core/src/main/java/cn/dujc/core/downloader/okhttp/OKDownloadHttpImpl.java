@@ -28,64 +28,6 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
 
     private Call call = null;
 
-    @Override
-    public void download(final String url, final File destination, boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
-        OkHttpClient httpClient = createOkByUrl(url, mainThreadHandler, listener);
-
-        final Request.Builder request = new Request.Builder()
-                .url(url);
-
-        if (destination.exists()) {
-            if (_continue) {
-                request.header("RANGE", "bytes=" + destination.length() + "-");
-            } else {
-                destination.deleteOnExit();
-            }
-        } else if (!destination.getParentFile().exists() || !destination.getParentFile().isDirectory()) {
-            destination.getParentFile().deleteOnExit();
-            destination.getParentFile().mkdirs();
-        }
-
-        call = httpClient.newCall(request.build());
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, final IOException e) {
-                Downloader.removeDownloadQueue(url, destination);
-                onError(e.getMessage(), listener, mainThreadHandler);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Downloader.removeDownloadQueue(url, destination);
-                if (response.isSuccessful()) {
-                    save(response, destination);
-                    if (listener != null) {
-                        mainThreadHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onDownloadSuccess(destination);
-                            }
-                        });
-                    }
-                } else {
-                    final ResponseBody body = response.body();
-                    onError(body != null ? body.string() : "unknown error", listener, mainThreadHandler);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void cancel() {
-        if (call != null) {
-            try {
-                call.cancel();
-            } catch (Throwable e) {
-                if (Core.DEBUG) e.printStackTrace();
-            }
-        }
-    }
-
     private static OkHttpClient createOkByUrl(String url, final Handler handler, final OnDownloadListener listener) {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (Downloader.useSSL(url)) {
@@ -147,6 +89,64 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
                 } catch (IOException e) {
                     if (Core.DEBUG) e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    @Override
+    public void download(final String url, final File destination, boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
+        OkHttpClient httpClient = createOkByUrl(url, mainThreadHandler, listener);
+
+        final Request.Builder request = new Request.Builder()
+                .url(url);
+
+        if (destination.exists()) {
+            if (_continue) {
+                request.header("RANGE", "bytes=" + destination.length() + "-");
+            } else {
+                destination.deleteOnExit();
+            }
+        } else if (!destination.getParentFile().exists() || !destination.getParentFile().isDirectory()) {
+            destination.getParentFile().deleteOnExit();
+            destination.getParentFile().mkdirs();
+        }
+
+        call = httpClient.newCall(request.build());
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                Downloader.removeDownloadQueue(url, destination);
+                onError(e.getMessage(), listener, mainThreadHandler);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Downloader.removeDownloadQueue(url, destination);
+                if (response.isSuccessful()) {
+                    save(response, destination);
+                    if (listener != null) {
+                        mainThreadHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onDownloadSuccess(destination);
+                            }
+                        });
+                    }
+                } else {
+                    final ResponseBody body = response.body();
+                    onError(body != null ? body.string() : "unknown error", listener, mainThreadHandler);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void cancel() {
+        if (call != null) {
+            try {
+                call.cancel();
+            } catch (Throwable e) {
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
     }

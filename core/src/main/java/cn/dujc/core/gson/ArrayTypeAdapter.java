@@ -38,7 +38,8 @@ import java.util.List;
 public final class ArrayTypeAdapter<E> extends TypeAdapter<Object> {
     public static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @SuppressWarnings({"unchecked", "rawtypes"})
-        @Override public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
+        @Override
+        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
             Type type = typeToken.getType();
             if (!(type instanceof GenericArrayType || type instanceof Class && ((Class<?>) type).isArray())) {
                 return null;
@@ -60,20 +61,25 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object> {
         this.componentType = componentType;
     }
 
-    @Override public Object read(JsonReader in) throws IOException {
+    @Override
+    public Object read(JsonReader in) throws IOException {
         if (in.peek() == JsonToken.NULL) {
             in.nextNull();
             return null;
         }
 
         List<E> list = new ArrayList<E>();
-        in.beginArray();
-        while (in.hasNext()) {
-            E instance = componentTypeAdapter.read(in);
-            list.add(instance);
+        try {
+            in.beginArray();
+            while (in.hasNext()) {
+                E instance = componentTypeAdapter.read(in);
+                list.add(instance);
+            }
+            in.endArray();
+        } catch (IllegalStateException e) {
+            in.skipValue();
+            return null;
         }
-        in.endArray();
-
         int size = list.size();
         Object array = Array.newInstance(componentType, size);
         for (int i = 0; i < size; i++) {
@@ -83,7 +89,8 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    @Override public void write(JsonWriter out, Object array) throws IOException {
+    @Override
+    public void write(JsonWriter out, Object array) throws IOException {
         if (array == null) {
             out.nullValue();
             return;

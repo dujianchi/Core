@@ -9,6 +9,7 @@ public abstract class ProviderDelegate implements IMultiTypeDelegate {
 
     /**
      * ProviderDelegate需要与{@link MultiTypeAdapter}配合使用，但{@link MultiTypeAdapter}
+     *
      * @deprecated 不会调用到这个方法，而是直接调用底下的
      * {@link #getProvider(List, int)}，但如果是一般adapter也不影响
      */

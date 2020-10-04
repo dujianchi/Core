@@ -64,6 +64,12 @@ public final class TabFactory<T> {
         return iTab;
     }
 
+    public static interface IIndexTab {
+        public CharSequence text();
+
+        public int icon();
+    }
+
     public static class TabImpl<T> implements ITab<T> {
 
         protected View mItemView;
@@ -104,12 +110,6 @@ public final class TabFactory<T> {
                 mItemView.setSelected(false);
             }
         }
-    }
-
-    public static interface IIndexTab {
-        public CharSequence text();
-
-        public int icon();
     }
 
     public static class IndexTabImpl implements IIndexTab {

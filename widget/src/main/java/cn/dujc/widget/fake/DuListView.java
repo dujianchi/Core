@@ -80,8 +80,8 @@ public class DuListView extends LinearLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public BaseAdapter getAdapter() {
+        return mAdapter;
     }
 
     public void setAdapter(BaseAdapter adapter) {
@@ -92,12 +92,12 @@ public class DuListView extends LinearLayout {
         }
     }
 
-    public BaseAdapter getAdapter() {
-        return mAdapter;
-    }
-
     public OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     void resetViews() {

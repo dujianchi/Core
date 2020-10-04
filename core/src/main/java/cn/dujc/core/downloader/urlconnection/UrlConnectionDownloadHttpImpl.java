@@ -34,72 +34,6 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
 
     private Future<Object> future = null;
 
-    @Override
-    public void download(final String url, final File destination, final boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
-        future = EXECUTOR.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                final HttpURLConnection downloader = createByUrl(url);
-                if (downloader != null) {
-                    if (destination.exists()) {
-                        if (_continue) {
-                            downloader.setRequestProperty("RANGE", "bytes=" + destination.length() + "-");
-                        } else {
-                            destination.deleteOnExit();
-                        }
-                    } else if (!destination.getParentFile().exists() || !destination.getParentFile().isDirectory()) {
-                        destination.getParentFile().deleteOnExit();
-                        destination.getParentFile().mkdirs();
-                    }
-                    downloader.setDoInput(true);
-                    //downloader.setDoOutput(true);
-                    downloader.setUseCaches(false);
-                    try {
-                        downloader.setRequestMethod("GET");
-                    } catch (ProtocolException e) {
-                        if (Core.DEBUG) e.printStackTrace();
-                    }
-                    try {
-                        downloader.connect();
-                    } catch (IOException e) {
-                        if (Core.DEBUG) e.printStackTrace();
-                    }
-                    try {
-                        final InputStream inputStream = downloader.getInputStream();
-                        final int contentLength = downloader.getContentLength();
-                        if (!_continue || contentLength > 0)
-                            save(inputStream, destination, contentLength, listener, mainThreadHandler);
-                        if (listener != null) {
-                            mainThreadHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onDownloadSuccess(destination);
-                                }
-                            });
-                        }
-                    } catch (IOException e) {
-                        if (Core.DEBUG) e.printStackTrace();
-                        onError(e.getLocalizedMessage(), listener, mainThreadHandler);
-                    }
-                    downloader.disconnect();
-                }
-                Downloader.removeDownloadQueue(url, destination);
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public void cancel() {
-        if (future != null) {
-            try {
-                future.cancel(true);
-            } catch (Throwable e) {
-                if (Core.DEBUG) e.printStackTrace();
-            }
-        }
-    }
-
     private static HttpURLConnection createByUrl(String urlStr) {
         try {
             URL url = new URL(urlStr);
@@ -167,6 +101,72 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                 } catch (IOException e) {
                     if (Core.DEBUG) e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    @Override
+    public void download(final String url, final File destination, final boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
+        future = EXECUTOR.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                final HttpURLConnection downloader = createByUrl(url);
+                if (downloader != null) {
+                    if (destination.exists()) {
+                        if (_continue) {
+                            downloader.setRequestProperty("RANGE", "bytes=" + destination.length() + "-");
+                        } else {
+                            destination.deleteOnExit();
+                        }
+                    } else if (!destination.getParentFile().exists() || !destination.getParentFile().isDirectory()) {
+                        destination.getParentFile().deleteOnExit();
+                        destination.getParentFile().mkdirs();
+                    }
+                    downloader.setDoInput(true);
+                    //downloader.setDoOutput(true);
+                    downloader.setUseCaches(false);
+                    try {
+                        downloader.setRequestMethod("GET");
+                    } catch (ProtocolException e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                    try {
+                        downloader.connect();
+                    } catch (IOException e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                    }
+                    try {
+                        final InputStream inputStream = downloader.getInputStream();
+                        final int contentLength = downloader.getContentLength();
+                        if (!_continue || contentLength > 0)
+                            save(inputStream, destination, contentLength, listener, mainThreadHandler);
+                        if (listener != null) {
+                            mainThreadHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onDownloadSuccess(destination);
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        if (Core.DEBUG) e.printStackTrace();
+                        onError(e.getLocalizedMessage(), listener, mainThreadHandler);
+                    }
+                    downloader.disconnect();
+                }
+                Downloader.removeDownloadQueue(url, destination);
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void cancel() {
+        if (future != null) {
+            try {
+                future.cancel(true);
+            } catch (Throwable e) {
+                if (Core.DEBUG) e.printStackTrace();
             }
         }
     }

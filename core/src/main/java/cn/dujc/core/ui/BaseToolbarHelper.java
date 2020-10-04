@@ -42,7 +42,7 @@ class BaseToolbarHelper {
         }
     }
 
-    private static View[] noneRootView(IBaseUI.WithToolbar baseUI, View contentView){
+    private static View[] noneRootView(IBaseUI.WithToolbar baseUI, View contentView) {
         final View[] rootAndTool = new View[2];
         if (contentView instanceof ViewGroup) {
             rootAndTool[1] = baseUI.initToolbar((ViewGroup) contentView);

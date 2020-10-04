@@ -17,7 +17,6 @@
 package cn.dujc.core.gson;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +26,6 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -39,7 +37,8 @@ import java.text.SimpleDateFormat;
 public final class SqlDateTypeAdapter extends TypeAdapter<java.sql.Date> {
     public static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @SuppressWarnings("unchecked") // we use a runtime check to make sure the 'T's equal
-        @Override public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
+        @Override
+        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
             return typeToken.getRawType() == java.sql.Date.class
                     ? (TypeAdapter<T>) new SqlDateTypeAdapter() : null;
         }
@@ -56,8 +55,9 @@ public final class SqlDateTypeAdapter extends TypeAdapter<java.sql.Date> {
         try {
             final long utilDate = format.parse(in.nextString()).getTime();
             return new java.sql.Date(utilDate);
-        } catch (ParseException e) {
-            throw new JsonSyntaxException(e);
+        } catch (Exception e) {
+            in.skipValue();
+            return null;
         }
     }
 

@@ -18,6 +18,7 @@ public interface OnDownloadListener {
 
     public abstract class OnDownloadListenerImpl implements OnDownloadListener {
         @Override
-        public void onThreadUpdateProgress(long downloaded, long total) {}
+        public void onThreadUpdateProgress(long downloaded, long total) {
+        }
     }
 }

@@ -23,9 +23,9 @@ import cn.dujc.widget.abstraction.IDuBannerIndicator;
  */
 public class IrregularIndicator extends LinearLayout implements IDuBannerIndicator {
 
-    private SparseArray<View> mChildren = new SparseArray<>();
     private final int mShortEdge;
     private final int mLongEdge;
+    private SparseArray<View> mChildren = new SparseArray<>();
     private Drawable mSelectedDrawable, mDefaultDrawable;
     private int mCurrent = -1;
 

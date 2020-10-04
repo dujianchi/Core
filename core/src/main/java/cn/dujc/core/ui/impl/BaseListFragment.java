@@ -17,32 +17,6 @@ import cn.dujc.core.ui.BaseFragment;
  */
 public abstract class BaseListFragment extends BaseFragment implements IBaseList.UI {
 
-    private static class FragmentImpl extends AbsImpl {
-
-        private BaseListFragment mFragment;
-        View mRootView;
-
-        FragmentImpl(BaseListFragment fragment) {
-            super(fragment);
-            mFragment = fragment;
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mFragment.findViewById(id);
-        }
-
-        @Override
-        public Context context() {
-            return mFragment.mActivity;
-        }
-
-        @Override
-        public View getRootView() {
-            return mRootView;
-        }
-    }
-
     private IBaseList mBaseList;
 
     @Override
@@ -170,6 +144,32 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
     @Override
     public void setOnRefreshListener(IRefreshListener onRefreshListener) {
         mBaseList.setOnRefreshListener(onRefreshListener);
+    }
+
+    private static class FragmentImpl extends AbsImpl {
+
+        View mRootView;
+        private BaseListFragment mFragment;
+
+        FragmentImpl(BaseListFragment fragment) {
+            super(fragment);
+            mFragment = fragment;
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return mFragment.findViewById(id);
+        }
+
+        @Override
+        public Context context() {
+            return mFragment.mActivity;
+        }
+
+        @Override
+        public View getRootView() {
+            return mRootView;
+        }
     }
 
 }

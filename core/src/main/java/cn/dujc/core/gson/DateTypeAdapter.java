@@ -74,7 +74,12 @@ public final class DateTypeAdapter extends TypeAdapter<Date> {
             in.nextNull();
             return null;
         }
-        return deserializeToDate(in.nextString());
+        try {
+            return deserializeToDate(in.nextString());
+        } catch (IllegalStateException | JsonSyntaxException e) {
+            in.skipValue();
+            return null;
+        }
     }
 
     private synchronized Date deserializeToDate(String json) {

@@ -19,11 +19,23 @@ import cn.dujc.core.util.BitmapUtil;
  */
 public class CacheHelper {
 
+    private static CacheHelper sHelper;
     private LruCache<Uri, Bitmap> mMemoryCache = new LruCache<>(1024 * 1024 * 15);
     private DiskCache mDiskCache;
 
     private CacheHelper(Context context) {
         mDiskCache = DiskLruCacheWrapper.create(new File(context.getCacheDir(), "my_cache"), 1024 * 1024 * 200);
+    }
+
+    public static CacheHelper get(Context context) {
+        if (sHelper == null) {
+            synchronized (CacheHelper.class) {
+                if (sHelper == null) {
+                    sHelper = new CacheHelper(context.getApplicationContext());
+                }
+            }
+        }
+        return sHelper;
     }
 
     /**
@@ -45,19 +57,6 @@ public class CacheHelper {
     public void setBitmap(Uri uri, Bitmap bitmap) {
         mMemoryCache.put(uri, bitmap);
         mDiskCache.put(new ObjectKey(uri), new BitmapWriter(bitmap));
-    }
-
-    private static CacheHelper sHelper;
-
-    public static CacheHelper get(Context context) {
-        if (sHelper == null) {
-            synchronized (CacheHelper.class) {
-                if (sHelper == null) {
-                    sHelper = new CacheHelper(context.getApplicationContext());
-                }
-            }
-        }
-        return sHelper;
     }
 
     /**

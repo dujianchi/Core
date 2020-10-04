@@ -33,6 +33,258 @@ import java.util.List;
  */
 public class RichTextBuilder {
 
+    private final SpannableStringBuilder mStringBuilder = new SpannableStringBuilder();
+
+    /**
+     * 返回spannable
+     */
+    public Spannable build() {
+        return mStringBuilder;
+    }
+
+    /**
+     * 添加一个char字符
+     */
+    public RichTextBuilder addTextPart(char text) {
+        mStringBuilder.append(text);
+        return this;
+    }
+
+    /**
+     * 添加多个char字符
+     */
+    public RichTextBuilder addTexts(char... texts) {
+        if (texts != null) {
+            for (final char text : texts) {
+                addTextPart(text);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 添加一个纯文本
+     */
+    public RichTextBuilder addTextPart(CharSequence text) {
+        if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
+        return this;
+    }
+
+    /**
+     * 添加多个char字符
+     */
+    public RichTextBuilder addTexts(CharSequence... texts) {
+        if (texts != null) {
+            for (final CharSequence text : texts) {
+                addTextPart(text);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 添加一个带颜色的char字符
+     */
+    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, char text) {
+        return addTextPart(context, colorId, String.valueOf(text));
+    }
+
+    /**
+     * 添加一个带颜色的char字符
+     */
+    public RichTextBuilder addTextPart(int color, char text) {
+        return addTextPart(color, String.valueOf(text));
+    }
+
+    /**
+     * 添加一个带默认值的变量，在值为null时使用默认值
+     */
+    public RichTextBuilder addTextWithDefault(Object text, Object _default) {
+        return addTextPart(text == null ? _default == null ? "" : String.valueOf(_default) : String.valueOf(text));
+    }
+
+    /**
+     * 添加一个带颜色的文字
+     */
+    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, CharSequence text) {
+        if (context == null || colorId == 0) return addTextPart(text);
+        return addPart(text, new ForegroundColorSpan(ContextCompat.getColor(context, colorId)));
+    }
+
+    /**
+     * 添加一个带颜色的文字
+     */
+    public RichTextBuilder addTextPart(int color, CharSequence text) {
+        return addPart(text, new ForegroundColorSpan(color));
+    }
+
+    /**
+     * 添加一个带文本样式的文字，比如删除线{@link android.text.style.StrikethroughSpan}
+     * 、下划线{@link android.text.style.UnderlineSpan}
+     * 、下标{@link android.text.style.SubscriptSpan}
+     * 、上标{@link android.text.style.SuperscriptSpan}
+     */
+    public RichTextBuilder addTextPart(CharSequence text, CharacterStyle characterStyle) {
+        return addPart(text, characterStyle);
+    }
+
+    /**
+     * 添加一个带颜色和点击事件的文字
+     */
+    public RichTextBuilder addTextPart(CharSequence text, Context context, @ColorRes int colorId, OnClickListener listener) {
+        return addPart(text, new TextClickableSpan(text, ContextCompat.getColor(context, colorId), listener));
+    }
+
+    /**
+     * 添加一个带颜色和点击事件的文字
+     */
+    public RichTextBuilder addTextPart(CharSequence text, int color, OnClickListener listener) {
+        return addPart(text, new TextClickableSpan(text, color, listener));
+    }
+
+    /**
+     * 添加一个指定多少px大小的文字
+     */
+    public RichTextBuilder addTextPartPx(CharSequence text, int sizeInPx) {
+        return addPart(text, new AbsoluteSizeSpan(sizeInPx));
+    }
+
+    /**
+     * 添加一个指定多少dp大小的文字
+     */
+    public RichTextBuilder addTextPartDp(CharSequence text, int sizeInDp) {
+        return addPart(text, new AbsoluteSizeSpan(sizeInDp, true));
+    }
+
+    /**
+     * 添加一个指定倍数的文字，比如0.5即为设置的字体的一半大
+     */
+    public RichTextBuilder addTextPartScale(CharSequence text, float scale) {
+        return addPart(text, new RelativeSizeSpan(scale));
+    }
+
+    /**
+     * 添加一个指定宽度倍数的文字，比如2。0即为设置的字体的2倍宽
+     */
+    public RichTextBuilder addTextPartScaleX(CharSequence text, float scaleX) {
+        return addPart(text, new ScaleXSpan(scaleX));
+    }
+
+    /**
+     * 添加一个图片
+     */
+    public RichTextBuilder addImage(Context context, @DrawableRes int drawableId) {
+        if (drawableId == 0) return this;
+        return addImage(ContextCompat.getDrawable(context, drawableId));
+    }
+
+    /**
+     * 添加一个图片
+     */
+    public RichTextBuilder addImage(Drawable drawable) {
+        if (drawable == null) return this;
+        return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), DynamicDrawableSpan.ALIGN_BASELINE);
+    }
+
+    /**
+     * 添加一个图片
+     *
+     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
+     */
+    public RichTextBuilder addImage(Drawable drawable, int verticalAlignment) {
+        if (drawable == null) return this;
+        return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), verticalAlignment);
+    }
+
+    /**
+     * 添加一个图片
+     */
+    public RichTextBuilder addImage(Drawable drawable, TextView textView) {
+        if (drawable == null) return this;
+        return addImage(drawable, textView, DynamicDrawableSpan.ALIGN_BASELINE);
+    }
+
+    /**
+     * 添加一个图片
+     */
+    public RichTextBuilder addImage(Drawable drawable, int width, int height) {
+        return addImage(drawable, width, height, DynamicDrawableSpan.ALIGN_BASELINE);
+    }
+
+    /**
+     * 添加一个图片
+     *
+     * @param textView          以此TextView字体大小为准
+     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
+     */
+    public RichTextBuilder addImage(Drawable drawable, TextView textView, int verticalAlignment) {
+        if (drawable == null) return this;
+        int width, height;
+        if (textView == null) {
+            width = drawable.getIntrinsicWidth();
+            height = drawable.getIntrinsicHeight();
+        } else {
+            width = height = (int) (textView.getTextSize() + 0.999F);
+        }
+        return addImage(drawable, width, height, verticalAlignment);
+    }
+
+    /**
+     * 添加一个图片
+     *
+     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
+     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
+     */
+    public RichTextBuilder addImage(Drawable drawable, int width, int height, int verticalAlignment) {
+        if (drawable == null) return this;
+        drawable.setBounds(0, 0, width, height);
+        return addPart(" ", new ImageSpan(drawable, verticalAlignment));
+    }
+
+    /**
+     * 添加一个文字，并指定多个span
+     */
+    public RichTextBuilder addPart(CharSequence text, Object... spans) {
+        if (!TextUtils.isEmpty(text)) {
+            if (spans != null && spans.length > 0) {
+                final int start = mStringBuilder.length();
+                final int end = start + text.length();
+                mStringBuilder.append(text);
+                for (Object span : spans) {
+                    if (span != null) {
+                        mStringBuilder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            } else {
+                mStringBuilder.append(text);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 对多个对象批量组合
+     */
+    public Texts batch() {
+        return new Texts(this);
+    }
+
+    public NotEmptyTexts ifNotNone(CharSequence... texts) {
+        return new NotEmptyTexts(this, texts);
+    }
+
+    /**
+     * 对多个对象配置多种样式
+     */
+    public Styles styles() {
+        return new Styles(this);
+    }
+
     public interface OnClickListener {
         void onClick(View widget, CharSequence clickedText);
     }
@@ -378,257 +630,5 @@ public class RichTextBuilder {
             return mBuilder;
         }
 
-    }
-
-    private final SpannableStringBuilder mStringBuilder = new SpannableStringBuilder();
-
-    /**
-     * 返回spannable
-     */
-    public Spannable build() {
-        return mStringBuilder;
-    }
-
-    /**
-     * 添加一个char字符
-     */
-    public RichTextBuilder addTextPart(char text) {
-        mStringBuilder.append(text);
-        return this;
-    }
-
-    /**
-     * 添加多个char字符
-     */
-    public RichTextBuilder addTexts(char... texts) {
-        if (texts != null) {
-            for (final char text : texts) {
-                addTextPart(text);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 添加一个纯文本
-     */
-    public RichTextBuilder addTextPart(CharSequence text) {
-        if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
-        return this;
-    }
-
-    /**
-     * 添加多个char字符
-     */
-    public RichTextBuilder addTexts(CharSequence... texts) {
-        if (texts != null) {
-            for (final CharSequence text : texts) {
-                addTextPart(text);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 添加一个带颜色的char字符
-     */
-    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, char text) {
-        return addTextPart(context, colorId, String.valueOf(text));
-    }
-
-    /**
-     * 添加一个带颜色的char字符
-     */
-    public RichTextBuilder addTextPart(int color, char text) {
-        return addTextPart(color, String.valueOf(text));
-    }
-
-    /**
-     * 添加一个带默认值的变量，在值为null时使用默认值
-     */
-    public RichTextBuilder addTextWithDefault(Object text, Object _default) {
-        return addTextPart(text == null ? _default == null ? "" : String.valueOf(_default) : String.valueOf(text));
-    }
-
-    /**
-     * 添加一个带颜色的文字
-     */
-    public RichTextBuilder addTextPart(Context context, @ColorRes int colorId, CharSequence text) {
-        if (context == null || colorId == 0) return addTextPart(text);
-        return addPart(text, new ForegroundColorSpan(ContextCompat.getColor(context, colorId)));
-    }
-
-    /**
-     * 添加一个带颜色的文字
-     */
-    public RichTextBuilder addTextPart(int color, CharSequence text) {
-        return addPart(text, new ForegroundColorSpan(color));
-    }
-
-    /**
-     * 添加一个带文本样式的文字，比如删除线{@link android.text.style.StrikethroughSpan}
-     * 、下划线{@link android.text.style.UnderlineSpan}
-     * 、下标{@link android.text.style.SubscriptSpan}
-     * 、上标{@link android.text.style.SuperscriptSpan}
-     */
-    public RichTextBuilder addTextPart(CharSequence text, CharacterStyle characterStyle) {
-        return addPart(text, characterStyle);
-    }
-
-    /**
-     * 添加一个带颜色和点击事件的文字
-     */
-    public RichTextBuilder addTextPart(CharSequence text, Context context, @ColorRes int colorId, OnClickListener listener) {
-        return addPart(text, new TextClickableSpan(text, ContextCompat.getColor(context, colorId), listener));
-    }
-
-    /**
-     * 添加一个带颜色和点击事件的文字
-     */
-    public RichTextBuilder addTextPart(CharSequence text, int color, OnClickListener listener) {
-        return addPart(text, new TextClickableSpan(text, color, listener));
-    }
-
-    /**
-     * 添加一个指定多少px大小的文字
-     */
-    public RichTextBuilder addTextPartPx(CharSequence text, int sizeInPx) {
-        return addPart(text, new AbsoluteSizeSpan(sizeInPx));
-    }
-
-    /**
-     * 添加一个指定多少dp大小的文字
-     */
-    public RichTextBuilder addTextPartDp(CharSequence text, int sizeInDp) {
-        return addPart(text, new AbsoluteSizeSpan(sizeInDp, true));
-    }
-
-    /**
-     * 添加一个指定倍数的文字，比如0.5即为设置的字体的一半大
-     */
-    public RichTextBuilder addTextPartScale(CharSequence text, float scale) {
-        return addPart(text, new RelativeSizeSpan(scale));
-    }
-
-    /**
-     * 添加一个指定宽度倍数的文字，比如2。0即为设置的字体的2倍宽
-     */
-    public RichTextBuilder addTextPartScaleX(CharSequence text, float scaleX) {
-        return addPart(text, new ScaleXSpan(scaleX));
-    }
-
-    /**
-     * 添加一个图片
-     */
-    public RichTextBuilder addImage(Context context, @DrawableRes int drawableId) {
-        if (drawableId == 0) return this;
-        return addImage(ContextCompat.getDrawable(context, drawableId));
-    }
-
-    /**
-     * 添加一个图片
-     */
-    public RichTextBuilder addImage(Drawable drawable) {
-        if (drawable == null) return this;
-        return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), DynamicDrawableSpan.ALIGN_BASELINE);
-    }
-
-    /**
-     * 添加一个图片
-     *
-     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
-     */
-    public RichTextBuilder addImage(Drawable drawable, int verticalAlignment) {
-        if (drawable == null) return this;
-        return addImage(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), verticalAlignment);
-    }
-
-    /**
-     * 添加一个图片
-     */
-    public RichTextBuilder addImage(Drawable drawable, TextView textView) {
-        if (drawable == null) return this;
-        return addImage(drawable, textView, DynamicDrawableSpan.ALIGN_BASELINE);
-    }
-
-    /**
-     * 添加一个图片
-     */
-    public RichTextBuilder addImage(Drawable drawable, int width, int height) {
-        return addImage(drawable, width, height, DynamicDrawableSpan.ALIGN_BASELINE);
-    }
-
-    /**
-     * 添加一个图片
-     *
-     * @param textView          以此TextView字体大小为准
-     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
-     */
-    public RichTextBuilder addImage(Drawable drawable, TextView textView, int verticalAlignment) {
-        if (drawable == null) return this;
-        int width, height;
-        if (textView == null) {
-            width = drawable.getIntrinsicWidth();
-            height = drawable.getIntrinsicHeight();
-        } else {
-            width = height = (int) (textView.getTextSize() + 0.999F);
-        }
-        return addImage(drawable, width, height, verticalAlignment);
-    }
-
-    /**
-     * 添加一个图片
-     *
-     * @param verticalAlignment 选择{@link android.text.style.DynamicDrawableSpan#ALIGN_BASELINE}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_BOTTOM}
-     *                          或{@link android.text.style.DynamicDrawableSpan#ALIGN_CENTER}(api > Q)
-     */
-    public RichTextBuilder addImage(Drawable drawable, int width, int height, int verticalAlignment) {
-        if (drawable == null) return this;
-        drawable.setBounds(0, 0, width, height);
-        return addPart(" ", new ImageSpan(drawable, verticalAlignment));
-    }
-
-    /**
-     * 添加一个文字，并指定多个span
-     */
-    public RichTextBuilder addPart(CharSequence text, Object... spans) {
-        if (!TextUtils.isEmpty(text)) {
-            if (spans != null && spans.length > 0) {
-                final int start = mStringBuilder.length();
-                final int end = start + text.length();
-                mStringBuilder.append(text);
-                for (Object span : spans) {
-                    if (span != null) {
-                        mStringBuilder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                }
-            } else {
-                mStringBuilder.append(text);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 对多个对象批量组合
-     */
-    public Texts batch() {
-        return new Texts(this);
-    }
-
-    public NotEmptyTexts ifNotNone(CharSequence... texts) {
-        return new NotEmptyTexts(this, texts);
-    }
-
-    /**
-     * 对多个对象配置多种样式
-     */
-    public Styles styles() {
-        return new Styles(this);
     }
 }
