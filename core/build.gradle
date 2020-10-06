@@ -30,10 +30,11 @@ dependencies {
     compileOnly 'com.google.code.gson:gson:2.8.5'
     compileOnly 'com.squareup.okhttp3:okhttp:4.1.0'
 
-    implementation "com.google.android.material:material:$support_version"
-    implementation "androidx.annotation:annotation:$support_version"
-    implementation "androidx.recyclerview:recyclerview:$support_version"
-    implementation "androidx.appcompat:appcompat:$support_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.annotation:annotation:$annotation_version"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefresh_version"
 
 //    implementation "com.squareup.okhttp3:okhttp:$ok_version"
 //    implementation "com.squareup.okhttp3:logging-interceptor:$ok_version"

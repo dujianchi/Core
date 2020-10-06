@@ -25,25 +25,29 @@ import java.util.concurrent.atomic.AtomicLongArray;
 public class GodTypeAdapterFactory {
 
     public static GsonBuilder createBuilder() {
-        return GodTypeAdapterFactory.assess(new GsonBuilder());
+        return GodTypeAdapterFactory.createBuilder(false);
     }
 
-    public static GsonBuilder assess(GsonBuilder builder) {
+    public static GsonBuilder createBuilder(boolean useMinPrimitive) {
+        return GodTypeAdapterFactory.assess(useMinPrimitive, new GsonBuilder());
+    }
+
+    public static GsonBuilder assess(boolean useMinPrimitive, GsonBuilder builder) {
         builder.registerTypeAdapterFactory(TypeAdapters.JSON_ELEMENT_FACTORY);
         builder.registerTypeAdapterFactory(ObjectTypeAdapter.FACTORY);
 
         // type adapters for basic platform types
         builder.registerTypeAdapterFactory(TypeAdapters.STRING_FACTORY);
-        builder.registerTypeAdapterFactory(TypeAdapters.INTEGER_FACTORY);
+        builder.registerTypeAdapterFactory(useMinPrimitive ? TypeAdapters.INTEGER_FACTORY : TypeAdapters.INTEGER_FACTORY0);
         builder.registerTypeAdapterFactory(TypeAdapters.BOOLEAN_FACTORY);
-        builder.registerTypeAdapterFactory(TypeAdapters.BYTE_FACTORY);
-        builder.registerTypeAdapterFactory(TypeAdapters.SHORT_FACTORY);
-        TypeAdapter<Number> longAdapter = longAdapter(LongSerializationPolicy.DEFAULT);
+        builder.registerTypeAdapterFactory(useMinPrimitive ? TypeAdapters.BYTE_FACTORY : TypeAdapters.BYTE_FACTORY0);
+        builder.registerTypeAdapterFactory(useMinPrimitive ? TypeAdapters.SHORT_FACTORY : TypeAdapters.SHORT_FACTORY0);
+        TypeAdapter<Number> longAdapter = useMinPrimitive ? longAdapter(LongSerializationPolicy.DEFAULT) : longAdapter0(LongSerializationPolicy.DEFAULT);
         builder.registerTypeAdapterFactory(TypeAdapters.newFactory(long.class, Long.class, longAdapter));
         builder.registerTypeAdapterFactory(TypeAdapters.newFactory(double.class, Double.class,
-                doubleAdapter(false)));
+                useMinPrimitive ? doubleAdapter(false) : doubleAdapter0(false)));
         builder.registerTypeAdapterFactory(TypeAdapters.newFactory(float.class, Float.class,
-                floatAdapter(false)));
+                useMinPrimitive ? floatAdapter(false) : floatAdapter0(false)));
         builder.registerTypeAdapterFactory(TypeAdapters.NUMBER_FACTORY);
         builder.registerTypeAdapterFactory(TypeAdapters.ATOMIC_INTEGER_FACTORY);
         builder.registerTypeAdapterFactory(TypeAdapters.ATOMIC_BOOLEAN_FACTORY);
@@ -91,7 +95,7 @@ public class GodTypeAdapterFactory {
         }
     }
 
-    private static TypeAdapter<Number> doubleAdapter(boolean serializeSpecialFloatingPointValues) {
+    private static TypeAdapter<Number> doubleAdapter0(boolean serializeSpecialFloatingPointValues) {
         if (serializeSpecialFloatingPointValues) {
             return TypeAdapters.DOUBLE;
         }
@@ -123,7 +127,39 @@ public class GodTypeAdapterFactory {
         };
     }
 
-    private static TypeAdapter<Number> floatAdapter(boolean serializeSpecialFloatingPointValues) {
+    private static TypeAdapter<Number> doubleAdapter(boolean serializeSpecialFloatingPointValues) {
+        if (serializeSpecialFloatingPointValues) {
+            return TypeAdapters.DOUBLE;
+        }
+        return new TypeAdapter<Number>() {
+            @Override
+            public Double read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.NULL) {
+                    in.nextNull();
+                    return null;
+                }
+                try {
+                    return in.nextDouble();
+                } catch (Exception e) {
+                    in.skipValue();
+                    return Double.MIN_VALUE;
+                }
+            }
+
+            @Override
+            public void write(JsonWriter out, Number value) throws IOException {
+                if (value == null) {
+                    out.nullValue();
+                    return;
+                }
+                double doubleValue = value.doubleValue();
+                checkValidFloatingPoint(doubleValue);
+                out.value(value);
+            }
+        };
+    }
+
+    private static TypeAdapter<Number> floatAdapter0(boolean serializeSpecialFloatingPointValues) {
         if (serializeSpecialFloatingPointValues) {
             return TypeAdapters.FLOAT;
         }
@@ -139,6 +175,38 @@ public class GodTypeAdapterFactory {
                 } catch (Exception e) {
                     in.skipValue();
                     return null;
+                }
+            }
+
+            @Override
+            public void write(JsonWriter out, Number value) throws IOException {
+                if (value == null) {
+                    out.nullValue();
+                    return;
+                }
+                float floatValue = value.floatValue();
+                checkValidFloatingPoint(floatValue);
+                out.value(value);
+            }
+        };
+    }
+
+    private static TypeAdapter<Number> floatAdapter(boolean serializeSpecialFloatingPointValues) {
+        if (serializeSpecialFloatingPointValues) {
+            return TypeAdapters.FLOAT;
+        }
+        return new TypeAdapter<Number>() {
+            @Override
+            public Float read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.NULL) {
+                    in.nextNull();
+                    return null;
+                }
+                try {
+                    return (float) in.nextDouble();
+                } catch (Exception e) {
+                    in.skipValue();
+                    return Float.MIN_VALUE;
                 }
             }
 
@@ -200,7 +268,7 @@ public class GodTypeAdapterFactory {
         }.nullSafe();
     }
 
-    private static TypeAdapter<Number> longAdapter(LongSerializationPolicy longSerializationPolicy) {
+    private static TypeAdapter<Number> longAdapter0(LongSerializationPolicy longSerializationPolicy) {
         if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {
             return TypeAdapters.LONG;
         }
@@ -216,6 +284,36 @@ public class GodTypeAdapterFactory {
                 } catch (Exception e) {
                     in.skipValue();
                     return null;
+                }
+            }
+
+            @Override
+            public void write(JsonWriter out, Number value) throws IOException {
+                if (value == null) {
+                    out.nullValue();
+                    return;
+                }
+                out.value(value.toString());
+            }
+        };
+    }
+
+    private static TypeAdapter<Number> longAdapter(LongSerializationPolicy longSerializationPolicy) {
+        if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {
+            return TypeAdapters.LONG;
+        }
+        return new TypeAdapter<Number>() {
+            @Override
+            public Number read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.NULL) {
+                    in.nextNull();
+                    return null;
+                }
+                try {
+                    return in.nextLong();
+                } catch (Exception e) {
+                    in.skipValue();
+                    return Long.MIN_VALUE;
                 }
             }
 

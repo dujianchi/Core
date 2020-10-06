@@ -33,7 +33,7 @@ public class Core {
     public static void init(Application app
             , Class<? extends IToolbar>[] iToolbar
     ) {
-        init(app, iToolbar, IBaseListSetup.DefaultImpl.class, null, IRefreshSetup.Impl.class);
+        init(app, iToolbar, IBaseListSetup.DefaultImpl.class, IPermissionSetup.DefaultImpl.class, IRefreshSetup.Impl.class);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Core {
             , Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup
     ) {
-        init(app, iToolbar, iListSetup, null, IRefreshSetup.Impl.class);
+        init(app, iToolbar, iListSetup, IPermissionSetup.DefaultImpl.class, IRefreshSetup.Impl.class);
     }
 
     /**
@@ -71,7 +71,8 @@ public class Core {
     /**
      * 初始化框架
      */
-    public static void init(Application app, Class<? extends IToolbar>[] iToolbar
+    public static void init(Application app
+            , Class<? extends IToolbar>[] iToolbar
             , Class<? extends IBaseListSetup> iListSetup
             , Class<? extends IPermissionSetup> iPermissionSetup
             , Class<? extends IRefreshSetup> iRefresh

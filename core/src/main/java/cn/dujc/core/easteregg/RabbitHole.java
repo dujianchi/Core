@@ -10,8 +10,19 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 兔子洞，更彩蛋{@link IEasterEgg}配合使用
+ * todo 还没完成
+ */
 public class RabbitHole {
 
+    /**
+     * 注册彩蛋。
+     *
+     * @param view 彩蛋应该放置在没有点击事件或没有其他触摸操作的控件上
+     * @param egg  彩蛋，彩蛋触发条件应为{@link IEasterEgg#canOpen()}和触摸情况满足{@link IEasterEgg#trigger()}
+     *             ，然后调用{@link IEasterEgg#open()}
+     */
     public static void registerEasterEggInto(View view, IEasterEgg egg) {
         if (view != null && egg != null) {
             view.setOnTouchListener(new EasterEggListener(view, egg));

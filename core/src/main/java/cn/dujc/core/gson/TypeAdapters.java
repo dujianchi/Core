@@ -110,7 +110,13 @@ public final class TypeAdapters {
                 in.nextNull();
                 return null;
             }
-            return Boolean.valueOf(in.nextString());
+            try {
+                String val = in.nextString();
+                return val == null ? null : Boolean.valueOf(val);
+            } catch (Exception e) {
+                in.skipValue();
+                return null;
+            }
         }
 
         @Override
@@ -120,7 +126,7 @@ public final class TypeAdapters {
     };
     public static final TypeAdapterFactory BOOLEAN_FACTORY
             = newFactory(boolean.class, Boolean.class, BOOLEAN);
-    public static final TypeAdapter<Number> BYTE = new TypeAdapter<Number>() {
+    public static final TypeAdapter<Number> BYTE0 = new TypeAdapter<Number>() {
         @Override
         public Number read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
@@ -141,9 +147,32 @@ public final class TypeAdapters {
             out.value(value);
         }
     };
+    public static final TypeAdapterFactory BYTE_FACTORY0
+            = newFactory(byte.class, Byte.class, BYTE0);
+    public static final TypeAdapter<Number> BYTE = new TypeAdapter<Number>() {
+        @Override
+        public Number read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            try {
+                int intValue = in.nextInt();
+                return (byte) intValue;
+            } catch (Exception e) {
+                in.skipValue();
+                return Byte.MIN_VALUE;
+            }
+        }
+
+        @Override
+        public void write(JsonWriter out, Number value) throws IOException {
+            out.value(value);
+        }
+    };
     public static final TypeAdapterFactory BYTE_FACTORY
             = newFactory(byte.class, Byte.class, BYTE);
-    public static final TypeAdapter<Number> SHORT = new TypeAdapter<Number>() {
+    public static final TypeAdapter<Number> SHORT0 = new TypeAdapter<Number>() {
         @Override
         public Number read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
@@ -155,6 +184,28 @@ public final class TypeAdapters {
             } catch (Exception e) {
                 in.skipValue();
                 return null;
+            }
+        }
+
+        @Override
+        public void write(JsonWriter out, Number value) throws IOException {
+            out.value(value);
+        }
+    };
+    public static final TypeAdapterFactory SHORT_FACTORY0
+            = newFactory(short.class, Short.class, SHORT0);
+    public static final TypeAdapter<Number> SHORT = new TypeAdapter<Number>() {
+        @Override
+        public Number read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            try {
+                return (short) in.nextInt();
+            } catch (Exception e) {
+                in.skipValue();
+                return Short.MIN_VALUE;
             }
         }
 
@@ -176,7 +227,7 @@ public final class TypeAdapters {
                 return in.nextInt();
             } catch (Exception e) {
                 in.skipValue();
-                return null;
+                return Integer.MIN_VALUE;
             }
         }
 
@@ -187,6 +238,28 @@ public final class TypeAdapters {
     };
     public static final TypeAdapterFactory INTEGER_FACTORY
             = newFactory(int.class, Integer.class, INTEGER);
+    public static final TypeAdapter<Number> INTEGER0 = new TypeAdapter<Number>() {
+        @Override
+        public Number read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            try {
+                return in.nextInt();
+            } catch (Exception e) {
+                in.skipValue();
+                return 0;
+            }
+        }
+
+        @Override
+        public void write(JsonWriter out, Number value) throws IOException {
+            out.value(value);
+        }
+    };
+    public static final TypeAdapterFactory INTEGER_FACTORY0
+            = newFactory(int.class, Integer.class, INTEGER0);
     public static final TypeAdapter<AtomicInteger> ATOMIC_INTEGER = new TypeAdapter<AtomicInteger>() {
         @Override
         public AtomicInteger read(JsonReader in) throws IOException {
@@ -298,7 +371,7 @@ public final class TypeAdapters {
                 return in.nextDouble();
             } catch (Exception e) {
                 in.skipValue();
-                return null;
+                return Double.MIN_VALUE;
             }
         }
 

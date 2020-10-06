@@ -20,6 +20,7 @@ import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
 import cn.dujc.coreapp.entity.Bean1;
 import cn.dujc.coreapp.entity.Bean2;
+import cn.dujc.coreapp.entity.Bean3;
 
 public class GsonActivity extends BaseActivity {
 
@@ -34,7 +35,7 @@ public class GsonActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mGson = GodTypeAdapterFactory.createBuilder().create();
+        mGson = GodTypeAdapterFactory.createBuilder(false).create();
         mEtJson = findViewById(R.id.et_json);
         mTvJson = findViewById(R.id.tv_json);
     }
@@ -58,7 +59,7 @@ public class GsonActivity extends BaseActivity {
 
     public void regenerate(View v) {
         String json = mEtJson.getText().toString();
-        Bean<Bean2> from = mGson.fromJson(json, new TypeToken<Bean<Bean2>>() {
+        Bean3<Bean2> from = mGson.fromJson(json, new TypeToken<Bean3<Bean2>>() {
         }.getType());
         mTvJson.setText(GsonUtil.toJsonString(from));
         System.out.println(from.getCode());

@@ -78,8 +78,8 @@ public final class CollectionTypeAdapterFactory implements TypeAdapterFactory {
                 return null;
             }
 
-            Collection<E> collection = constructor.construct();
             try {
+                Collection<E> collection = constructor.construct();
                 in.beginArray();
                 while (in.hasNext()) {
                     E instance = elementTypeAdapter.read(in);
@@ -88,10 +88,11 @@ public final class CollectionTypeAdapterFactory implements TypeAdapterFactory {
                     }
                 }
                 in.endArray();
-            } catch (IllegalStateException e) {
+                return collection;
+            } catch (Exception e) {
                 in.skipValue();
             }
-            return collection;
+            return null;
         }
 
         @Override

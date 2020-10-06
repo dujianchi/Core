@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -22,10 +23,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "com.google.android.material:material:$support_version"
-    implementation "androidx.recyclerview:recyclerview:$support_version"
-    //implementation "androidx.constraintlayout:constraintlayout:$support_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    //implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation project(':core')
     implementation project(':widget')
     implementation project(':zxing')
@@ -42,7 +44,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     //LeakCanary --- end
 
-    implementation 'com.qmuiteam:qmui:1.4.0'
+    implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
     implementation 'cn.dujc:Matisse:d0.5.3-beta4_9'

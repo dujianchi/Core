@@ -5,6 +5,9 @@ import androidx.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * 彩蛋，用于设置一些特殊入口或操作
+ */
 public interface IEasterEgg {
 
     public static final long LONG_LIMIT_MILLS = 3000L//长按触发极限，单位毫秒
