@@ -77,6 +77,7 @@
         <activity android:name=".ui.EventActivity0" />
         <activity android:name=".ui.EventActivity1" />
         <activity android:name=".ui.GsonActivity" />
+        <activity android:name=".ui.SelectableActivity" />
     </application>
 
 </manifest>

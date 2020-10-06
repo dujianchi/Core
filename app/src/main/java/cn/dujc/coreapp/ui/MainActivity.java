@@ -71,6 +71,7 @@ public class MainActivity extends BaseListActivity {
             , "bitmap"
             , "event"
             , "gallery"
+            , "selectable layout"
             //, ""
     );
 
@@ -298,6 +299,10 @@ public class MainActivity extends BaseListActivity {
             break;
             case 33: {
                 starter().goFragment(GalleryFragment.class);
+            }
+            break;
+            case 34: {
+                starter().go(SelectableActivity.class);
             }
             break;
             //case 00:{}break;

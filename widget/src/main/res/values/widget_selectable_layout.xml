@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SelectableLayout">
+        <attr name="du_selectableLayoutSelectCount" format="integer" />
+        <attr name="du_selectableLayoutSelectedIndexes" format="string" />
+        <attr name="du_selectableLayoutCancelable" format="boolean" />
+    </declare-styleable>
+
+</resources>
