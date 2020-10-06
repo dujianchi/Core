@@ -16,14 +16,14 @@
     <cn.dujc.widget.selectable.SelectableLayout
         android:id="@+id/sl_bottom"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         app:du_selectableLayoutSelectCount="1"
         app:du_selectableLayoutSelectedIndexes="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <TextView
+        <cn.dujc.widget.selectable.SelectableView
             android:id="@+id/cb_0"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,24 +31,34 @@
             android:background="#2333"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/app_name"
             android:textColor="@color/s_red_blue"
+            app:du_selectableViewIconHeight="20dp"
+            app:du_selectableViewIconSrc="@mipmap/ic_launcher"
+            app:du_selectableViewIconWidth="30dp"
+            app:du_selectableViewText="@string/app_name"
+            app:du_selectableViewTextColor="@color/s_red_blue"
+            app:du_selectableViewTextSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/cb_1"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <cn.dujc.widget.selectable.SelectableView
             android:id="@+id/cb_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:background="#2333"
             android:gravity="center"
-            android:padding="10dp"
             android:text="@string/app_name"
-            android:textColor="@color/s_red_blue"
+            app:du_selectableViewIconHeight="20dp"
+            app:du_selectableViewIconSrc="@mipmap/ic_star_red"
+            app:du_selectableViewIconTextSpacing="2dp"
+            app:du_selectableViewIconWidth="20dp"
+            app:du_selectableViewText="@string/app_name"
+            app:du_selectableViewTextColor="@color/colorPrimary"
+            app:du_selectableViewTextSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toRightOf="@id/cb_0"
