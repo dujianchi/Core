@@ -78,6 +78,7 @@
         <activity android:name=".ui.EventActivity1" />
         <activity android:name=".ui.GsonActivity" />
         <activity android:name=".ui.SelectableActivity" />
+        <activity android:name=".ui.TabLayoutActivity" />
     </application>
 
 </manifest>

@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Checkable
 import androidx.constraintlayout.widget.ConstraintLayout
+import cn.dujc.core.util.ViewUtils
 import cn.dujc.widget.R
 import kotlin.math.max
 
@@ -53,14 +55,13 @@ class SelectableLayout(context: Context, attrs: AttributeSet?, defStyleAttr: Int
             var max = -1
             defaultSelectedIndexes?.forEach { ind ->
                 getChildAt(ind)?.let { view ->
-                    view.isSelected = true
+                    operateChild(view, true)
                     if (!selectedViews.contains(view)) selectedViews.add(view)
-                    view
                 }
                 max = max(ind, max)
             }
-            defaultInitialized = index >= max
             removeOverflow()
+            defaultInitialized = index >= max
         }
     }
 
@@ -76,7 +77,7 @@ class SelectableLayout(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val result = super.dispatchTouchEvent(ev)
+        var result = false//super.dispatchTouchEvent(ev)
         val action = ev.action
         if (
         /*action == MotionEvent.ACTION_UP
@@ -92,16 +93,17 @@ class SelectableLayout(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         ) {
             for (index in 0 until childCount) {
                 val child = getChildAt(index)
-                if (isViewUnderEvent(child, ev)) {
-                    if (child.isSelected) {
+                if (ViewUtils.isViewUnderEvent(child, ev)) {
+                    result = true
+                    if (isChildSelected(child)) {
                         if (cancelable) {
-                            child.isSelected = false
+                            operateChild(child, false)
                             selectedViews.remove(child)
                         }
                     } else {
                         if (!selectedViews.contains(child))
                             selectedViews.add(child)
-                        child.isSelected = true
+                        operateChild(child, true)
                     }
                     /*(child as? Checkable)?.let { checkable ->
                         checkable.isChecked = !checkable.isChecked
@@ -126,24 +128,67 @@ class SelectableLayout(context: Context, attrs: AttributeSet?, defStyleAttr: Int
             ?: -1
 
     /**
+     * 选中
+     */
+    fun select(vararg indexes: Int) {
+        val iterator = selectedViews.iterator()
+        while (iterator.hasNext()) {
+            operateChild(iterator.next(), false)
+            iterator.remove()
+        }
+        indexes?.forEach { ind ->
+            getChildAt(ind)?.let { view ->
+                operateChild(view, true)
+                if (!selectedViews.contains(view)) selectedViews.add(view)
+            }
+        }
+        removeOverflow()
+    }
+
+    private fun isChildSelected(child: View?): Boolean {
+        if (child == null) return false
+        when (child) {
+            is Checkable -> return child.isChecked
+            is ViewGroup -> {
+                for (index in 0 until child.childCount) {
+                    if (isChildSelected(child.getChildAt(index))) return true
+                }
+                return false
+            }
+            else -> return child.isSelected
+        }
+    }
+
+    private fun operateChild(child: View?, selected: Boolean) {
+        if (child == null) return
+        when (child) {
+            is Checkable -> {
+                child.isChecked = selected
+            }
+            is ViewGroup -> {
+                for (index in 0 until child.childCount) {
+                    operateChild(child.getChildAt(index), selected)
+                }
+            }
+            else -> {
+                child.isSelected = selected
+            }
+        }
+    }
+
+    /**
      * 移除超出的
      */
     private fun removeOverflow() {
+        val hash = selectedViews.hashCode()
         while (selectedViews.size > selectCount) {
             val remove = selectedViews.removeAt(0)
             //(next as? Checkable)?.isChecked = false
-            remove.isSelected = false
+            operateChild(remove, false)
         }
-        onSelectChangedListener?.onSelected(selectedViews, selectedIndexes(), selectedIndexLast())
+        if (hash != selectedViews.hashCode()) {
+            onSelectChangedListener?.onSelected(selectedViews, selectedIndexes(), selectedIndexLast())
+        }
     }
 
-    private fun isViewUnderEvent(view: View, event: MotionEvent): Boolean {
-        val xy = IntArray(2)
-        view.getLocationOnScreen(xy)
-        val width = view.width
-        val height = view.height
-        val x = event.rawX
-        val y = event.rawY
-        return !(x < xy[0] || y < xy[1] || x > xy[0] + width || y > xy[1] + height)
-    }
 }

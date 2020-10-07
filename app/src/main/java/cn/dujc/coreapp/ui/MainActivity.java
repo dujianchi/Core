@@ -72,6 +72,7 @@ public class MainActivity extends BaseListActivity {
             , "event"
             , "gallery"
             , "selectable layout"
+            , "tab layout"
             //, ""
     );
 
@@ -303,6 +304,10 @@ public class MainActivity extends BaseListActivity {
             break;
             case 34: {
                 starter().go(SelectableActivity.class);
+            }
+            break;
+            case 35: {
+                starter().go(TabLayoutActivity.class);
             }
             break;
             //case 00:{}break;

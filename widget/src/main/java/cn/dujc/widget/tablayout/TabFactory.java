@@ -64,7 +64,7 @@ public final class TabFactory<T> {
         return iTab;
     }
 
-    public static interface IIndexTab {
+    public static interface IViewData {
         public CharSequence text();
 
         public int icon();
@@ -112,11 +112,11 @@ public final class TabFactory<T> {
         }
     }
 
-    public static class IndexTabImpl implements IIndexTab {
+    public static class ViewDataImpl implements IViewData {
         private CharSequence mText;
         private int mIcon;
 
-        public IndexTabImpl(CharSequence text, int icon) {
+        public ViewDataImpl(CharSequence text, int icon) {
             mText = text;
             mIcon = icon;
         }
@@ -140,13 +140,13 @@ public final class TabFactory<T> {
         }
     }
 
-    public static class IndexImpl<T extends IIndexTab> extends TabImpl<T> {
+    public static class IndexTabImpl<T extends IViewData> extends TabImpl<T> {
 
         protected ImageView mItemIconView;
 
         @Override
         public ITab<T> create() {
-            return new IndexImpl<>();
+            return new IndexTabImpl<>();
         }
 
         @NonNull

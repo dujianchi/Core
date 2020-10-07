@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class TabLayout<T> extends HorizontalScrollView {
     private final TabFactory<T> mTabFactory = new TabFactory<T>();
     private final LinearLayout mInnerLayout;
     private ViewPager mViewPager;
+    private ViewPager2 mViewPager2;
     private ITabWidthCalculator mTabWidthCalculator = new ITabWidthCalculator.FixedImpl();
     private final OnLayoutChangeListener mLayoutChangeListener = new OnLayoutChangeListener() {
         @Override
@@ -31,6 +33,12 @@ public class TabLayout<T> extends HorizontalScrollView {
     };
     private OnTabClickListener mOnTabClickListener;
     private final ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            updatePosition(position, false);
+        }
+    };
+    private final ViewPager2.OnPageChangeCallback mPageChangeListener2 = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(int position) {
             updatePosition(position, false);
@@ -65,6 +73,9 @@ public class TabLayout<T> extends HorizontalScrollView {
         if (mViewPager != null) {
             mViewPager.removeOnPageChangeListener(mPageChangeListener);
         }
+        if (mViewPager2 != null) {
+            mViewPager2.unregisterOnPageChangeCallback(mPageChangeListener2);
+        }
     }
 
     @Override
@@ -73,6 +84,10 @@ public class TabLayout<T> extends HorizontalScrollView {
         if (mViewPager != null) {
             mViewPager.removeOnPageChangeListener(mPageChangeListener);
             mViewPager.addOnPageChangeListener(mPageChangeListener);
+        }
+        if (mViewPager2 != null) {
+            mViewPager2.unregisterOnPageChangeCallback(mPageChangeListener2);
+            mViewPager2.registerOnPageChangeCallback(mPageChangeListener2);
         }
     }
 
@@ -120,6 +135,13 @@ public class TabLayout<T> extends HorizontalScrollView {
                 && position >= 0
                 && position < mViewPager.getAdapter().getCount()) {
             mViewPager.setCurrentItem(position);
+        }
+        if (viewPagerToo && mViewPager2 != null
+                && mViewPager2.getAdapter() != null
+                && mViewPager2.getCurrentItem() != position
+                && position >= 0
+                && position < mViewPager2.getAdapter().getItemCount()) {
+            mViewPager2.setCurrentItem(position);
         }
     }
 
@@ -172,9 +194,22 @@ public class TabLayout<T> extends HorizontalScrollView {
         }
     }
 
+    public void setViewPager2(ViewPager2 viewPager) {
+        mViewPager2 = viewPager;
+        if (viewPager != null) {
+            viewPager.unregisterOnPageChangeCallback(mPageChangeListener2);
+            viewPager.registerOnPageChangeCallback(mPageChangeListener2);
+        }
+    }
+
     public void setDataAndViewPage(List<T> data, ViewPager viewPager) {
         setData(data);
         setViewPager(viewPager);
+    }
+
+    public void setDataAndViewPage(List<T> data, ViewPager2 viewPager) {
+        setData(data);
+        setViewPager2(viewPager);
     }
 
     public interface OnTabClickListener {
