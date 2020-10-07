@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import cn.dujc.core.gson.GodTypeAdapterFactory;
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.GsonUtil;
 import cn.dujc.coreapp.R;
 import cn.dujc.coreapp.entity.Bean;
@@ -35,7 +36,9 @@ public class GsonActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        mGson = GodTypeAdapterFactory.createBuilder(false).create();
+        mGson = new GsonBuilder()
+                .registerTypeAdapter(Bean3.class, new GodDeserializer<Bean3<?>>(true))
+                .create();
         mEtJson = findViewById(R.id.et_json);
         mTvJson = findViewById(R.id.tv_json);
     }
