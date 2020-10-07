@@ -54,7 +54,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         mActivity = getActivity();
         final int vid = getViewId();
         final View rootView = getViewV();
-        Context context = container != null ? container.getContext() : null;
+        Context context = container != null ? container.getContext() : mActivity;
 
         if (mRootView == null && (vid != 0 || rootView != null) && context != null) {
             if (rootView == null) {
