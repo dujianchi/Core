@@ -18,22 +18,31 @@ import cn.dujc.core.gson.GodTypeAdapterFactory;
  */
 public class GodDeserializer<T> implements JsonDeserializer<T> {
 
-    private final Gson gson;
+    private final Gson originGson, godGson;
 
     public GodDeserializer() {
-        this(false);
+        this(null, false);
     }
 
     public GodDeserializer(boolean useMinPrimitive) {
-        gson = GodTypeAdapterFactory.createBuilder(useMinPrimitive).create();
+        this(null, useMinPrimitive);
+    }
+
+    public GodDeserializer(Gson gson, boolean useMinPrimitive) {
+        originGson = gson != null ? gson : new Gson();
+        godGson = GodTypeAdapterFactory.createBuilder(useMinPrimitive).create();
     }
 
     @Override
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
         try {
-            return gson.fromJson(json, typeOfT);
+            return originGson.fromJson(json, typeOfT);
         } catch (Exception e) {
-            return null;
+            try {
+                return godGson.fromJson(json, typeOfT);
+            } catch (Exception ie) {
+                return null;
+            }
         }
     }
 }
