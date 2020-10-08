@@ -59,4 +59,60 @@ public class Bean2 implements Serializable {
     public void setStringStringMap(Map<String, Integer> stringStringMap) {
         this.stringStringMap = stringStringMap;
     }
+
+    /*private String intArrays;
+    private String stringArrays;
+    private String booleanArrays;
+    private String floatList;
+    private String stringList;
+    private String stringStringMap;
+
+    public String getIntArrays() {
+        return intArrays;
+    }
+
+    public void setIntArrays(String intArrays) {
+        this.intArrays = intArrays;
+    }
+
+    public String getStringArrays() {
+        return stringArrays;
+    }
+
+    public void setStringArrays(String stringArrays) {
+        this.stringArrays = stringArrays;
+    }
+
+    public String getBooleanArrays() {
+        return booleanArrays;
+    }
+
+    public void setBooleanArrays(String booleanArrays) {
+        this.booleanArrays = booleanArrays;
+    }
+
+    public String getFloatList() {
+        return floatList;
+    }
+
+    public void setFloatList(String floatList) {
+        this.floatList = floatList;
+    }
+
+    public String getStringList() {
+        return stringList;
+    }
+
+    public void setStringList(String stringList) {
+        this.stringList = stringList;
+    }
+
+    public String getStringStringMap() {
+        return stringStringMap;
+    }
+
+    public void setStringStringMap(String stringStringMap) {
+        this.stringStringMap = stringStringMap;
+    }*/
+
 }

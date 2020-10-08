@@ -74,5 +74,11 @@ public class GsonActivity extends BaseActivity {
         System.out.println(from.getData().get(0).getStringArrays() + "");
         System.out.println(from.getData().get(0).getStringList() + "");
         System.out.println(from.getData().get(0).getStringStringMap());
+        /*System.out.println(from.getData().get(0).getBooleanArrays());
+        System.out.println(from.getData().get(0).getFloatList());
+        System.out.println(from.getData().get(0).getIntArrays());
+        System.out.println(from.getData().get(0).getStringArrays());
+        System.out.println(from.getData().get(0).getStringList());
+        System.out.println(from.getData().get(0).getStringStringMap());*/
     }
 }

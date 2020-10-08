@@ -418,8 +418,13 @@ public final class TypeAdapters {
             try {
                 return in.nextString();
             } catch (Exception e) {
-                in.skipValue();
-                return null;
+                try {
+                    JsonElement read = JSON_ELEMENT.read(in);
+                    return read == null ? null : read.toString();
+                } catch (Exception e1) {
+                    in.skipValue();
+                    return null;
+                }
             }
         }
 
