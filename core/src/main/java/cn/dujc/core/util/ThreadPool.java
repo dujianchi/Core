@@ -37,4 +37,31 @@ public class ThreadPool {
         }
     }
 
+    private static Handler getHandler() {
+        if (sHandler == null) {
+            synchronized (ThreadPool.class) {
+                if (sHandler == null) {
+                    sHandler = new Handler(Looper.getMainLooper());
+                }
+            }
+        }
+        return sHandler;
+    }
+
+    /**
+     * 回到主线程执行
+     */
+    public static void runInMainThread(Runnable runnable) {
+        if (runnable == null) return;
+        getHandler().post(runnable);
+    }
+
+    /**
+     * 回到主线程执行并按照队列执行，即当有多个的时候，会一一排队执行
+     */
+    public static void runInMainThreadQueue(Runnable runnable) {
+        if (runnable == null) return;
+        getHandler().postAtFrontOfQueue(runnable);
+    }
+
 }
